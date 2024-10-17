@@ -1,0 +1,17 @@
+Mistakes: 
+1. Expected outcomes and Deliverables (Proposal) [Increased Revenue]
+2. Documentation part missed in Gantt Chart (Asked Sandip sir)
+
+
+
+
+Consideration:
+1. Malt meaning (Manish + Salt)  
+	[ Malt typically refers to grains (usually barley) that have been processed for brewing beer or distilled 	alcoholic beverages, such as whiskey, vodka, rum, gin, and tequila.]
+
+2. Consider Roles for webapp (Admin, Vendor, Delivery Personnel, Customer)
+3. Sushil and Achyut Sir for help [Food mood and Pokhara food delivery]
+4. Unit testing [Move on to one by one unit to easily identify errors]
+5. Consider reserve keywords of PostgreSQL {Example: ORDER BY, CHECK, ALL, IN, NOT, HAVING}
+6. Develop the application in increments.
+7. Be consistent and good with references.
