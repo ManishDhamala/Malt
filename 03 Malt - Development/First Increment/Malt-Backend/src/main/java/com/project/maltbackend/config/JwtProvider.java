@@ -16,47 +16,55 @@ import java.util.Set;
 @Service
 public class JwtProvider {
 
-   private SecretKey key = Keys.hmacShaKeyFor(JwtConstant.SECRET_KEY.getBytes());
+    // Create a secret key using the predefined secret from JwtConstant
+    private SecretKey key = Keys.hmacShaKeyFor(JwtConstant.SECRET_KEY.getBytes());
 
-   public String generateToken(Authentication auth) {
-       Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
-       String roles = populateAuthorities(authorities);
+    // Method to generate a JWT based on authentication information
+    public String generateToken(Authentication auth) {
+        // Get the user's authorities (roles)
+        Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
+        // Convert authorities into a comma-separated string
+        String roles = populateAuthorities(authorities);
 
-       String jwt  = Jwts.builder().setIssuedAt(new Date())
-               .setExpiration((new Date(new Date().getTime()+86400000)))
-               .claim("email",auth.getName())
-               .claim("authorities",roles)
-               .signWith(key)
-               .compact();
+        // Build the JWT with necessary claims and sign it
+        String jwt = Jwts.builder()
+                .setIssuedAt(new Date()) // Set the issue date to now
+                .setExpiration(new Date(new Date().getTime() + 86400000)) // Set expiration to 1 day later
+                .claim("email", auth.getName()) // Add the user's email as a claim (data inside the token)
+                .claim("authorities", roles) // Add the user's roles as a claim
+                .signWith(key) // Sign the JWT with the secret key
+                .compact(); // Generate the final JWT string
 
+        return jwt; // Return the generated JWT
+    }
 
-       return jwt;
-   }
+    // Method to extract the email from a given JWT
+    public String getEmailFromJwtToken(String jwt) {
+        jwt = jwt.substring(7); // Remove the "Bearer " prefix from the JWT
 
+        // Parse the JWT using the secret key to retrieve claims
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(jwt)
+                .getBody();
 
-    public String getEmailFromJwtToken(String jwt){
-        jwt = jwt.substring(7);
-
-        Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt).getBody();
-
+        // Extract the email claim from the JWT
         String email = String.valueOf(claims.get("email"));
 
-        return email;
-
+        return email; // Return the extracted email
     }
 
-
-
-
+    // Helper method to convert a collection of GrantedAuthority into a comma-separated string
     private String populateAuthorities(Collection<? extends GrantedAuthority> authorities) {
-       Set<String> auths = new HashSet<>();
+        Set<String> auths = new HashSet<>(); // Use a set to store unique authorities
 
-       for (GrantedAuthority authority :authorities){
+        // Loop through each authority and add it to the set
+        for (GrantedAuthority authority : authorities) {
             auths.add(authority.getAuthority());
+        }
 
-       }
-       return String.join(",", auths);
-
+        // Join the authorities into a single string separated by commas
+        return String.join(",", auths);
     }
-
 }

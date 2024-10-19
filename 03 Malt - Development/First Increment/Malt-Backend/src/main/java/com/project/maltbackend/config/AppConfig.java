@@ -20,44 +20,74 @@ import java.util.Collections;
 @EnableWebSecurity
 public class AppConfig {
 
+    // This method configures Spring Security's filter chain.
+    // It defines how requests should be authorized, enables CORS, disables CSRF, and adds JWT validation.
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
+        // Stateless session management: No session is maintained, every request must include authentication details.
         http.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+                // Authorization rules: Defines who can access which URLs
                 .authorizeHttpRequests(Authorize -> Authorize
+                        // URLs starting with /api/admin/** require roles of either RESTAURANT_OWNER or ADMIN
                         .requestMatchers("/api/admin/**").hasAnyRole("RESTAURANT_OWNER", "ADMIN")
+
+                        // Any other /api/** URLs require authentication
                         .requestMatchers("/api/**").authenticated()
+
+                        // All other requests are publicly accessible (no authentication needed)
                         .anyRequest().permitAll()
-                ).addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class)
+                )
+
+                // Add a custom filter to validate JWT tokens before Spring's default BasicAuthenticationFilter
+                .addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class)
+
+                // Disable CSRF(Cross-Site Request Forgery) protection since this is a stateless application (CSRF tokens are unnecessary with JWT)
                 .csrf(csrf -> csrf.disable())
+
+                // Enable CORS and apply the CORS configuration
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()));
 
+        // Build and return the security configuration
         return http.build();
     }
 
+    // This method configures Cross-Origin Resource Sharing (CORS)
     private CorsConfigurationSource corsConfigurationSource() {
         return new CorsConfigurationSource() {
+
             @Override
             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                 CorsConfiguration cfg = new CorsConfiguration();
 
-                cfg.setAllowedOrigins(Arrays.asList(
-                        "http://localhost:3000/"
-                ));
-                cfg.setAllowedMethods(Collections.singletonList("*"));  // "GET", "POST", "PUT", "DELETE" allowing all methods
+                // Allow requests from the frontend running on localhost:3000
+                cfg.setAllowedOrigins(Arrays.asList("http://localhost:3000/"));
+
+                // Allow all HTTP methods (GET, POST, PUT, DELETE, etc.)
+                cfg.setAllowedMethods(Collections.singletonList("*"));
+
+                // Allow credentials such as cookies or Authorization headers to be included in requests
                 cfg.setAllowCredentials(true);
+
+                // Allow all headers to be sent in requests
                 cfg.setAllowedHeaders(Collections.singletonList("*"));
+
+                // Expose the Authorization header so the frontend can access the JWT token
                 cfg.setExposedHeaders(Arrays.asList("Authorization"));
+
+                // Keep the response to the initial CORS request for 1 hour (3600 seconds).
                 cfg.setMaxAge(3600L);
+
                 return cfg;
             }
         };
     }
 
+    // This method creates a PasswordEncoder that uses BCrypt to securely hash passwords.
     @Bean
     PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
-
 
 }
