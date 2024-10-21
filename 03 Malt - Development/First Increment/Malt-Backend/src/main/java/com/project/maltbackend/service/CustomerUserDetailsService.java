@@ -20,6 +20,7 @@ public class CustomerUserDetailsService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
+    // This method retrieves the user's information based on their email
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(username);  //username = email
@@ -29,10 +30,13 @@ public class CustomerUserDetailsService implements UserDetailsService {
 
         USER_ROLE role = user.getRole();
 
+        // Create a list to hold the user's granted authorities (roles/permission)
         List<GrantedAuthority> authorities = new ArrayList<>();
+
+        // Convert the user's role to a string and add it as a SimpleGrantedAuthority
         authorities.add(new SimpleGrantedAuthority(role.toString()));
 
-
+        // Return a Spring Security User object containing the user's email, password, and authorities
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
     }
 }

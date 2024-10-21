@@ -61,20 +61,25 @@ public class AuthController {
 
         User savedUser = userRepository.save(createdUser);
 
+        // Create a cart for the new user and save it in the database
         Cart cart = new Cart();
         cart.setCustomer(savedUser);
         cartRepository.save(cart);
 
+        // Authenticate the new user by creating an authentication token using their email and password
         Authentication authentication = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        SecurityContextHolder.getContext().setAuthentication(authentication);  // Set the authentication in the SecurityContext
 
+        // Generate a JWT token for the authenticated user
         String jwt = jwtProvider.generateToken(authentication);
 
+        // Create an AuthResponse object with the JWT token, success message, and the user's role
         AuthResponse authResponse = new AuthResponse();
         authResponse.setJwt(jwt);
         authResponse.setMessage("Registered Successfully");
         authResponse.setRole(savedUser.getRole());
 
+        // Return the response with HTTP status 201 (Created)
         return new ResponseEntity<>(authResponse, HttpStatus.CREATED);
 
     }
@@ -82,37 +87,49 @@ public class AuthController {
     @PostMapping("/signin")
     public ResponseEntity<AuthResponse> signInHandler(@RequestBody LoginRequest loginRequest) throws Exception {
 
+        // Extract the username (email) and password from the login request
         String username = loginRequest.getEmail();
         String password = loginRequest.getPassword();
 
-        Authentication authentication = authenticate(username,password);
+        // Authenticate the user using the provided username and password
+        Authentication authentication = authenticate(username, password);
 
+        // Retrieve the user's authorities (roles) from the authentication object
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        String role = authorities.isEmpty()?null:authorities.iterator().next().getAuthority();
+        String role = authorities.isEmpty() ? null : authorities.iterator().next().getAuthority();  // Get the first role
 
+        // Generate a JWT token for the authenticated user
         String jwt = jwtProvider.generateToken(authentication);
 
+        // Create an AuthResponse object with the JWT token, success message, and the user's role
         AuthResponse authResponse = new AuthResponse();
         authResponse.setJwt(jwt);
         authResponse.setMessage("Login Successfully");
-        authResponse.setRole(USER_ROLE.valueOf(role));
+        authResponse.setRole(USER_ROLE.valueOf(role));  // Convert the role string to USER_ROLE enum
 
+        // Return the response with HTTP status 200 (OK)
         return new ResponseEntity<>(authResponse, HttpStatus.OK);
-
     }
 
+    // Private method to authenticate a user by their username and password
     private Authentication authenticate(String username, String password) {
+        // Load the user details (username, password, roles) using the custom UserDetailsService
         UserDetails userDetails = customerUserDetailsService.loadUserByUsername(username);
 
-        if(userDetails == null){
+        // Check if the user exists, if not, throw an exception for invalid username
+        if (userDetails == null) {
             throw new BadCredentialsException("Invalid Username");
         }
-        if(!passwordEncoder.matches(password,userDetails.getPassword())){   //1.Without encrypting password ,2.Encrypted password
+
+        // Validate the password by comparing the provided password with the stored (hashed) password
+        if (!passwordEncoder.matches(password, userDetails.getPassword())) {  // If passwords do not match, throw an exception
             throw new BadCredentialsException("Invalid Password");
         }
 
-         return new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
+        // Return an authenticated token containing the user's details and authorities (roles)
+        return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
+
 
 
 }
