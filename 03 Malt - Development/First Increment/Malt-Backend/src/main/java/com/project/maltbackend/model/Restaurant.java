@@ -32,7 +32,7 @@ public class Restaurant {
     @OneToOne
     private Address address;
 
-    @Embedded
+    @Embedded  // Embedding contact information and mapping to a single database table(Restaurant).
     private ContactInformation contactInformation;
 
     private String openingHours;
