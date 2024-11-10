@@ -1,0 +1,27 @@
+package com.project.maltbackend.repository;
+
+import com.project.maltbackend.model.Food;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface FoodRepository extends JpaRepository<Food, Long> {
+
+    List<Food> findByRestaurantId(Long restaurantId);
+
+    //Case Sensitive
+//    @Query("SELECT f FROM Food f WHERE f.name LIKE %:KEYWORD% OR f.foodCategory.name LIKE %:keyword%")
+//    List<Food> searchFood(@Param("keyword") String keyword);
+
+    // Custom JPQL query to search foods by name, case-insensitive.
+    @Query("SELECT f FROM Food f WHERE LOWER(f.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(f.foodCategory.name) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+    List<Food> searchFood(@Param("keyword") String keyword);
+
+
+
+
+}

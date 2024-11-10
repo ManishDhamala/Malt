@@ -27,6 +27,7 @@ public class RestaurantServiceImp implements RestaurantService{
     @Autowired
     private UserRepository userRepository;
 
+    // Method to create a new restaurant based on the request data and the user
     @Override
     public Restaurant createRestaurant(CreateRestaurantRequest req, User user) {
         Address address = addressRepository.save(req.getAddress());
@@ -45,11 +46,13 @@ public class RestaurantServiceImp implements RestaurantService{
         return restaurantRepository.save(restaurant);
     }
 
+    // Method to update an existing restaurant's details
     @Override
     public Restaurant updateRestaurant(Long restaurantId, CreateRestaurantRequest updatedRestaurant) throws Exception {
 
         Restaurant restaurant= findRestaurantById(restaurantId);
 
+        // Update fields if provided in the request
         if(restaurant.getDescription() != null){
             restaurant.setDescription(updatedRestaurant.getDescription());
         }
@@ -61,6 +64,7 @@ public class RestaurantServiceImp implements RestaurantService{
         return restaurantRepository.save(restaurant);
     }
 
+    // Method to delete a restaurant by its ID
     @Override
     public void deleteRestaurant(Long restaurantId) throws Exception {
 
@@ -69,18 +73,22 @@ public class RestaurantServiceImp implements RestaurantService{
 
     }
 
+    // Method to retrieve all restaurants
     @Override
     public List<Restaurant> getAllRestaurants() throws Exception {
         return restaurantRepository.findAll();
     }
 
+    // Method to search for restaurants based on a keyword
     @Override
     public List<Restaurant> searchRestaurants(String keyword) throws Exception {
         return restaurantRepository.findBySearchQuery(keyword);
     }
 
+    // Method to find a restaurant by its ID
     @Override
     public Restaurant findRestaurantById(Long Id) throws Exception {
+        // Attempt to find restaurant by ID using repository
         Optional<Restaurant> opt = restaurantRepository.findById(Id);
 
         if(opt.isEmpty()){
@@ -90,6 +98,7 @@ public class RestaurantServiceImp implements RestaurantService{
         return opt.get();
     }
 
+    // Method to get a restaurant based on the owner's user ID
     @Override
     public Restaurant getRestaurantByUserId(Long userId) throws Exception {
         Restaurant restaurant = restaurantRepository.findByOwnerId(userId);
@@ -101,6 +110,7 @@ public class RestaurantServiceImp implements RestaurantService{
         return restaurant;
     }
 
+    // Method to add or remove a restaurant from a user's favourites
     @Override
     public RestaurantDto addToFavourites(Long restaurantId, User user) throws Exception {
 
@@ -112,6 +122,7 @@ public class RestaurantServiceImp implements RestaurantService{
         dto.setTitle(restaurant.getName());
         dto.setId(restaurantId);
 
+        // Check if restaurant is already a favourite and toggle
         boolean isFavourite = false;
         List<RestaurantDto> favourites = user.getFavourites();
         for(RestaurantDto favourite : favourites){
@@ -121,17 +132,20 @@ public class RestaurantServiceImp implements RestaurantService{
             }
         }
 
+        // Add or remove from favourites based on current status
         if(isFavourite){
             favourites.removeIf(favourite -> favourite.getId().equals(restaurantId));
         }else {
             favourites.add(dto);
         }
 
+        // Save the updated user with new favourites list
         userRepository.save(user);
 
         return dto;
     }
 
+    // Method to toggle the open status of a restaurant
     @Override
     public Restaurant updateRestaurantStatus(Long restaurantId) throws Exception {
 
