@@ -43,7 +43,7 @@ public class CategoryServiceImp implements CategoryService{
         Optional<Category> optionalCategory = categoryRepository.findById(id);
 
         if(optionalCategory.isEmpty()){
-            throw new Exception("Category not found");
+            throw new Exception("Food category not found");
         }
 
         return optionalCategory.get();
