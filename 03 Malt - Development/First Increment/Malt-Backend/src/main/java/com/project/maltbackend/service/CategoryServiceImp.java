@@ -3,6 +3,7 @@ package com.project.maltbackend.service;
 import com.project.maltbackend.model.Category;
 import com.project.maltbackend.model.Restaurant;
 import com.project.maltbackend.repository.CategoryRepository;
+import com.project.maltbackend.repository.FoodRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,26 +16,27 @@ public class CategoryServiceImp implements CategoryService{
     @Autowired
     private CategoryRepository categoryRepository;
 
+
     @Autowired
-    private RestaurantService restaurantService;
+    private FoodRepository foodRepository;
+
+
+
+        @Override
+        public Category createCategory(String name) throws Exception {
+
+            Category category = new Category();
+            category.setName(name);
+
+            return categoryRepository.save(category);
+        }
+
 
 
     @Override
-    public Category createCategory(String name, Long userId) throws Exception {
-        Restaurant restaurant = restaurantService.getRestaurantByUserId(userId);
-        Category category = new Category();
-
-        category.setName(name);
-        category.setRestaurant(restaurant);
-
-        return categoryRepository.save(category);
-    }
-
-    @Override
-    public List<Category> findCategoryByRestaurantId(Long id) throws Exception {
-        Restaurant restaurant = restaurantService.getRestaurantByUserId(id);
-
-        return categoryRepository.findByRestaurantId(restaurant.getId());
+    public List<Category> getAllCategoriesByRestaurantId(Long restaurantId) throws Exception {
+            List<Category> categories = foodRepository.findDistinctCategoriesByRestaurantId(restaurantId);
+            return categories;
     }
 
     @Override

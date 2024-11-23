@@ -1,5 +1,6 @@
 package com.project.maltbackend.repository;
 
+import com.project.maltbackend.model.Category;
 import com.project.maltbackend.model.Food;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -22,6 +23,8 @@ public interface FoodRepository extends JpaRepository<Food, Long> {
     List<Food> searchFood(@Param("keyword") String keyword);
 
 
-
+    // Custom JPQL query to get all food categories associated with a restaurant
+    @Query("SELECT DISTINCT f.foodCategory FROM Food f WHERE f.restaurant.id = :restaurantId")
+    List<Category> findDistinctCategoriesByRestaurantId(@Param("restaurantId") Long restaurantId);
 
 }

@@ -27,7 +27,7 @@ public class Order {
     @ManyToOne
     private Restaurant restaurant;
 
-    private Long totalAmount;
+    private Long totalPrice;
 
     private String orderStatus;
 
@@ -43,7 +43,7 @@ public class Order {
 
     private int totalItem;
 
-    private int totalPrice;
+   // private int totalPrice; // redundant
 
 
 }
