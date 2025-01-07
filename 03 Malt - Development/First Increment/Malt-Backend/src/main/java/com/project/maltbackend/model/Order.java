@@ -1,5 +1,6 @@
 package com.project.maltbackend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -21,10 +22,12 @@ public class Order {
     private Long id;
 
     @ManyToOne
+    @JsonBackReference
     private User customer;
 
-    @JsonIgnore
+    //@JsonIgnore
     @ManyToOne
+    @JsonBackReference
     private Restaurant restaurant;
 
     private Long totalPrice;
@@ -33,7 +36,7 @@ public class Order {
 
     private Date createdAt;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private Address deliveryAddress;
 
     @OneToMany
@@ -41,7 +44,7 @@ public class Order {
 
 //    private Payment payment;
 
-    private int totalItem;
+    private int totalItem;  // Check this
 
    // private int totalPrice; // redundant
 
