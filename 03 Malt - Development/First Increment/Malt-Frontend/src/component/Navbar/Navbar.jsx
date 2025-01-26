@@ -2,6 +2,7 @@ import { Avatar, Badge, IconButton } from "@mui/material";
 import React from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import PersonIcon from "@mui/icons-material/Person";
 import "./navbar.css";
 
 export const Navbar = () => {
@@ -17,14 +18,19 @@ export const Navbar = () => {
             <SearchIcon sx={{ fontSize: "1.6rem", color: "white" }} />
           </IconButton>
         </div>
-        <div className="">
+        {/* <div className="">
           <Avatar sx={{ bgcolor: "white", color: "#B20303" }}>M</Avatar>
-        </div>
+        </div> */}
         <div className="">
           <IconButton>
             <Badge color="secondary" badgeContent={3}>
               <ShoppingCartIcon sx={{ fontSize: "1.6rem", color: "white" }} />
             </Badge>
+          </IconButton>
+        </div>
+        <div className="">
+          <IconButton>
+            <PersonIcon sx={{ fontSize: "1.8rem", color: "white" }} />
           </IconButton>
         </div>
       </div>
