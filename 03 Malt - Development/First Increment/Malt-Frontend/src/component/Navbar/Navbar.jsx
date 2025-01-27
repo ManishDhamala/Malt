@@ -3,6 +3,7 @@ import React from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import PersonIcon from "@mui/icons-material/Person";
+import NotificationsIcon from "@mui/icons-material/Notifications";
 import "./navbar.css";
 
 export const Navbar = () => {
@@ -31,6 +32,13 @@ export const Navbar = () => {
         <div className="">
           <IconButton>
             <PersonIcon sx={{ fontSize: "1.8rem", color: "white" }} />
+          </IconButton>
+        </div>
+        <div className="">
+          <IconButton>
+            <Badge color="secondary" badgeContent={2}>
+              <NotificationsIcon sx={{ fontSize: "1.6rem", color: "white" }} />
+            </Badge>
           </IconButton>
         </div>
       </div>
