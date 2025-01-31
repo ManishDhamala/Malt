@@ -4,7 +4,7 @@ export const CarouselItem = ({ image, title }) => {
   return (
     <div className="flex flex-col justify-center items-center">
       <img
-        className="w-[10rem] h-[10rem] lg:h-[14rem] lg:w-[14rem] rounded-full object-cover object-center"
+        className="w-[5rem] h-[5rem] lg:h-[11rem] lg:w-[11rem] rounded-full object-cover object-center"
         src={image || "backup-image-url.jpg"}
         alt="food-image"
       />

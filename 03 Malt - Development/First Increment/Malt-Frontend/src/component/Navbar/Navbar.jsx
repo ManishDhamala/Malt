@@ -5,8 +5,10 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import PersonIcon from "@mui/icons-material/Person";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import "./navbar.css";
+import { useNavigate } from "react-router-dom";
 
 export const Navbar = () => {
+  const navigate = useNavigate();
   return (
     <div className="px-5 z-50 py-[.8rem] bg-[#B20303] lg:px-20 flex justify-between">
       <div className="lg:mr-10 cursor-pointer flex items-center space-x-4">
@@ -30,7 +32,7 @@ export const Navbar = () => {
           </IconButton>
         </div>
         <div className="">
-          <IconButton>
+          <IconButton onClick={() => navigate("/account/login")}>
             <PersonIcon sx={{ fontSize: "1.8rem", color: "white" }} />
           </IconButton>
         </div>

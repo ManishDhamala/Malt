@@ -2,7 +2,7 @@ import { createTheme } from "@mui/material";
 
 export const whiteTheme = createTheme({
     palette: {
-        mode: "dark",
+        mode: "light",
         primary: {
             main: "#B20303" //red
         },
@@ -18,7 +18,8 @@ export const whiteTheme = createTheme({
             paper: "#fdfdfd"      // white
         },
         textColor: {
-            main: "#20232d"  // light-black
+            main: "#20232d",  // light-black
+            secondary: "#4a4a4a" // lighter secondary text
         }
 
     }

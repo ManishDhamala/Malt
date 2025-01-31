@@ -1,9 +1,9 @@
 import React from "react";
 import "./home.css";
 import { MultipleItemCarousel } from "./MultipleItemCarousel";
-import { RestaurantCard } from "../Restaurant/RestaurantCard";
+import { RestaurantList } from "../Restaurant/RestaurantList";
+import { Authentication } from "../Authentication/Authentication";
 
-const restaurant = [1, 1, 1, 1, 1, 1, 1, 1, 1];
 export const Home = () => {
   return (
     <div className="pb-10">
@@ -21,7 +21,7 @@ export const Home = () => {
         <div className="fadeout"></div>
       </section>
 
-      <section className="p-10 lg:py-10 lg:px-20">
+      <section className="p-10 lg:py-8 lg:px-20">
         <h1 className=" text-2xl font-semibold text-gray-800 py-3 pb-10">
           Popular Meals
         </h1>
@@ -32,12 +32,12 @@ export const Home = () => {
         <h1 className="text-2xl font-semibold text-gray-800 pb-6">
           Featured Restaurants
         </h1>
-        <div className="flex flex-wrap items-center justify-around gap-6">
-          {restaurant.map((item) => (
-            <RestaurantCard />
-          ))}
+        <div>
+          <RestaurantList />
         </div>
       </section>
+
+      <Authentication />
     </div>
   );
 };

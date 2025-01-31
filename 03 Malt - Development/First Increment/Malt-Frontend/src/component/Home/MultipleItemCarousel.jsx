@@ -10,10 +10,10 @@ export const MultipleItemCarousel = () => {
     dots: false,
     infinite: true,
     speed: 400,
-    slidesToShow: 4,
+    slidesToShow: 5,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 2000,
+    autoplaySpeed: 3000,
     arrows: false,
   };
   return (
