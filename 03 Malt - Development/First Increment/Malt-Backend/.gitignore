@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Adding authentication part in gitignore
+/src/main/java/com/project/maltbackend/config/

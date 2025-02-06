@@ -62,7 +62,7 @@ public class AppConfig {
                 CorsConfiguration cfg = new CorsConfiguration();
 
                 // Allow requests from the frontend running on localhost:3000
-                cfg.setAllowedOrigins(Arrays.asList("http://localhost:3000/"));
+                cfg.setAllowedOrigins(Arrays.asList("http://localhost:3000/", "http://localhost:5173/"));
 
                 // Allow all HTTP methods (GET, POST, PUT, DELETE, etc.)
                 cfg.setAllowedMethods(Collections.singletonList("*"));
