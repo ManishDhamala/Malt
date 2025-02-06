@@ -13,6 +13,8 @@ import {
 import { Field, Form, Formik } from "formik";
 import { useNavigate } from "react-router-dom";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { registerUser } from "../State/Authentication/Action";
+import { useDispatch } from "react-redux";
 
 const initialValues = {
   fullName: "",
@@ -23,6 +25,7 @@ const initialValues = {
 
 export const Register = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -31,7 +34,13 @@ export const Register = () => {
   };
 
   const handleSubmit = (values) => {
-    console.log("Form Values: ", values);
+    console.log("Form Values:", { ...values, password: "********" }); // This needs to be removed
+    dispatch(
+      registerUser({
+        userData: values,
+        navigate,
+      })
+    );
   };
 
   return (

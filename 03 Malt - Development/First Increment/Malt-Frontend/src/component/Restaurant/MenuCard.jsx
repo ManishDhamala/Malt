@@ -11,10 +11,10 @@ export const MenuCard = () => {
       />
 
       <div className="flex flex-col space-y-1 sm:space-y-2 lg:space-y-3 lg:max-w-lg flex-grow">
-        <p className="font-semibold text-base sm:text-lg text-gray-700">
+        <p className="font-semibold text-base sm:text-lg text-gray-800">
           Pizza
         </p>
-        <p className="text-sm sm:text-base font-medium">Rs 750</p>
+        <p className="text-sm sm:text-base font-medium text-gray-800">Rs 750</p>
         <p className="text-gray-700 text-xs sm:text-sm leading-snug">
           Pizza is a popular Italian dish with a flat, round dough topped with
           tomato sauce, cheese, and various toppings.

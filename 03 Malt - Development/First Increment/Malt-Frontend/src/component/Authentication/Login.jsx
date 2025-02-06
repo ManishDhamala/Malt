@@ -9,6 +9,8 @@ import { Field, Form, Formik } from "formik";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useDispatch } from "react-redux";
+import { loginUser } from "../State/Authentication/Action";
 
 const initialValues = {
   email: "",
@@ -17,6 +19,7 @@ const initialValues = {
 
 export const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -24,7 +27,14 @@ export const Login = () => {
     setShowPassword((prev) => !prev);
   };
 
-  const handleSubmit = () => {};
+  const handleSubmit = (values) => {
+    dispatch(
+      loginUser({
+        userData: values,
+        navigate,
+      })
+    );
+  };
 
   return (
     <div>
