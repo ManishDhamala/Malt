@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getUser } from "./component/State/Authentication/Action";
 import { store } from "./component/State/store";
+import { Cart } from "./component/Cart/Cart";
 
 function App() {
   const dispatch = useDispatch();
@@ -22,8 +23,9 @@ function App() {
     <ThemeProvider theme={whiteTheme}>
       <CssBaseline />
       <Navbar />
-      <Home />
+      {/* <Home /> */}
       {/* <RestaurantDetails /> */}
+      <Cart />
     </ThemeProvider>
   );
 }
