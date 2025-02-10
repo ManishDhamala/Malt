@@ -1,9 +1,18 @@
 import React from "react";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logout } from "../State/Authentication/Action";
 
 export const UserProfile = () => {
-  const handleLogout = () => {};
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/");
+  };
   return (
     <div className="min-h-[80vh] flex flex-col justify-center items-center text-center lg:mt-22">
       <div className="flex flex-col items-center justify-center ">
