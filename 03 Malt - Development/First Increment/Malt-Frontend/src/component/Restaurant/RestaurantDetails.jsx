@@ -47,7 +47,7 @@ export const RestaurantDetails = () => {
     console.log(e.target.value, e.target.name);
   };
   return (
-    <div className="px-5 lg:px-20">
+    <div className="px-5 lg:px-20 lg:mt-22">
       <section>
         <h3 className="text-gray-700 py-2 mt-5">Home/Nepal/Cheli Thakali/5</h3>
         <div>

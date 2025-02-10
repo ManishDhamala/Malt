@@ -6,7 +6,7 @@ import { Authentication } from "../Authentication/Authentication";
 
 export const Home = () => {
   return (
-    <div className="pb-10">
+    <div className="pb-10 lg:mt-16">
       <section className="banner -z-50 relative flex flex-col justify-center items-center">
         <div className="w-[50vw] z-10 text-center">
           <p className="text2xl text-gray-300 lg:text-6xl font-bold z-10 py-5">

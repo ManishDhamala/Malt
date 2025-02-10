@@ -9,6 +9,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { getUser } from "./component/State/Authentication/Action";
 import { store } from "./component/State/store";
 import { Cart } from "./component/Cart/Cart";
+import { Profile } from "./component/Profile/Profile";
+import { CustomerRoute } from "./Routers/CustomerRoute";
 
 function App() {
   const dispatch = useDispatch();
@@ -25,7 +27,10 @@ function App() {
       <Navbar />
       {/* <Home /> */}
       {/* <RestaurantDetails /> */}
-      <Cart />
+      {/* <Cart /> */}
+      {/* <Profile /> */}
+
+      <CustomerRoute />
     </ThemeProvider>
   );
 }
