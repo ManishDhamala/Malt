@@ -1,4 +1,4 @@
-import { isPresentInFavourites } from "../../config/logic";
+import { isPresentInFavourites } from "../../component/config/logic";
 import { ADD_TO_FAVORITE_FAIL, ADD_TO_FAVORITE_REQUEST, ADD_TO_FAVORITE_SUCCESS, GET_USER_FAIL, GET_USER_REQUEST, GET_USER_SUCCESS, LOGIN_FAIL, LOGIN_REQUEST, LOGIN_SUCCESS, LOGOUT, REGISTER_FAIL, REGISTER_REQUEST, REGISTER_SUCCESS } from "./ActionType";
 
 const initialState = {
