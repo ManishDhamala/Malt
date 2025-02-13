@@ -1,4 +1,4 @@
-import { api } from "../../component/config/api"
+import { api } from "../../config/api"
 import { GET_RESTAURANT_ORDER_FAIL, GET_RESTAURANT_ORDER_REQUEST, GET_RESTAURANT_ORDER_SUCCESS, UPDATE_ORDER_STATUS_FAIL, UPDATE_ORDER_STATUS_REQUEST, UPDATE_ORDER_STATUS_SUCCESS } from "./ActionType"
 
 

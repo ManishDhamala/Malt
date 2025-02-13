@@ -2,37 +2,58 @@ import { Card, Chip, IconButton } from "@mui/material";
 import React from "react";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { addToFavorite } from "../State/Authentication/Action";
+import { isPresentInFavourites } from "../config/logic";
+import { store } from "../State/store";
 
 export const RestaurantCard = ({ restaurant }) => {
-  const { name, description, isOpen, image, isFavorite } = restaurant;
+  if (!restaurant) return null; //  Prevent rendering if restaurant is undefined
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const jwt = localStorage.getItem("jwt");
+  const { auth } = useSelector((store) => store);
+
+  const handleAddToFavorite = () => {
+    dispatch(addToFavorite({ restaurantId: restaurant.id, jwt }));
+  };
 
   return (
     <Card className="m-2 w-[18rem]">
       <div
         className={`${
-          isOpen ? "cursor-pointer" : "cursor-not-allowed"
+          restaurant.open ? "cursor-pointer" : "cursor-not-allowed"
         } relative`}
       >
         <img
           className="w-full h-[10rem] rounded-t-md object-cover"
-          src={image}
-          alt={name}
+          src={
+            restaurant.images[0] ||
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRv1ank-wR_C1doFKGVu5XKmO5bg6RTaVub5A&s"
+          }
+          alt={restaurant.name || restaurant.title || "Restaurant Image"}
         />
         <Chip
           size="small"
           className="absolute top-2 left-2"
-          color={isOpen ? "success" : "error"}
-          label={isOpen ? "open" : "closed"}
+          color={restaurant.open ? "success" : "error"}
+          label={restaurant.open ? "open" : "closed"}
         />
       </div>
       <div className="p-4 textPart lg:flex w-full justify-between">
         <div className="space-y-1">
-          <p className="text-gray-700 font-semibold text-lg">{name}</p>
-          <p className="text-gray-700 text-sm">{description}</p>
+          <p className="text-gray-700 font-semibold text-lg">
+            {restaurant.name || restaurant.title || "Unknown Restaurant"}
+          </p>
+          <p className="text-gray-700 text-sm">
+            {restaurant.description || "No description available"}
+          </p>
         </div>
         <div>
-          <IconButton>
-            {isFavorite ? (
+          <IconButton onClick={handleAddToFavorite}>
+            {isPresentInFavourites(auth.favourites, restaurant) ? (
               <FavoriteIcon sx={{ fontSize: "1.6rem", color: "#d91a1a" }} />
             ) : (
               <FavoriteBorderIcon

@@ -1,4 +1,5 @@
-import { api } from "../../component/config/api"
+
+import { api } from "../../config/api"
 import { CREATE_ORDER_FAIL, CREATE_ORDER_REQUEST, CREATE_ORDER_SUCCESS, GET_USER_ORDER_FAIL, GET_USER_ORDER_REQUEST, GET_USER_ORDER_SUCCESS } from "./ActionType"
 
 

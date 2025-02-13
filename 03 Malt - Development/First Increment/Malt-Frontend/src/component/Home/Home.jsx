@@ -1,10 +1,23 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./home.css";
 import { MultipleItemCarousel } from "./MultipleItemCarousel";
-import { RestaurantList } from "../Restaurant/RestaurantList";
+//import { RestaurantList } from "../Restaurant/RestaurantList";
 import { Authentication } from "../Authentication/Authentication";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllRestaurantsAction } from "../State/Restaurant/Action";
+import { RestaurantCard } from "../Restaurant/RestaurantCard";
 
 export const Home = () => {
+  const dispatch = useDispatch();
+  const jwt = localStorage.getItem("jwt");
+  const { restaurant } = useSelector((store) => store);
+
+  console.log("Restaurant store ", restaurant);
+
+  useEffect(() => {
+    dispatch(getAllRestaurantsAction(jwt));
+  }, []);
+
   return (
     <div className="pb-10 lg:mt-16">
       <section className="banner -z-50 relative flex flex-col justify-center items-center">
@@ -29,11 +42,13 @@ export const Home = () => {
       </section>
 
       <section className="px-5 lg:px-20 pt-5">
-        <h1 className="text-2xl font-semibold text-gray-800 pb-6">
+        <h1 className="text-2xl font-semibold text-gray-800 pb-5">
           Featured Restaurants
         </h1>
-        <div>
-          <RestaurantList />
+        <div className="flex flex-wrap items-center justify-around gap-5">
+          {restaurant.restaurants.map((item) => (
+            <RestaurantCard key={item.id} restaurant={item} /> //  Passing restaurant data as a prop
+          ))}
         </div>
       </section>
 

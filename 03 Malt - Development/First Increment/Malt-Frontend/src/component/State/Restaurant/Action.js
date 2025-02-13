@@ -1,3 +1,4 @@
+import { api } from "../../config/api"
 import {
     CREATE_CATEGORY_FAIL,
     CREATE_CATEGORY_REQUEST,
