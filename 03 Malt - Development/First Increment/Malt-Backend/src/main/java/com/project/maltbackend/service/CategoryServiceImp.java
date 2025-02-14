@@ -20,13 +20,17 @@ public class CategoryServiceImp implements CategoryService{
     @Autowired
     private FoodRepository foodRepository;
 
+    @Autowired
+    private RestaurantService restaurantService;
+
 
 
         @Override
-        public Category createCategory(String name) throws Exception {
+        public Category createCategory(String name, Restaurant restaurant) throws Exception {
 
             Category category = new Category();
             category.setName(name);
+            category.setRestaurant(restaurant);
 
             return categoryRepository.save(category);
         }
@@ -35,8 +39,7 @@ public class CategoryServiceImp implements CategoryService{
 
     @Override
     public List<Category> getAllCategoriesByRestaurantId(Long restaurantId) throws Exception {
-            List<Category> categories = foodRepository.findDistinctCategoriesByRestaurantId(restaurantId);
-            return categories;
+            return categoryRepository.findByRestaurantId(restaurantId);
     }
 
     @Override

@@ -18,8 +18,9 @@ public class Category {
 
     private String name;
 
-//    @ManyToOne
-//    @JsonIgnore
-//    private Restaurant restaurant;
+   @ManyToOne
+   @JoinColumn(name = "restaurant_id", nullable = false) // ✅ Foreign key
+   @JsonIgnore
+   private Restaurant restaurant;
 
 }
