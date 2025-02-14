@@ -10,8 +10,14 @@ import {
 } from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MenuCard } from "./MenuCard";
+import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getRestaurantById,
+  getRestaurantCategory,
+} from "../State/Restaurant/Action";
 
 const categories = [
   "All",
@@ -42,10 +48,50 @@ const menu = [1, 1, 1, 1, 1, 1];
 
 export const RestaurantDetails = () => {
   const [foodType, setFoodType] = useState("all");
+  const [loading, setLoading] = useState(true); // Track loading state
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const jwt = localStorage.getItem("jwt");
+  const { auth, restaurant } = useSelector((store) => store);
+
+  const { id, city } = useParams();
 
   const handleFilter = (e) => {
     console.log(e.target.value, e.target.name);
   };
+
+  // useEffect(() => {
+  //   dispatch(getRestaurantById({ jwt, restaurantId: id }));
+  // }, [dispatch, jwt, id]);
+
+  useEffect(() => {
+    setLoading(true); // Start loading before fetching
+    dispatch(getRestaurantById({ jwt, restaurantId: id }));
+    dispatch(getRestaurantCategory({ jwt, restaurantId: id })).finally(() => {
+      setLoading(false); // Stop loading after fetch
+    });
+  }, [dispatch, jwt, id]);
+
+  // Show loading until restaurant data is available
+  if (loading || !restaurant?.restaurants) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-gray-700 text-lg">Loading restaurant details...</p>
+      </div>
+    );
+  }
+
+  console.log("Restaurant Details ", restaurant);
+
+  if (!restaurant) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-gray-700 text-lg">Loading restaurant details...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="px-5 lg:px-20 lg:mt-22">
       <section>
@@ -54,47 +100,68 @@ export const RestaurantDetails = () => {
           <Grid container spacing={2}>
             {/* Full-width image */}
             <Grid item xs={12}>
-              <img
-                className="w-full h-[40vh] object-cover"
-                src="https://images.pexels.com/photos/941861/pexels-photo-941861.jpeg?auto=compress&cs=tinysrgb&w=600"
-                alt="restaurant-image"
-              />
+              {restaurant?.restaurants?.images?.length > 0 ? (
+                <img
+                  className="w-full h-[40vh] object-cover"
+                  src={restaurant.restaurants.images[0]}
+                  alt="restaurant-image"
+                />
+              ) : (
+                <div className="w-full h-[40vh] bg-gray-200 flex items-center justify-center">
+                  No Image Available
+                </div>
+              )}
             </Grid>
 
             <Grid item xs={12} md={6}>
-              <img
-                className="w-full h-[40vh] object-cover"
-                src="https://images.pexels.com/photos/1581384/pexels-photo-1581384.jpeg?auto=compress&cs=tinysrgb&w=600"
-                alt="restaurant-image"
-              />
+              {restaurant?.restaurants?.images?.[1] ? (
+                <img
+                  className="w-full h-[40vh] object-cover"
+                  src={restaurant.restaurants.images[1]}
+                  alt="restaurant-image"
+                />
+              ) : (
+                <div className="w-full h-[40vh] bg-gray-200 flex items-center justify-center">
+                  No Image Available
+                </div>
+              )}
             </Grid>
+
             <Grid item xs={12} md={6}>
-              <img
-                className="w-full h-[40vh] object-cover"
-                src="https://images.pexels.com/photos/1307698/pexels-photo-1307698.jpeg?auto=compress&cs=tinysrgb&w=600"
-                alt="restaurant-image"
-              />
+              {restaurant?.restaurants?.images?.[2] ? (
+                <img
+                  className="w-full h-[40vh] object-cover"
+                  src={restaurant.restaurants.images[2]}
+                  alt="restaurant-image"
+                />
+              ) : (
+                <div className="w-full h-[40vh] bg-gray-200 flex items-center justify-center">
+                  No Image Available
+                </div>
+              )}
             </Grid>
           </Grid>
         </div>
 
         <div className="pt-3 pb-5">
-          <h1 className="text-4xl font-semibold">Cheli Thakali</h1>
+          <h1 className="text-4xl font-semibold">
+            {restaurant.restaurants?.name || "Loading..."}
+          </h1>
           <p className="text-gary-700 mt-1">
-            Description Lorem ipsum dolor sit amet consectetur adipisicing elit.
-            Quaerat delectus exercitationem ullam, quibusdam repellat modi
-            dignissimos quidem atque distinctio similique impedit explicabo!
-            Unde praesentium aut perferendis aperiam deserunt ratione?
-            Dignissimos?
+            {restaurant.restaurants?.description || "Loading..."}
           </p>
           <div className="space-y-3 mt-3">
             <p className="text-gray-700 flex items-center gap-3">
               <LocationOnIcon />
-              <span>Pokhara, Chipledhunga</span>
+              <span>
+                {" "}
+                {restaurant.restaurants?.address.city || "N/A"},{" "}
+                {restaurant.restaurants?.address.streetAddress || "N/A"}
+              </span>
             </p>
             <p className="text-gray-700 flex items-center gap-3">
               <CalendarTodayIcon />
-              <span>Sun - Fri: 10:00 AM - 8:00 PM (Today)</span>
+              <span>{restaurant.restaurants?.openingHours || "N/A"}</span>
             </p>
           </div>
         </div>
@@ -135,12 +202,12 @@ export const RestaurantDetails = () => {
                   name="food_type"
                   value={foodType}
                 >
-                  {categories.map((item) => (
+                  {restaurant.categories.map((item) => (
                     <FormControlLabel
                       key={item}
                       value={item}
                       control={<Radio />}
-                      label={item}
+                      label={item.name}
                     />
                   ))}
                 </RadioGroup>

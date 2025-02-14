@@ -6,11 +6,13 @@ import { Authentication } from "../Authentication/Authentication";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllRestaurantsAction } from "../State/Restaurant/Action";
 import { RestaurantCard } from "../Restaurant/RestaurantCard";
+import { useNavigate } from "react-router-dom";
 
 export const Home = () => {
   const dispatch = useDispatch();
   const jwt = localStorage.getItem("jwt");
   const { restaurant } = useSelector((store) => store);
+  const navigate = useNavigate();
 
   console.log("Restaurant store ", restaurant);
 

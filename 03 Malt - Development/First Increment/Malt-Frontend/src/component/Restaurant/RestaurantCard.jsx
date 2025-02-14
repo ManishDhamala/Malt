@@ -20,6 +20,14 @@ export const RestaurantCard = ({ restaurant }) => {
     dispatch(addToFavorite({ restaurantId: restaurant.id, jwt }));
   };
 
+  const handleNavigateToRestaurant = () => {
+    if (restaurant.open) {
+      navigate(
+        `/restaurant/${restaurant.address.city}/${restaurant.name}/${restaurant.id}`
+      );
+    }
+  };
+
   return (
     <Card className="m-2 w-[18rem]">
       <div
@@ -44,7 +52,10 @@ export const RestaurantCard = ({ restaurant }) => {
       </div>
       <div className="p-4 textPart lg:flex w-full justify-between">
         <div className="space-y-1">
-          <p className="text-gray-700 font-semibold text-lg">
+          <p
+            onClick={handleNavigateToRestaurant}
+            className="text-gray-700 font-semibold text-lg cursor-pointer"
+          >
             {restaurant.name || restaurant.title || "Unknown Restaurant"}
           </p>
           <p className="text-gray-700 text-sm">
