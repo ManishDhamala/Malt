@@ -18,16 +18,7 @@ import {
   getRestaurantById,
   getRestaurantCategory,
 } from "../State/Restaurant/Action";
-
-const categories = [
-  "All",
-  "pizza",
-  "Momo",
-  "Burgar",
-  "Chowmein",
-  "Wings",
-  "Biryani",
-];
+import { getMenuItemsByRestaurantId } from "../State/Menu/Action";
 
 const foodTypes = [
   {
@@ -44,8 +35,6 @@ const foodTypes = [
   },
 ];
 
-const menu = [1, 1, 1, 1, 1, 1];
-
 export const RestaurantDetails = () => {
   const [foodType, setFoodType] = useState("all");
   const [loading, setLoading] = useState(true); // Track loading state
@@ -53,7 +42,7 @@ export const RestaurantDetails = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const jwt = localStorage.getItem("jwt");
-  const { auth, restaurant } = useSelector((store) => store);
+  const { auth, restaurant, menu } = useSelector((store) => store);
 
   const { id, city } = useParams();
 
@@ -68,10 +57,18 @@ export const RestaurantDetails = () => {
   useEffect(() => {
     setLoading(true); // Start loading before fetching
     dispatch(getRestaurantById({ jwt, restaurantId: id }));
-    dispatch(getRestaurantCategory({ jwt, restaurantId: id })).finally(() => {
+    dispatch(getRestaurantCategory({ jwt, restaurantId: id }));
+    dispatch(
+      getMenuItemsByRestaurantId({
+        jwt,
+        restaurantId: id,
+        vegetarian: "",
+        foodCategory: "",
+      })
+    ).finally(() => {
       setLoading(false); // Stop loading after fetch
     });
-  }, [dispatch, jwt, id]);
+  }, [dispatch, jwt, id, city]);
 
   // Show loading until restaurant data is available
   if (loading || !restaurant?.restaurants) {
@@ -95,7 +92,9 @@ export const RestaurantDetails = () => {
   return (
     <div className="px-5 lg:px-20 lg:mt-22">
       <section>
-        <h3 className="text-gray-700 py-2 mt-5">Home/Nepal/Cheli Thakali/5</h3>
+        <h3 className="text-gray-700 py-2 mt-5">
+          Home/Nepal/{restaurant.restaurants?.name}/5
+        </h3>
         <div>
           <Grid container spacing={2}>
             {/* Full-width image */}
@@ -204,7 +203,7 @@ export const RestaurantDetails = () => {
                 >
                   {restaurant.categories.map((item) => (
                     <FormControlLabel
-                      key={item}
+                      key={item.id}
                       value={item}
                       control={<Radio />}
                       label={item.name}
@@ -217,8 +216,8 @@ export const RestaurantDetails = () => {
         </div>
 
         <div className="space-y-3 lg:w-[80%] mr-20">
-          {menu.map((item) => (
-            <MenuCard />
+          {menu.menuItems.map((item) => (
+            <MenuCard key={item.id} item={item} />
           ))}
         </div>
       </section>

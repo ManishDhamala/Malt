@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./home.css";
 import { MultipleItemCarousel } from "./MultipleItemCarousel";
 //import { RestaurantList } from "../Restaurant/RestaurantList";
@@ -9,6 +9,8 @@ import { RestaurantCard } from "../Restaurant/RestaurantCard";
 import { useNavigate } from "react-router-dom";
 
 export const Home = () => {
+  const [loading, setLoading] = useState(true);
+
   const dispatch = useDispatch();
   const jwt = localStorage.getItem("jwt");
   const { restaurant } = useSelector((store) => store);
@@ -17,8 +19,19 @@ export const Home = () => {
   console.log("Restaurant store ", restaurant);
 
   useEffect(() => {
-    dispatch(getAllRestaurantsAction(jwt));
-  }, []);
+    dispatch(getAllRestaurantsAction(jwt)).finally(() => {
+      setLoading(false);
+    });
+  }, [dispatch, jwt]);
+
+  // Show loading until restaurant data is available
+  if (loading || !restaurant?.restaurants) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-gray-700 text-lg">Loading restaurant details...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="pb-10 lg:mt-16">
