@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./home.css";
 import { MultipleItemCarousel } from "./MultipleItemCarousel";
-//import { RestaurantList } from "../Restaurant/RestaurantList";
 import { Authentication } from "../Authentication/Authentication";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllRestaurantsAction } from "../State/Restaurant/Action";

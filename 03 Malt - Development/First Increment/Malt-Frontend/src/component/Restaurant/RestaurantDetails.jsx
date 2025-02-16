@@ -23,31 +23,38 @@ import { getMenuItemsByRestaurantId } from "../State/Menu/Action";
 const foodTypes = [
   {
     label: "All",
-    value: "all",
+    value: "",
   },
   {
     label: "Veg",
-    value: "vegetarian",
+    value: "true",
   },
   {
     label: "Non-Veg",
-    value: "non-veg",
+    value: "false",
   },
 ];
 
 export const RestaurantDetails = () => {
-  const [foodType, setFoodType] = useState("all");
+  const [foodType, setFoodType] = useState("");
   const [loading, setLoading] = useState(true); // Track loading state
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const jwt = localStorage.getItem("jwt");
   const { auth, restaurant, menu } = useSelector((store) => store);
+  const [selectedCategory, setSelectedCategory] = useState("");
 
   const { id, city } = useParams();
 
   const handleFilter = (e) => {
+    setFoodType(e.target.value);
     console.log(e.target.value, e.target.name);
+  };
+
+  const handleFilterCategory = (e, value) => {
+    setSelectedCategory(value);
+    console.log(e.target.value, e.target.name, value);
   };
 
   // useEffect(() => {
@@ -57,18 +64,21 @@ export const RestaurantDetails = () => {
   useEffect(() => {
     setLoading(true); // Start loading before fetching
     dispatch(getRestaurantById({ jwt, restaurantId: id }));
-    dispatch(getRestaurantCategory({ jwt, restaurantId: id }));
+    dispatch(getRestaurantCategory({ jwt, restaurantId: id })).finally(() => {
+      setLoading(false); // Stop loading after fetch
+    });
+  }, [dispatch, jwt, id, city]);
+
+  useEffect(() => {
     dispatch(
       getMenuItemsByRestaurantId({
         jwt,
         restaurantId: id,
-        vegetarian: "",
-        foodCategory: "",
+        vegetarian: foodType,
+        foodCategory: selectedCategory,
       })
-    ).finally(() => {
-      setLoading(false); // Stop loading after fetch
-    });
-  }, [dispatch, jwt, id, city]);
+    );
+  }, [selectedCategory, foodType]);
 
   // Show loading until restaurant data is available
   if (loading || !restaurant?.restaurants) {
@@ -197,14 +207,21 @@ export const RestaurantDetails = () => {
               </Typography>
               <FormControl className="py-10 space-y-5" component={"fieldset"}>
                 <RadioGroup
-                  onChange={handleFilter}
-                  name="food_type"
-                  value={foodType}
+                  onChange={handleFilterCategory}
+                  name="food_category"
+                  value={selectedCategory}
                 >
+                  {/* Default "All" filter */}
+                  <FormControlLabel
+                    key="all"
+                    value=""
+                    control={<Radio />}
+                    label="All"
+                  />
                   {restaurant.categories.map((item) => (
                     <FormControlLabel
                       key={item.id}
-                      value={item}
+                      value={item.name}
                       control={<Radio />}
                       label={item.name}
                     />
