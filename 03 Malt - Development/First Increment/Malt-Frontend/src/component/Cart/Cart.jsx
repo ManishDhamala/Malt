@@ -7,12 +7,14 @@ import {
   Modal,
   TextField,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { CartItem } from "./CartItem";
 import { AddressCard } from "./AddressCard";
 import AddLocationAltIcon from "@mui/icons-material/AddLocationAlt";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import { ErrorMessage, Field, Form, Formik } from "formik";
+import { useSelector } from "react-redux";
+import { store } from "../State/store";
 // import * as Yup from "yup";
 
 const style = {
@@ -43,8 +45,6 @@ const initialValues = {
 //   city: Yup.string().required("City is required"),
 // });
 
-const items = [1, 1];
-
 export const Cart = () => {
   const createOrderUsingSelectedAddress = () => {};
   const handleOpenAddressModal = () => setOpen(true);
@@ -54,36 +54,63 @@ export const Cart = () => {
     console.log("Address Form Value", value);
   };
 
+  const { cart } = useSelector((store) => store);
+
+  const deliveryFee = 100;
+  const restaurantCharges = 10;
+
+  const [subtotal, setSubtotal] = useState(0);
+  const [totalAmount, setTotalAmount] = useState(0);
+
+  //  Refresh bill details when cart updates
+  // **Recalculate total when cartItems change**
+  useEffect(() => {
+    if (cart?.cartItems?.length > 0) {
+      const newSubtotal = cart.cartItems.reduce(
+        (sum, item) => sum + item.food.price * item.quantity,
+        0
+      );
+      setSubtotal(newSubtotal);
+      setTotalAmount(newSubtotal + deliveryFee + restaurantCharges);
+    } else {
+      setSubtotal(0);
+      setTotalAmount(0);
+    }
+  }, [cart.cartItems]);
+
   return (
     <>
       <main className="lg:flex justify-between lg:mt-16">
         <section className="lg:w-[30%] space-y-6 lg:min-h-screen pt-10">
-          {items.map((item) => (
-            <CartItem />
-          ))}
+          {cart?.cartItems?.length > 0 ? (
+            cart.cartItems.map((item) => <CartItem key={item.id} item={item} />)
+          ) : (
+            <p className="text-center text-gray-800">Your cart is empty</p>
+          )}
+
           <Divider />
           <div className="billDetails px-5 text-sm">
             <p className="font-bold py-5 underline">Bill Details:</p>
             <div className="space-y-3">
               <div className="flex justify-between text-gray-900">
-                <p>Item Total</p>
-                <p>Rs 440</p>
+                <p>Subtotal</p>
+                <p>Rs {subtotal}</p>
               </div>
 
               <div className="flex justify-between text-gray-900">
                 <p>Delivery Fee</p>
-                <p>Rs 100</p>
+                <p>Rs {deliveryFee}</p>
               </div>
 
               <div className="flex justify-between text-gray-900">
                 <p>Restaurant Charges</p>
-                <p>Rs 10</p>
+                <p>Rs {restaurantCharges}</p>
               </div>
               <Divider />
             </div>
             <div className="flex justify-between text-gray-900 font-bold pt-3">
               <p>Total Amount</p>
-              <p>Rs 550</p>
+              <p>Rs {totalAmount}</p>
             </div>
           </div>
         </section>

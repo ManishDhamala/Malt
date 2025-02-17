@@ -11,6 +11,7 @@ import { store } from "./component/State/store";
 import { Cart } from "./component/Cart/Cart";
 import { Profile } from "./component/Profile/Profile";
 import { CustomerRoute } from "./Routers/CustomerRoute";
+import { findCart } from "./component/State/Cart/Action";
 
 function App() {
   const dispatch = useDispatch();
@@ -19,6 +20,7 @@ function App() {
 
   useEffect(() => {
     dispatch(getUser(auth.jwt || jwt));
+    dispatch(findCart(jwt));
   }, [auth.jwt]);
 
   return (

@@ -1,7 +1,24 @@
 import React from "react";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+import { useDispatch } from "react-redux";
+import { addItemToCart } from "../State/Cart/Action";
+import { IconButton } from "@mui/material";
 
 export const MenuCard = ({ item }) => {
+  const dispatch = useDispatch();
+
+  const handleAddItemToCart = () => {
+    const reqData = {
+      jwt: localStorage.getItem("jwt"),
+      cartItem: {
+        foodId: item.id,
+        quantity: 1,
+      },
+    };
+    dispatch(addItemToCart(reqData));
+    console.log("Req data", reqData);
+  };
+
   return (
     <div className="flex flex-col lg:flex-row items-center lg:items-start gap-3 sm:gap-4 lg:gap-5 shadow-md border border-gray-200 rounded-lg p-3 sm:p-4 lg:p-5 bg-white w-full max-w-2xl mx-auto relative">
       <img
@@ -25,15 +42,17 @@ export const MenuCard = ({ item }) => {
         </p>
       </div>
 
-      <AddCircleIcon
-        sx={{
-          fontSize: "1.8rem",
-          color: "#0aa13e",
-          cursor: "pointer",
-          "&:hover": { color: "#42cf73" },
-        }}
-        className="absolute top-3 right-3 lg:static lg:self-center"
-      />
+      <IconButton onClick={handleAddItemToCart}>
+        <AddCircleIcon
+          sx={{
+            fontSize: "1.8rem",
+            color: "#0aa13e",
+            cursor: "pointer",
+            "&:hover": { color: "#42cf73" },
+          }}
+          className="absolute top-3 right-3 lg:static lg:self-center"
+        />
+      </IconButton>
     </div>
   );
 };

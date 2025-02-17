@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllRestaurantsAction } from "../State/Restaurant/Action";
 import { RestaurantCard } from "../Restaurant/RestaurantCard";
 import { useNavigate } from "react-router-dom";
+import { findCart } from "../State/Cart/Action";
 
 export const Home = () => {
   const [loading, setLoading] = useState(true);
@@ -18,7 +19,8 @@ export const Home = () => {
   console.log("Restaurant store ", restaurant);
 
   useEffect(() => {
-    dispatch(getAllRestaurantsAction(jwt)).finally(() => {
+    dispatch(getAllRestaurantsAction(jwt));
+    dispatch(findCart(jwt)).finally(() => {
       setLoading(false);
     });
   }, [dispatch, jwt]);
