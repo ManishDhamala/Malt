@@ -3,7 +3,7 @@ import { api } from "../../config/api"
 import { CREATE_ORDER_FAIL, CREATE_ORDER_REQUEST, CREATE_ORDER_SUCCESS, GET_USER_ORDER_FAIL, GET_USER_ORDER_REQUEST, GET_USER_ORDER_SUCCESS } from "./ActionType"
 
 
-export const createRestaurant = (reqData) => {
+export const createOrder = (reqData) => {
     return async (dispatch) => {
         dispatch({ type: CREATE_ORDER_REQUEST })
         try {

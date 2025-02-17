@@ -13,8 +13,9 @@ import { AddressCard } from "./AddressCard";
 import AddLocationAltIcon from "@mui/icons-material/AddLocationAlt";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import { ErrorMessage, Field, Form, Formik } from "formik";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { store } from "../State/store";
+import { createOrder } from "../State/Order/Action";
 // import * as Yup from "yup";
 
 const style = {
@@ -50,11 +51,34 @@ export const Cart = () => {
   const handleOpenAddressModal = () => setOpen(true);
   const [open, setOpen] = React.useState(false);
   const handleClose = () => setOpen(false);
-  const handleSubmit = (value) => {
-    console.log("Address Form Value", value);
-  };
 
-  const { cart } = useSelector((store) => store);
+  const { cart, auth } = useSelector((store) => store);
+
+  const dispatch = useDispatch();
+
+  const handleSubmit = (values, { resetForm }) => {
+    const data = {
+      jwt: localStorage.getItem("jwt"),
+      order: {
+        restaurantId: cart.cartItems[0].food?.restaurant.id,
+        deliveryAddress: {
+          fullName: auth.user?.fullName,
+          streetAddress: values.streetAddress,
+          city: values.city,
+          country: values.country,
+          province: values.province,
+          postalCode: values.postalCode,
+          landmark: values.landmark,
+        },
+      },
+    };
+    dispatch(createOrder(data));
+    console.log("Address Form Value", values);
+
+    resetForm();
+
+    handleClose();
+  };
 
   const deliveryFee = 100;
   const restaurantCharges = 10;
