@@ -12,6 +12,7 @@ import { Cart } from "./component/Cart/Cart";
 import { Profile } from "./component/Profile/Profile";
 import { CustomerRoute } from "./Routers/CustomerRoute";
 import { findCart } from "./component/State/Cart/Action";
+import { Routers } from "./Routers/Routers";
 
 function App() {
   const dispatch = useDispatch();
@@ -26,13 +27,13 @@ function App() {
   return (
     <ThemeProvider theme={whiteTheme}>
       <CssBaseline />
-      <Navbar />
+      {/* <Navbar /> */}
       {/* <Home /> */}
       {/* <RestaurantDetails /> */}
       {/* <Cart /> */}
       {/* <Profile /> */}
 
-      <CustomerRoute />
+      <Routers />
     </ThemeProvider>
   );
 }
