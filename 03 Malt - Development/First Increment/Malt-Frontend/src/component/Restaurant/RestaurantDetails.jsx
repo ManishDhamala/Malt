@@ -103,7 +103,8 @@ export const RestaurantDetails = () => {
     <div className="px-5 lg:px-20 lg:mt-22">
       <section>
         <h3 className="text-gray-700 py-2 mt-5">
-          Home/Nepal/{restaurant.restaurants?.name}/5
+          Nepal/{restaurant.restaurants?.address?.city}/
+          {restaurant.restaurants?.name}
         </h3>
         <div>
           <Grid container spacing={2}>
@@ -164,8 +165,8 @@ export const RestaurantDetails = () => {
               <LocationOnIcon />
               <span>
                 {" "}
-                {restaurant.restaurants?.address.city || "N/A"},{" "}
-                {restaurant.restaurants?.address.streetAddress || "N/A"}
+                {restaurant.restaurants?.address?.city || "N/A"},{" "}
+                {restaurant.restaurants?.address?.streetAddress || "N/A"}
               </span>
             </p>
             <p className="text-gray-700 flex items-center gap-3">

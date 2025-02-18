@@ -30,7 +30,7 @@ export const CartItem = ({ item }) => {
         <div>
           <img
             className="w-[5rem] h-[5rem] object-cover"
-            src={item.food.images[0]}
+            src={item.food?.images[0]}
             alt="food-image"
           />
         </div>

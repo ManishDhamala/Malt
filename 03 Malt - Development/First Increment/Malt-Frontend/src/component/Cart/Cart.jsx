@@ -66,9 +66,9 @@ export const Cart = () => {
           streetAddress: values.streetAddress,
           city: values.city,
           country: values.country,
-          province: values.province,
+          province: values?.province,
           postalCode: values.postalCode,
-          landmark: values.landmark,
+          landmark: values?.landmark,
         },
       },
     };
@@ -199,6 +199,7 @@ export const Cart = () => {
                     label="Country"
                     fullWidth
                     variant="outlined"
+                    required
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -208,6 +209,7 @@ export const Cart = () => {
                     label="Province"
                     fullWidth
                     variant="outlined"
+                    required
                   />
                 </Grid>
                 <Grid item xs={6}>
@@ -217,6 +219,7 @@ export const Cart = () => {
                     label="City"
                     fullWidth
                     variant="outlined"
+                    required
                   />
                 </Grid>
                 <Grid item xs={6}>
@@ -236,6 +239,7 @@ export const Cart = () => {
                     label="Street Address"
                     fullWidth
                     variant="outlined"
+                    required
                     // error={!ErrorMessage("streetAddress")}
                     // helperText={
                     //   <ErrorMessage>

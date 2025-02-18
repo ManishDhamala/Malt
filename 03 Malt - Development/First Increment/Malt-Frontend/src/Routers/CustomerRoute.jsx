@@ -6,6 +6,7 @@ import { RestaurantDetails } from "../component/Restaurant/RestaurantDetails";
 import { Cart } from "../component/Cart/Cart";
 import { Profile } from "../component/Profile/Profile";
 import { Navbar } from "../component/Navbar/Navbar";
+import { PaymentSuccess } from "../component/PaymentSuccess/PaymentSuccess";
 
 export const CustomerRoute = () => {
   return (
@@ -20,6 +21,7 @@ export const CustomerRoute = () => {
         />
         <Route path="/cart" element={<Cart />} />
         <Route path="/my-profile/*" element={<Profile />} />
+        <Route path="/payment/success/:id" element={<PaymentSuccess />} />
       </Routes>
     </div>
   );
