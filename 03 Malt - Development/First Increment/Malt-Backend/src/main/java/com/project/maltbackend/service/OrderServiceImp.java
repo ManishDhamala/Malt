@@ -36,6 +36,10 @@ public class OrderServiceImp implements OrderService{
     @Autowired
     private CartService cartService;
 
+    private int deliveryCharge = 100;
+
+    private int restaurantCharge = 10;
+
 
 
     @Override
@@ -78,7 +82,7 @@ public class OrderServiceImp implements OrderService{
         Long totalPrice = cartService.calculateCartTotals(cart); //check this
 
         createOrder.setItems(orderItems);
-        createOrder.setTotalPrice(totalPrice);
+        createOrder.setTotalPrice(totalPrice + deliveryCharge + restaurantCharge);
 
         Order savedOrder = orderRepository.save(createOrder);
         restaurant.getOrders().add(savedOrder);

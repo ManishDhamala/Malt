@@ -4,7 +4,9 @@ import com.project.maltbackend.model.CartItem;
 import com.project.maltbackend.model.Order;
 import com.project.maltbackend.model.User;
 import com.project.maltbackend.request.OrderRequest;
+import com.project.maltbackend.response.PaymentResponse;
 import com.project.maltbackend.service.OrderService;
+import com.project.maltbackend.service.PaymentService;
 import com.project.maltbackend.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,16 +24,20 @@ public class OrderController {
     private OrderService orderService;
 
     @Autowired
+    private PaymentService paymentService;
+
+    @Autowired
     private UserService userService;
 
     @PostMapping("/order")
-    public ResponseEntity<Order> createOrder( @Valid @RequestBody OrderRequest request,
-                                                @RequestHeader("Authorization") String jwt) throws Exception {
+    public ResponseEntity<PaymentResponse> createOrder(@Valid @RequestBody OrderRequest request,
+                                                       @RequestHeader("Authorization") String jwt) throws Exception {
 
         User user = userService.findUserByJwtToken(jwt);
         Order order = orderService.createOrder(request,user);
+        PaymentResponse response = paymentService.createPaymentLink(order);
 
-        return new ResponseEntity<>(order, HttpStatus.CREATED);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @GetMapping("/order/user")
