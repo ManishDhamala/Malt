@@ -1,5 +1,10 @@
 import React from "react";
+import { FoodCategoryTable } from "./FoodCategoryTable";
 
 export const FoodCategory = () => {
-  return <div>FoodCategory</div>;
+  return (
+    <div>
+      <FoodCategoryTable />
+    </div>
+  );
 };
