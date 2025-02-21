@@ -31,9 +31,15 @@ export const FoodCategoryTable = () => {
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell align="left">Id</TableCell>
-                <TableCell align="left">Name</TableCell>
-                <TableCell align="left">Delete</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }} align="left">
+                  Id
+                </TableCell>
+                <TableCell sx={{ fontWeight: "bold" }} align="left">
+                  Name
+                </TableCell>
+                <TableCell sx={{ fontWeight: "bold" }} align="left">
+                  Delete
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -47,7 +53,7 @@ export const FoodCategoryTable = () => {
                   </TableCell>
                   <TableCell align="left">{"Momo"}</TableCell>
                   <TableCell align="left">
-                    <IconButton>
+                    <IconButton color="primary">
                       <Delete />
                     </IconButton>
                   </TableCell>

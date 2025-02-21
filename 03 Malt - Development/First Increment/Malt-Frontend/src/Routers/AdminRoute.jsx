@@ -9,7 +9,7 @@ export const AdminRoute = () => {
       <Routes>
         <Route
           path="/*"
-          element={false ? <CreateRestaurantForm /> : <Admin />}
+          element={true ? <CreateRestaurantForm /> : <Admin />}
         ></Route>
       </Routes>
     </div>

@@ -31,11 +31,21 @@ export const MenuTable = () => {
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell align="left">Image</TableCell>
-                <TableCell align="right">Name</TableCell>
-                <TableCell align="right">Price</TableCell>
-                <TableCell align="right">Availability</TableCell>
-                <TableCell align="right">Delete</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }} align="left">
+                  Image
+                </TableCell>
+                <TableCell sx={{ fontWeight: "bold" }} align="right">
+                  Name
+                </TableCell>
+                <TableCell sx={{ fontWeight: "bold" }} align="right">
+                  Price
+                </TableCell>
+                <TableCell sx={{ fontWeight: "bold" }} align="right">
+                  Availability
+                </TableCell>
+                <TableCell sx={{ fontWeight: "bold" }} align="right">
+                  Delete
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -51,7 +61,7 @@ export const MenuTable = () => {
                   <TableCell align="right">{"Manish Dhamala"}</TableCell>
                   <TableCell align="right">{"500"}</TableCell>
                   <TableCell align="right">
-                    <IconButton>
+                    <IconButton color="primary">
                       <Delete />
                     </IconButton>
                   </TableCell>

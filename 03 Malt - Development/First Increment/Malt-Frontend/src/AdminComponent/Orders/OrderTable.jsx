@@ -23,12 +23,22 @@ export const OrderTable = () => {
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell>Id</TableCell>
-                <TableCell align="right">Image</TableCell>
-                <TableCell align="right">Customer</TableCell>
-                <TableCell align="right">Price</TableCell>
-                <TableCell align="right">Name</TableCell>
-                <TableCell align="right">Status</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>Id</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }} align="right">
+                  Image
+                </TableCell>
+                <TableCell sx={{ fontWeight: "bold" }} align="right">
+                  Customer
+                </TableCell>
+                <TableCell sx={{ fontWeight: "bold" }} align="right">
+                  Price
+                </TableCell>
+                <TableCell sx={{ fontWeight: "bold" }} align="right">
+                  Name
+                </TableCell>
+                <TableCell sx={{ fontWeight: "bold" }} align="right">
+                  Status
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
