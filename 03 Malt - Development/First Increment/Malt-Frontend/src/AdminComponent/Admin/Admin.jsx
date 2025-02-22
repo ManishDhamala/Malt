@@ -7,6 +7,7 @@ import { FoodCategory } from "../FoodCategory/FoodCategory";
 import { Events } from "../Events/Events";
 import { RestaurantDetails } from "./RestaurantDetails";
 import { RestaurantDashboard } from "../Dashboard/RestaurantDashboard";
+import { CreateMenuForm } from "../Menu/CreateMenuForm";
 
 export const Admin = () => {
   const handleClose = () => {};
@@ -24,6 +25,7 @@ export const Admin = () => {
             <Route path="/category" element={<FoodCategory />} />
             <Route path="/event" element={<Events />} />
             <Route path="/details" element={<RestaurantDetails />} />
+            <Route path="/add-menu" element={<CreateMenuForm />} />
           </Routes>
         </div>
       </div>
