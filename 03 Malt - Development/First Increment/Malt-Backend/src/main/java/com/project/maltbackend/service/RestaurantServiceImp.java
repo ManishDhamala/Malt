@@ -30,10 +30,24 @@ public class RestaurantServiceImp implements RestaurantService{
     // Method to create a new restaurant based on the request data and the user
     @Override
     public Restaurant createRestaurant(CreateRestaurantRequest req, User user) {
-        Address address = addressRepository.save(req.getAddress());
+
+        // Validate input
+        if (req == null || user == null) {
+            throw new IllegalArgumentException("Create Restaurant request or User must not be null");
+        }
+
+        // Create and save the Address entity before setting it in Restaurant
+        Address address = new Address();
+        address.setStreetAddress(req.getAddress().getStreetAddress()); // landmark is missing
+        address.setCity(req.getAddress().getCity());
+        address.setProvince(req.getAddress().getProvince());
+        address.setPostalCode(req.getAddress().getPostalCode());
+        address.setCountry(req.getAddress().getCountry());
+
+        Address savedAddress = addressRepository.save(address); // Save it properly
 
         Restaurant restaurant = new Restaurant();
-        restaurant.setAddress(address);
+        restaurant.setAddress(savedAddress);
         restaurant.setContactInformation(req.getContactInformation());
         restaurant.setDescription(req.getDescription());
         restaurant.setImages(req.getImages());
