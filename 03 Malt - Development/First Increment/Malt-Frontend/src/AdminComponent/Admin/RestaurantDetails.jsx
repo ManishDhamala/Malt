@@ -4,25 +4,41 @@ import InstagramIcon from "@mui/icons-material/Instagram";
 import XIcon from "@mui/icons-material/X";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import FacebookIcon from "@mui/icons-material/Facebook";
+import { useDispatch, useSelector } from "react-redux";
+import { updateRestaurantStatus } from "../../component/State/Restaurant/Action";
 
 export const RestaurantDetails = () => {
-  const handleRestaurantStatus = () => {};
+  const { restaurant } = useSelector((store) => store);
+
+  const dispatch = useDispatch();
+  const jwt = localStorage.getItem("jwt");
+
+  console.log("Restaurant Details: ", restaurant);
+
+  const handleRestaurantStatus = () => {
+    dispatch(
+      updateRestaurantStatus({
+        restaurantId: restaurant.usersRestaurant.id,
+        jwt,
+      })
+    );
+  };
 
   return (
     <div className="lg:px-20 px-5 pb-10 ">
       <div className="py-5 flex justify-center items-center gap-5">
         <h1 className="text-2xl lg:text-5xl text-center font-bold p-5">
-          Rupakot Resort
+          {restaurant.usersRestaurant?.name}
         </h1>
         <div>
           <Button
-            color={true ? "primary" : "error"}
+            color={restaurant.usersRestaurant?.open ? "primary" : "success"}
             className="py-[1rem] px-[2rem]"
             variant="contained"
             onClick={handleRestaurantStatus}
             size="medium"
           >
-            {true ? "Close" : "Open"}
+            {restaurant.usersRestaurant?.open ? "Close" : "Open"}
           </Button>
         </div>
       </div>
@@ -42,7 +58,7 @@ export const RestaurantDetails = () => {
                   <p className="w-45">Owner</p>
                   <p className="text-gray-600">
                     <span className="pr-5">-</span>
-                    Manish Dhamala
+                    {restaurant.usersRestaurant?.owner?.fullName}
                   </p>
                 </div>
               </div>
@@ -51,7 +67,7 @@ export const RestaurantDetails = () => {
                   <p className="w-45">Restaurant Name</p>
                   <p className="text-gray-600">
                     <span className="pr-5">-</span>
-                    Rupakot Resort
+                    {restaurant.usersRestaurant?.name}
                   </p>
                 </div>
               </div>
@@ -60,7 +76,7 @@ export const RestaurantDetails = () => {
                   <p className="w-45">Opening Hours</p>
                   <p className="text-gray-600">
                     <span className="pr-5">-</span>
-                    Sun - Fri 9:00 AM - 8:00 PM
+                    {restaurant.usersRestaurant?.openingHours}
                   </p>
                 </div>
               </div>
@@ -69,12 +85,15 @@ export const RestaurantDetails = () => {
                   <p className="w-45">Status</p>
                   <p className="text-gray-600">
                     <span className="pr-5">-</span>
-                    {true ? (
-                      <span className="px-5 py-2 rounded-full bg-green-400 text-gray-900">
+                    {restaurant.usersRestaurant?.open ? (
+                      <span
+                        style={{ background: "#388e3c" }}
+                        className="px-5 py-2 rounded-full text-white"
+                      >
                         Open
                       </span>
                     ) : (
-                      <span className="px-5 py-2 rounded-full bg-red-400 text-gray-50">
+                      <span className="px-5 py-2 rounded-full bg-red-800 text-gray-50">
                         Closed
                       </span>
                     )}
@@ -97,7 +116,7 @@ export const RestaurantDetails = () => {
                   <p className="w-45">Country</p>
                   <p className="text-gray-600">
                     <span className="pr-5">-</span>
-                    Nepal
+                    {restaurant.usersRestaurant?.address?.country}
                   </p>
                 </div>
               </div>
@@ -106,7 +125,7 @@ export const RestaurantDetails = () => {
                   <p className="w-45">Province</p>
                   <p className="text-gray-600">
                     <span className="pr-5">-</span>
-                    Gandaki
+                    {restaurant.usersRestaurant?.address?.province}
                   </p>
                 </div>
               </div>
@@ -115,7 +134,7 @@ export const RestaurantDetails = () => {
                   <p className="w-45">City</p>
                   <p className="text-gray-600">
                     <span className="pr-5">-</span>
-                    Pokhara
+                    {restaurant.usersRestaurant?.address?.city}
                   </p>
                 </div>
               </div>
@@ -124,7 +143,7 @@ export const RestaurantDetails = () => {
                   <p className="w-45">Street Address</p>
                   <p className="text-gray-600">
                     <span className="pr-5">-</span>
-                    Rupakot
+                    {restaurant.usersRestaurant?.address?.streetAddress}
                   </p>
                 </div>
               </div>
@@ -144,7 +163,7 @@ export const RestaurantDetails = () => {
                   <p className="w-25">Email</p>
                   <p className="text-gray-600">
                     <span className="pr-5">-</span>
-                    Rupakotresort24@gmail.com
+                    {restaurant.usersRestaurant?.contactInformation?.email}
                   </p>
                 </div>
               </div>
@@ -153,7 +172,7 @@ export const RestaurantDetails = () => {
                   <p className="w-25">Mobile</p>
                   <p className="text-gray-600">
                     <span className="pr-5">-</span>
-                    +9772361432
+                    {restaurant.usersRestaurant?.contactInformation?.mobile}
                   </p>
                 </div>
               </div>
@@ -162,13 +181,24 @@ export const RestaurantDetails = () => {
                   <p className="w-25 pt-3">Social</p>
                   <div className="flex text-gray-600 items-center pb-3 gap-3">
                     <span className="pr-5">-</span>
-                    <a href="/">
+                    <a
+                      href={
+                        restaurant.usersRestaurant?.contactInformation
+                          ?.instagram
+                      }
+                      target="_blank"
+                    >
                       <InstagramIcon sx={{ fontSize: "3rem" }} />
                     </a>
-                    <a href="/">
+                    <a
+                      href={
+                        restaurant.usersRestaurant?.contactInformation?.twitter
+                      }
+                      target="_blank"
+                    >
                       <XIcon sx={{ fontSize: "3rem" }} />
                     </a>
-                    <a href="/">
+                    <a href="#">
                       <FacebookIcon sx={{ fontSize: "3rem" }} />
                     </a>
                   </div>

@@ -2,7 +2,6 @@ import { Dashboard, ShoppingBag } from "@mui/icons-material";
 import React from "react";
 import RestaurantMenuIcon from "@mui/icons-material/RestaurantMenu";
 import CategoryIcon from "@mui/icons-material/Category";
-import FastfoodIcon from "@mui/icons-material/Fastfood";
 import EventIcon from "@mui/icons-material/Event";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import LogoutIcon from "@mui/icons-material/Logout";
