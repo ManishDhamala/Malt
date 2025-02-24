@@ -28,6 +28,10 @@ public class CategoryServiceImp implements CategoryService{
         @Override
         public Category createCategory(String name, Restaurant restaurant) throws Exception {
 
+            if (restaurant == null) {
+                throw new Exception("Restaurant not found");
+            }
+
             Category category = new Category();
             category.setName(name);
             category.setRestaurant(restaurant);

@@ -3,6 +3,7 @@ package com.project.maltbackend.controller;
 import com.project.maltbackend.model.Category;
 import com.project.maltbackend.model.Restaurant;
 import com.project.maltbackend.model.User;
+import com.project.maltbackend.request.CreateCategoryRequest;
 import com.project.maltbackend.service.CategoryService;
 import com.project.maltbackend.service.RestaurantService;
 import com.project.maltbackend.service.UserService;
@@ -28,17 +29,16 @@ public class CategoryController {
 
     //  Endpoint for creating new category
     @PostMapping("/admin/category")
-    public ResponseEntity<Category> createCategory( @RequestHeader("Authorization") String jwt,
-                                                    @RequestBody Category category,
-                                                   @RequestParam Long restaurantId) throws Exception {
+    public ResponseEntity<Category> createCategory(@RequestHeader("Authorization") String jwt,
+                                                   @RequestBody CreateCategoryRequest categoryRequest) throws Exception {
 
         // Retrieves the user based on the JWT token in the Authorization header
 //        User user = userService.findUserByJwtToken(jwt);
 
-        Restaurant restaurant = restaurantService.findRestaurantById(restaurantId);
+        Restaurant restaurant = restaurantService.findRestaurantById(categoryRequest.getRestaurantId());
 
         // Creates a new category using the category's name and the user's ID
-        Category createdCategory = categoryService.createCategory(category.getName(), restaurant);
+        Category createdCategory = categoryService.createCategory(categoryRequest.getName(), restaurant);
 
         // Returns the created category in the response body with a 201 CREATED status
         return new ResponseEntity<>(createdCategory, HttpStatus.CREATED);
