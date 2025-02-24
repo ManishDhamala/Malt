@@ -1,5 +1,12 @@
-import { Box, Card, CardActions, CardHeader, IconButton } from "@mui/material";
-import React from "react";
+import {
+  Avatar,
+  Box,
+  Card,
+  CardActions,
+  CardHeader,
+  IconButton,
+} from "@mui/material";
+import React, { useEffect } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -10,11 +17,34 @@ import Paper from "@mui/material/Paper";
 import CreateIcon from "@mui/icons-material/Create";
 import { Delete } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-
-const orders = [1, 1, 1, 1, 1, 1];
+import { useDispatch, useSelector } from "react-redux";
+import {
+  deleteFood,
+  getMenuItemsByRestaurantId,
+} from "../../component/State/Menu/Action";
 
 export const MenuTable = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { restaurant, menu } = useSelector((store) => store);
+  const jwt = localStorage.getItem("jwt");
+
+  console.log("Menu --- ", menu);
+
+  useEffect(() => {
+    dispatch(
+      getMenuItemsByRestaurantId({
+        restaurantId: restaurant?.usersRestaurant?.id,
+        jwt,
+        vegetarian: "",
+        foodCategory: "",
+      })
+    );
+  }, [jwt, restaurant?.usersRestaurant?.id]);
+
+  const handleDeleteFood = (foodId) => {
+    dispatch(deleteFood({ foodId, jwt }));
+  };
 
   return (
     <Box>
@@ -40,13 +70,13 @@ export const MenuTable = () => {
                 <TableCell sx={{ fontWeight: "bold" }} align="left">
                   Image
                 </TableCell>
-                <TableCell sx={{ fontWeight: "bold" }} align="right">
+                <TableCell sx={{ fontWeight: "bold" }} align="left">
                   Name
                 </TableCell>
-                <TableCell sx={{ fontWeight: "bold" }} align="right">
+                <TableCell sx={{ fontWeight: "bold" }} align="left">
                   Price
                 </TableCell>
-                <TableCell sx={{ fontWeight: "bold" }} align="right">
+                <TableCell sx={{ fontWeight: "bold" }} align="left">
                   Availability
                 </TableCell>
                 <TableCell sx={{ fontWeight: "bold" }} align="right">
@@ -55,19 +85,24 @@ export const MenuTable = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {orders.map((row) => (
+              {menu?.menuItems.map((item) => (
                 <TableRow
-                  key={row.name}
+                  key={item.id}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 >
-                  <TableCell component="th" scope="row">
-                    {1}
+                  <TableCell component="th" align="left" scope="row">
+                    <Avatar src={item.images[0]}></Avatar>
                   </TableCell>
-                  <TableCell align="right">{"image-1"}</TableCell>
-                  <TableCell align="right">{"Manish Dhamala"}</TableCell>
-                  <TableCell align="right">{"500"}</TableCell>
+                  <TableCell align="left">{item.name}</TableCell>
+                  <TableCell align="left">Rs {item.price}</TableCell>
+                  <TableCell align="left">
+                    {item.available ? "In Stock" : "Out of Stock"}
+                  </TableCell>
                   <TableCell align="right">
-                    <IconButton color="primary">
+                    <IconButton
+                      onClick={() => handleDeleteFood(item.id)}
+                      color="primary"
+                    >
                       <Delete />
                     </IconButton>
                   </TableCell>

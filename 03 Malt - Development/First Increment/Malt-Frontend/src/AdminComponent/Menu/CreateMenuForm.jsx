@@ -14,6 +14,8 @@ import { useFormik } from "formik";
 import React, { useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import { uploadImageToCloudinary } from "../Util/UploadToCloudinary";
+import { useDispatch, useSelector } from "react-redux";
+import { createMenuItem } from "../../component/State/Menu/Action";
 
 const initialValues = {
   name: "",
@@ -26,13 +28,35 @@ const initialValues = {
 };
 
 export const CreateMenuForm = () => {
+  const dispatch = useDispatch();
+  const jwt = localStorage.getItem("jwt");
+  const { restaurant } = useSelector((store) => store);
+
   const [uploadImage, setUploadImage] = useState(false);
 
   const formik = useFormik({
     initialValues,
-    onSubmit: (values) => {
-      values.restaurantId = 2;
-      console.log("Data ---- ", values);
+    onSubmit: (values, { resetForm, setSubmitting }) => {
+      const formattedData = {
+        name: values.name,
+        description: values.description,
+        price: values.price,
+        categoryId: values.category.id, //  Ensure only ID is sent
+        restaurantId: restaurant.usersRestaurant.id,
+        vegetarian: values.vegetarian,
+        images: values.images,
+      };
+      // values.restaurantId = restaurant.usersRestaurant.id;
+      dispatch(createMenuItem({ menu: formattedData, jwt }))
+        .then(() => {
+          resetForm(); // Resets the form completely
+          setSubmitting(false);
+        })
+        .catch((error) => {
+          console.error("Error creating menu item:", error);
+          setSubmitting(false);
+        });
+      console.log("Data ---- ", formattedData);
     },
   });
 
@@ -126,7 +150,7 @@ export const CreateMenuForm = () => {
                 label="Price"
                 variant="outlined"
                 onChange={formik.handleChange}
-                value={formik.values.openingHours}
+                value={formik.values.price}
               />
             </Grid>
 
@@ -155,9 +179,11 @@ export const CreateMenuForm = () => {
                   onChange={formik.handleChange}
                   name="category"
                 >
-                  <MenuItem value={10}>Ten</MenuItem>
-                  <MenuItem value={20}>Twenty</MenuItem>
-                  <MenuItem value={30}>Thirty</MenuItem>
+                  {restaurant?.categories?.map((item) => (
+                    <MenuItem key={item.id} value={item}>
+                      {item.name}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </Grid>
