@@ -8,9 +8,39 @@ import { Events } from "../Events/Events";
 import { RestaurantDetails } from "./RestaurantDetails";
 import { RestaurantDashboard } from "../Dashboard/RestaurantDashboard";
 import { CreateMenuForm } from "../Menu/CreateMenuForm";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import {
+  getRestaurantById,
+  getRestaurantCategory,
+} from "../../component/State/Restaurant/Action";
+import { getMenuItemsByRestaurantId } from "../../component/State/Menu/Action";
+import { getRestaurantOrders } from "../../component/State/Restaurant Order/Action";
 
 export const Admin = () => {
+  const dispatch = useDispatch();
+  const jwt = localStorage.getItem("jwt");
+
+  const { restaurant } = useSelector((store) => store);
+
   const handleClose = () => {};
+
+  useEffect(() => {
+    dispatch(
+      getRestaurantCategory({
+        jwt,
+        restaurantId: restaurant?.usersRestaurant?.id,
+      })
+    );
+
+    dispatch(
+      getRestaurantOrders({
+        jwt,
+        restaurantId: restaurant?.usersRestaurant?.id,
+      })
+    );
+  }, [jwt]);
+
   return (
     <div>
       <div className="lg:flex justify-between">

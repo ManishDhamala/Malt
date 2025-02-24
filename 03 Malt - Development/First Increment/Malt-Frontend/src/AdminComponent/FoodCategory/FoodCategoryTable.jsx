@@ -7,7 +7,7 @@ import {
   IconButton,
   Modal,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -18,6 +18,9 @@ import Paper from "@mui/material/Paper";
 import CreateIcon from "@mui/icons-material/Create";
 import { Delete } from "@mui/icons-material";
 import { CreateFoodCategoryForm } from "./CreateFoodCategoryForm";
+import { useDispatch, useSelector } from "react-redux";
+import { getRestaurantCategory } from "../../component/State/Restaurant/Action";
+import { getRestaurantOrders } from "../../component/State/Restaurant Order/Action";
 
 const orders = [1, 1, 1, 1, 1, 1];
 
@@ -32,9 +35,24 @@ const style = {
 };
 
 export const FoodCategoryTable = () => {
+  const { restaurant } = useSelector((store) => store);
+  const dispatch = useDispatch();
+  const jwt = localStorage.getItem("jwt");
+
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  // console.log("Restaurant Details ", restaurant);
+
+  useEffect(() => {
+    dispatch(
+      getRestaurantCategory({
+        jwt,
+        restaurantId: restaurant?.usersRestaurant?.id,
+      })
+    );
+  }, [jwt]);
 
   return (
     <Box>
@@ -66,15 +84,15 @@ export const FoodCategoryTable = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {orders.map((row) => (
+              {restaurant.categories.map((item) => (
                 <TableRow
-                  key={row.name}
+                  key={item.id}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 >
                   <TableCell component="th" scope="row">
-                    {1}
+                    {item.id}
                   </TableCell>
-                  <TableCell align="left">{"Momo"}</TableCell>
+                  <TableCell align="left">{item.name}</TableCell>
                   <TableCell align="left">
                     <IconButton color="primary">
                       <Delete />
