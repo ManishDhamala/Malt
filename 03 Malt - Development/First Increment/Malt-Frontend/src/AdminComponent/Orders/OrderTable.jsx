@@ -1,62 +1,212 @@
-import { Box, Card, CardHeader } from "@mui/material";
-import React from "react";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
+import {
+  Avatar,
+  AvatarGroup,
+  Box,
+  Button,
+  Card,
+  CardHeader,
+  Chip,
+  Menu,
+  MenuItem,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getRestaurantOrders,
+  updateOrderStatus,
+} from "../../component/State/Restaurant Order/Action";
 
-const orders = [1, 1, 1, 1, 1, 1];
+const orderStatus = [
+  { label: "Pending", value: "PENDING" },
+  { label: "Out for Delivery", value: "OUT_FOR_DELIVERY" },
+  { label: "Delivered", value: "DELIVERED" },
+  { label: "Completed", value: "COMPLETED" },
+];
 
-export const OrderTable = () => {
+export const OrderTable = ({ filterValue }) => {
+  const dispatch = useDispatch();
+  const jwt = localStorage.getItem("jwt");
+  const { restaurant, restaurantOrder } = useSelector((store) => store);
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+
+  useEffect(() => {
+    dispatch(
+      getRestaurantOrders({
+        jwt,
+        restaurantId: restaurant?.usersRestaurant?.id,
+      })
+    );
+  }, [jwt, restaurant?.usersRestaurant?.id]);
+
+  // 🔹 **Fix: Correctly filter orders before mapping**
+  const filteredOrders =
+    filterValue === "all"
+      ? restaurantOrder?.restaurantOrders
+      : restaurantOrder?.restaurantOrders?.filter(
+          (order) => order.orderStatus === filterValue
+        );
+
+  const handleClick = (event, orderId) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedOrder(orderId);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+    setSelectedOrder(null);
+  };
+
+  const handleUpdateOrder = (orderId, orderStatus) => {
+    // Optimistically update UI
+    dispatch({
+      type: "UPDATE_ORDER_STATUS_OPTIMISTIC",
+      payload: { orderId, orderStatus },
+    });
+
+    // Dispatch API request
+    dispatch(updateOrderStatus({ orderId, orderStatus, jwt })).then(() => {
+      dispatch(
+        getRestaurantOrders({
+          jwt,
+          restaurantId: restaurant?.usersRestaurant?.id,
+        })
+      );
+    });
+
+    handleClose();
+  };
+
   return (
     <Box>
       <Card className="mt-1">
         <CardHeader
-          title={"Order History"}
+          title="Order History"
           sx={{ pt: 2, alignItems: "center" }}
         />
 
         <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <Table sx={{ minWidth: 700 }} aria-label="order table">
             <TableHead>
               <TableRow>
                 <TableCell sx={{ fontWeight: "bold" }}>Id</TableCell>
-                <TableCell sx={{ fontWeight: "bold" }} align="right">
+                <TableCell sx={{ fontWeight: "bold" }} align="center">
                   Image
                 </TableCell>
-                <TableCell sx={{ fontWeight: "bold" }} align="right">
+                <TableCell sx={{ fontWeight: "bold" }} align="center">
                   Customer
                 </TableCell>
-                <TableCell sx={{ fontWeight: "bold" }} align="right">
+                <TableCell sx={{ fontWeight: "bold" }} align="center">
                   Price
                 </TableCell>
-                <TableCell sx={{ fontWeight: "bold" }} align="right">
+                <TableCell sx={{ fontWeight: "bold" }} align="center">
                   Name
                 </TableCell>
-                <TableCell sx={{ fontWeight: "bold" }} align="right">
-                  Status
+                <TableCell sx={{ fontWeight: "bold" }} align="center">
+                  Order Status
                 </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {orders.map((row) => (
-                <TableRow
-                  key={row.name}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell component="th" scope="row">
-                    {1}
+              {filteredOrders?.length > 0 ? (
+                filteredOrders
+                  .sort((a, b) => a.id - b.id) // Keep order consistent
+                  .map((item) => (
+                    <TableRow
+                      key={item.id}
+                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    >
+                      <TableCell>{item.id}</TableCell>
+
+                      {/* Display food images */}
+                      <TableCell align="center">
+                        <AvatarGroup max={3}>
+                          {item.items?.map((orderItem, index) => (
+                            <Avatar
+                              key={index}
+                              src={orderItem.food?.images[0]}
+                            />
+                          ))}
+                        </AvatarGroup>
+                      </TableCell>
+
+                      {/* Customer Name */}
+                      <TableCell align="center">
+                        {item?.customer?.fullName}
+                      </TableCell>
+
+                      {/* Price*/}
+                      <TableCell align="center">
+                        Rs {item?.totalPrice}
+                      </TableCell>
+
+                      {/* Food Items */}
+                      <TableCell align="center">
+                        {item.items?.map((orderItem, index) => (
+                          <Chip
+                            key={index}
+                            label={orderItem.food?.name}
+                            variant="outlined"
+                            sx={{ margin: "2px" }}
+                          />
+                        ))}
+                      </TableCell>
+
+                      {/* Order Status Button */}
+                      <TableCell align="center">
+                        <Button
+                          variant="contained"
+                          size="small"
+                          onClick={(event) => handleClick(event, item.id)}
+                          sx={{
+                            minWidth: "120px",
+                            textTransform: "capitalize",
+                            fontSize: "0.75rem",
+                            backgroundColor: "primary.main",
+                            color: "white",
+                            "&:hover": { backgroundColor: "primary.dark" },
+                          }}
+                        >
+                          {orderStatus.find(
+                            (status) => status.value === item.orderStatus
+                          )?.label || "Unknown"}
+                        </Button>
+
+                        {/* Dropdown Menu for Updating Order Status */}
+                        <Menu
+                          anchorEl={anchorEl}
+                          open={Boolean(anchorEl) && selectedOrder === item.id}
+                          onClose={handleClose}
+                        >
+                          {orderStatus.map((status) => (
+                            <MenuItem
+                              key={status.value}
+                              onClick={() =>
+                                handleUpdateOrder(item.id, status.value)
+                              }
+                            >
+                              {status.label}
+                            </MenuItem>
+                          ))}
+                        </Menu>
+                      </TableCell>
+                    </TableRow>
+                  ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={6} align="center">
+                    No orders found
                   </TableCell>
-                  <TableCell align="right">{"image-1"}</TableCell>
-                  <TableCell align="right">{"Manish Dhamala"}</TableCell>
-                  <TableCell align="right">{"500"}</TableCell>
-                  <TableCell align="right">{"Momo"}</TableCell>
-                  <TableCell align="right">{"Completed"}</TableCell>
                 </TableRow>
-              ))}
+              )}
             </TableBody>
           </Table>
         </TableContainer>

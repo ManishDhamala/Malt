@@ -10,13 +10,15 @@ import React, { useState } from "react";
 import { OrderTable } from "./OrderTable";
 
 const orderStatus = [
+  { label: "All", value: "all" },
   { label: "Pending", value: "PENDING" },
+  { label: "Out for Delivery", value: "OUT_FOR_DELIVERY" },
+  { label: "Delivered", value: "DELIVERED" },
   { label: "Completed", value: "COMPLETED" },
-  { label: "All", value: "ALL" },
 ];
 
 export const Orders = () => {
-  const [filterValue, setFilterValue] = useState();
+  const [filterValue, setFilterValue] = useState("all");
   const handleFilter = (e, value) => {
     setFilterValue(value);
   };
@@ -33,10 +35,11 @@ export const Orders = () => {
             row
             name="category"
             value={filterValue || "all"}
+            sx={{ gap: 5 }}
           >
             {orderStatus.map((item) => (
               <FormControlLabel
-                key={item.label}
+                key={item.value}
                 value={item.value}
                 control={<Radio />}
                 label={item.label}
@@ -46,7 +49,7 @@ export const Orders = () => {
           </RadioGroup>
         </FormControl>
       </Card>
-      <OrderTable />
+      <OrderTable filterValue={filterValue} />
     </div>
   );
 };
