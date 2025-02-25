@@ -2,6 +2,7 @@ package com.project.maltbackend.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,7 +23,7 @@ public class Order {
     private Long id;
 
     @ManyToOne
-    @JsonBackReference
+    @JsonIgnoreProperties("orders") // Ignore 'orders' field in User when serializing
     private User customer;
 
     //@JsonIgnore
@@ -44,9 +45,7 @@ public class Order {
 
 //    private Payment payment;
 
-    private int totalItem;  // Check this
 
-   // private int totalPrice; // redundant
 
 
 }

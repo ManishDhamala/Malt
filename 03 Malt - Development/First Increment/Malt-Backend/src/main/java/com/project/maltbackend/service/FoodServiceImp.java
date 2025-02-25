@@ -47,14 +47,15 @@ public class FoodServiceImp implements FoodService {
 
     @Override
     public void deleteFood(Long foodId) throws Exception {
-        // Find the food by ID, or throw an exception if not found
-        Food food = findFoodById(foodId);
-
-        // Disassociate the food from its restaurant before deletion
-        food.setRestaurant(null);
-
-        // Save the food with the disassociation change (soft delete approach)
-        foodRepository.save(food);
+//        // Find the food by ID, or throw an exception if not found
+//        Food food = findFoodById(foodId);
+//
+//        // Disassociate the food from its restaurant before deletion
+//        food.setRestaurant(null);
+//
+//        // Save the food with the disassociation change (soft delete approach)
+//        foodRepository.save(food);
+        foodRepository.deleteById(foodId);
     }
 
     @Override
