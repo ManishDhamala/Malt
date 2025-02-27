@@ -4,6 +4,7 @@ import com.project.maltbackend.model.Category;
 import com.project.maltbackend.model.Restaurant;
 import com.project.maltbackend.model.User;
 import com.project.maltbackend.request.CreateCategoryRequest;
+import com.project.maltbackend.response.MessageResponse;
 import com.project.maltbackend.service.CategoryService;
 import com.project.maltbackend.service.RestaurantService;
 import com.project.maltbackend.service.UserService;
@@ -58,6 +59,20 @@ public class CategoryController {
         // Returns the list of categories in the response body with a 200 OK status
         return new ResponseEntity<>(categories, HttpStatus.OK);
 
+    }
+
+    @DeleteMapping("/admin/category/{id}")
+    public ResponseEntity<MessageResponse> deleteFoodCategory(@PathVariable Long id,
+                                                      @RequestHeader("Authorization") String jwt) throws Exception {
+
+        User user = userService.findUserByJwtToken(jwt);
+
+        categoryService.deleteFoodCategory(id);
+
+        MessageResponse response = new MessageResponse();
+        response.setMessage("Food Category Deleted Successfully");
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 

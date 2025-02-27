@@ -57,4 +57,9 @@ public class CategoryServiceImp implements CategoryService{
 
         return optionalCategory.get();
     }
+
+    @Override
+    public void deleteFoodCategory(Long categoryId) throws Exception {
+        categoryRepository.deleteById(categoryId);
+    }
 }
