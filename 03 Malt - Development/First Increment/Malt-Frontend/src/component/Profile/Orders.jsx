@@ -18,8 +18,8 @@ export const Orders = () => {
     <div className="flex items-center flex-col lg:mt-20">
       <h1 className="text-xl text-center py-7 font-semibold">My Orders</h1>
       <div className="space-y-5 w-full lg:w-1/2">
-        {order.orders.map((order) =>
-          order.items.map((item) => <OrderCard order={order} item={item} />)
+        {order.orders?.map((order) =>
+          order.items?.map((item) => <OrderCard order={order} item={item} />)
         )}
       </div>
     </div>

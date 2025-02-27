@@ -54,7 +54,7 @@ export const MenuTable = () => {
           sx={{ pt: 2, alignItems: "center" }}
           action={
             <IconButton
-              onClick={() => navigate("/admin/restaurants/add-menu")}
+              onClick={() => navigate("/admin/restaurant/add-menu")}
               aria-label="settings"
             >
               <CreateIcon />

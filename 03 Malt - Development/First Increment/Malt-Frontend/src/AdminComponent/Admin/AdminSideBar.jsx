@@ -55,7 +55,7 @@ export const AdminSideBar = ({ handleClose }) => {
   const dispatch = useDispatch();
 
   const handleNavigate = (item) => {
-    navigate(`/admin/restaurants${item.path}`);
+    navigate(`/admin/restaurant${item.path}`);
     if (item.title === "Logout") {
       navigate("/");
       dispatch(logout());

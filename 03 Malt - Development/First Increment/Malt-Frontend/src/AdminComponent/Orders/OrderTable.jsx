@@ -45,9 +45,10 @@ export const OrderTable = ({ filterValue }) => {
         restaurantId: restaurant?.usersRestaurant?.id,
       })
     );
+    console.log("Fetched Orders:", restaurantOrder?.restaurantOrders);
   }, [jwt, restaurant?.usersRestaurant?.id]);
 
-  // 🔹 **Fix: Correctly filter orders before mapping**
+  //  Correctly filter orders before mapping
   const filteredOrders =
     filterValue === "all"
       ? restaurantOrder?.restaurantOrders

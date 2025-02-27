@@ -21,6 +21,7 @@ const restaurantReducer = (state = initialState, action) => {
         case actionTypes.GET_RESTAURANT_BY_ID_REQUEST:
         case actionTypes.CREATE_CATEGORY_REQUEST:
         case actionTypes.GET_RESTAURANT_CATEGORY_REQUEST:
+        case actionTypes.DELETE_CATEGORY_REQUEST:
             return {
                 ...state,
                 loading: true,
@@ -85,6 +86,13 @@ const restaurantReducer = (state = initialState, action) => {
                 categories: action.payload
             };
 
+        case actionTypes.DELETE_CATEGORY_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                categories: state.categories.filter(category => category.id !== action.payload)
+            };
+
         case actionTypes.CREATE_RESTAURANT_FAIL:
         case actionTypes.GET_ALL_RESTAURANT_FAIL:
         case actionTypes.DELETE_RESTAURANT_FAIL:
@@ -92,6 +100,7 @@ const restaurantReducer = (state = initialState, action) => {
         case actionTypes.GET_RESTAURANT_BY_ID_FAIL:
         case actionTypes.CREATE_CATEGORY_FAIL:
         case actionTypes.GET_RESTAURANT_CATEGORY_FAIL:
+        case actionTypes.DELETE_CATEGORY_FAIL:
             return {
                 ...state,
                 loading: false,

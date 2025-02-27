@@ -19,10 +19,11 @@ import CreateIcon from "@mui/icons-material/Create";
 import { Delete } from "@mui/icons-material";
 import { CreateFoodCategoryForm } from "./CreateFoodCategoryForm";
 import { useDispatch, useSelector } from "react-redux";
-import { getRestaurantCategory } from "../../component/State/Restaurant/Action";
+import {
+  deleteFoodCategory,
+  getRestaurantCategory,
+} from "../../component/State/Restaurant/Action";
 import { getRestaurantOrders } from "../../component/State/Restaurant Order/Action";
-
-const orders = [1, 1, 1, 1, 1, 1];
 
 const style = {
   position: "absolute",
@@ -42,6 +43,10 @@ export const FoodCategoryTable = () => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  const handleDeleteFoodCategory = (categoryId) => {
+    dispatch(deleteFoodCategory({ categoryId, jwt }));
+  };
 
   // console.log("Restaurant Details ", restaurant);
 
@@ -94,7 +99,10 @@ export const FoodCategoryTable = () => {
                   </TableCell>
                   <TableCell align="left">{item.name}</TableCell>
                   <TableCell align="left">
-                    <IconButton color="primary">
+                    <IconButton
+                      onClick={() => handleDeleteFoodCategory(item.id)}
+                      color="primary"
+                    >
                       <Delete />
                     </IconButton>
                   </TableCell>
