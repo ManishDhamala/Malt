@@ -19,7 +19,7 @@ export const Home = () => {
   console.log("Restaurant store ", restaurant);
 
   useEffect(() => {
-    dispatch(getAllRestaurantsAction(jwt));
+    dispatch(getAllRestaurantsAction());
     dispatch(findCart(jwt)).finally(() => {
       setLoading(false);
     });

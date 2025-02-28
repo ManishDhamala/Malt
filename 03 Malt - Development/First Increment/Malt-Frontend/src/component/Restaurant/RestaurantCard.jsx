@@ -20,11 +20,23 @@ export const RestaurantCard = ({ restaurant }) => {
     dispatch(addToFavorite({ restaurantId: restaurant.id, jwt }));
   };
 
+  // const handleNavigateToRestaurant = () => {
+  //   if (restaurant.open) {
+  //     navigate(
+  //       `/restaurant/${restaurant.address.city}/${restaurant.name}/${restaurant.id}`
+  //     );
+  //   }
+  // };
+
   const handleNavigateToRestaurant = () => {
     if (restaurant.open) {
-      navigate(
-        `/restaurant/${restaurant.address.city}/${restaurant.name}/${restaurant.id}`
-      );
+      if (auth?.user) {
+        navigate(
+          `/restaurant/${restaurant.address.city}/${restaurant.name}/${restaurant.id}`
+        );
+      } else {
+        navigate("/account/login");
+      }
     }
   };
 

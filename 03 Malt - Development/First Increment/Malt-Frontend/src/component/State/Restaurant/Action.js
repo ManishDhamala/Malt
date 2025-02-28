@@ -6,15 +6,32 @@ import {
 } from "./ActionType"
 
 
-export const getAllRestaurantsAction = (jwt) => {
+// export const getAllRestaurantsAction = (jwt) => {
+//     return async (dispatch) => {
+//         dispatch({ type: GET_ALL_RESTAURANT_REQUEST })
+//         try {
+//             const { data } = await api.get(`/api/restaurants`, {
+//                 headers: {
+//                     Authorization: `Bearer ${jwt}`
+//                 }
+//             })
+
+//             dispatch({ type: GET_ALL_RESTAURANT_SUCCESS, payload: data })
+//             console.log("All restaurant", data)
+
+//         } catch (error) {
+//             dispatch({ type: GET_ALL_RESTAURANT_FAIL, payload: error })
+//             console.log("error", error)
+//         }
+//     }
+// }
+
+
+export const getAllRestaurantsAction = () => {
     return async (dispatch) => {
         dispatch({ type: GET_ALL_RESTAURANT_REQUEST })
         try {
-            const { data } = await api.get(`/api/restaurants`, {
-                headers: {
-                    Authorization: `Bearer ${jwt}`
-                }
-            })
+            const { data } = await api.get(`/api/restaurants`)  // No JWT token required
 
             dispatch({ type: GET_ALL_RESTAURANT_SUCCESS, payload: data })
             console.log("All restaurant", data)

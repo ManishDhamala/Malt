@@ -25,6 +25,14 @@ export const Navbar = () => {
     }
   };
 
+  const handleCartClick = () => {
+    if (!auth?.user) {
+      navigate("/account/login");
+    } else {
+      navigate("/cart");
+    }
+  };
+
   return (
     <div className="px-5 z-50 py-[.8rem] bg-[#B20303] lg:px-20 flex justify-between fixed w-full top-0 left-0">
       <div className="lg:mr-10 cursor-pointer flex items-center space-x-4">
@@ -46,7 +54,7 @@ export const Navbar = () => {
           <Avatar sx={{ bgcolor: "white", color: "#B20303" }}>M</Avatar>
         </div> */}
         <div className="">
-          <IconButton onClick={() => navigate("/cart")}>
+          <IconButton onClick={handleCartClick}>
             <Badge color="secondary" badgeContent={cart.cartItems.length}>
               <ShoppingCartIcon sx={{ fontSize: "1.6rem", color: "white" }} />
             </Badge>
