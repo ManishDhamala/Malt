@@ -7,6 +7,7 @@ import { getAllRestaurantsAction } from "../State/Restaurant/Action";
 import { RestaurantCard } from "../Restaurant/RestaurantCard";
 import { useNavigate } from "react-router-dom";
 import { findCart } from "../State/Cart/Action";
+import { HomeFooter } from "./HomeFooter";
 
 export const Home = () => {
   const [loading, setLoading] = useState(true);
@@ -35,7 +36,7 @@ export const Home = () => {
   }
 
   return (
-    <div className="pb-10 lg:mt-16">
+    <div className="lg:mt-16">
       <section className="banner -z-50 relative flex flex-col justify-center items-center">
         <div className="w-[50vw] z-10 text-center">
           <p className="text2xl text-gray-300 lg:text-6xl font-bold z-10 py-5">
@@ -69,6 +70,7 @@ export const Home = () => {
       </section>
 
       <Authentication />
+      <HomeFooter />
     </div>
   );
 };

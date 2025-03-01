@@ -40,6 +40,8 @@ export const RestaurantCard = ({ restaurant }) => {
     }
   };
 
+  console.log("Restaurant Status:", restaurant.name, restaurant.open);
+
   return (
     <Card className="m-2 w-[18rem]">
       <div
