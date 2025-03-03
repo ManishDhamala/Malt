@@ -63,16 +63,15 @@ export const RestaurantDetails = () => {
 
   useEffect(() => {
     setLoading(true); // Start loading before fetching
-    dispatch(getRestaurantById({ jwt, restaurantId: id }));
-    dispatch(getRestaurantCategory({ jwt, restaurantId: id })).finally(() => {
+    dispatch(getRestaurantById({ restaurantId: id }));
+    dispatch(getRestaurantCategory({ restaurantId: id })).finally(() => {
       setLoading(false); // Stop loading after fetch
     });
-  }, [dispatch, jwt, id, city]);
+  }, [dispatch, id, city]);
 
   useEffect(() => {
     dispatch(
       getMenuItemsByRestaurantId({
-        jwt,
         restaurantId: id,
         vegetarian: foodType,
         foodCategory: selectedCategory,

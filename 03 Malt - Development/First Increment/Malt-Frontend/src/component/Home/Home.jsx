@@ -63,9 +63,13 @@ export const Home = () => {
           Featured Restaurants
         </h1>
         <div className="flex flex-wrap items-center justify-around gap-5">
-          {restaurant?.restaurants?.map((item) => (
-            <RestaurantCard key={item.id} restaurant={item} /> //  Passing restaurant data as a prop
-          ))}
+          {Array.isArray(restaurant?.restaurants) ? (
+            restaurant.restaurants.map((item) => (
+              <RestaurantCard key={item.id} restaurant={item} />
+            ))
+          ) : (
+            <p className="text-gray-500">No restaurants available</p>
+          )}
         </div>
       </section>
 

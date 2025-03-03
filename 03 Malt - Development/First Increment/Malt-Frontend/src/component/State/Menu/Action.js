@@ -21,16 +21,34 @@ export const createMenuItem = ({ menu, jwt }) => {
 }
 
 // Remove nonveg api endpoint if it occurs any error(Boolean isVegetarian)
+// export const getMenuItemsByRestaurantId = (reqData) => {
+//     return async (dispatch) => {
+//         dispatch({ type: GET_MENU_ITEMS_BY_RESTAURANT_ID_REQUEST })
+//         try {
+//             const { data } = await api.get(`/api/food/restaurant/${reqData.restaurantId}?vegetarian=${reqData.vegetarian}  
+//                 &foodCategory=${reqData.foodCategory}`, {
+//                 headers: {
+//                     Authorization: `Bearer ${reqData.jwt}`
+//                 }
+//             })
+
+//             dispatch({ type: GET_MENU_ITEMS_BY_RESTAURANT_ID_SUCCESS, payload: data })
+//             console.log("Get Menu Items By Restaurant", data)
+
+//         } catch (error) {
+//             dispatch({ type: GET_MENU_ITEMS_BY_RESTAURANT_ID_FAIL, payload: error })
+//             console.log("error", error)
+//         }
+//     }
+// }
+
+
 export const getMenuItemsByRestaurantId = (reqData) => {
     return async (dispatch) => {
         dispatch({ type: GET_MENU_ITEMS_BY_RESTAURANT_ID_REQUEST })
         try {
             const { data } = await api.get(`/api/food/restaurant/${reqData.restaurantId}?vegetarian=${reqData.vegetarian}  
-                &foodCategory=${reqData.foodCategory}`, {
-                headers: {
-                    Authorization: `Bearer ${reqData.jwt}`
-                }
-            })
+                &foodCategory=${reqData.foodCategory}`)
 
             dispatch({ type: GET_MENU_ITEMS_BY_RESTAURANT_ID_SUCCESS, payload: data })
             console.log("Get Menu Items By Restaurant", data)

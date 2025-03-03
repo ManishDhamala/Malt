@@ -20,25 +20,25 @@ export const RestaurantCard = ({ restaurant }) => {
     dispatch(addToFavorite({ restaurantId: restaurant.id, jwt }));
   };
 
-  // const handleNavigateToRestaurant = () => {
-  //   if (restaurant.open) {
-  //     navigate(
-  //       `/restaurant/${restaurant.address.city}/${restaurant.name}/${restaurant.id}`
-  //     );
-  //   }
-  // };
-
   const handleNavigateToRestaurant = () => {
     if (restaurant.open) {
-      if (auth?.user) {
-        navigate(
-          `/restaurant/${restaurant.address.city}/${restaurant.name}/${restaurant.id}`
-        );
-      } else {
-        navigate("/account/login");
-      }
+      navigate(
+        `/restaurant/${restaurant.address.city}/${restaurant.name}/${restaurant.id}`
+      );
     }
   };
+
+  // const handleNavigateToRestaurant = () => {
+  //   if (restaurant.open) {
+  //     if (auth?.user) {
+  //       navigate(
+  //         `/restaurant/${restaurant.address.city}/${restaurant.name}/${restaurant.id}`
+  //       );
+  //     } else {
+  //       navigate("/account/login");
+  //     }
+  //   }
+  // };
 
   console.log("Restaurant Status:", restaurant.name, restaurant.open);
 
@@ -60,8 +60,8 @@ export const RestaurantCard = ({ restaurant }) => {
         <Chip
           size="small"
           className="absolute top-2 left-2"
-          color={restaurant.open ? "success" : "error"}
-          label={restaurant.open ? "open" : "closed"}
+          color={restaurant?.open ? "success" : "error"}
+          label={restaurant?.open ? "open" : "closed"}
         />
       </div>
       <div className="p-4 textPart lg:flex w-full justify-between">
@@ -78,7 +78,7 @@ export const RestaurantCard = ({ restaurant }) => {
         </div>
         <div>
           <IconButton onClick={handleAddToFavorite}>
-            {isPresentInFavourites(auth.favourites, restaurant) ? (
+            {isPresentInFavourites(auth?.favourites, restaurant) ? (
               <FavoriteIcon sx={{ fontSize: "1.6rem", color: "#d91a1a" }} />
             ) : (
               <FavoriteBorderIcon

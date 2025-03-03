@@ -1,5 +1,5 @@
 import { Avatar, Badge, IconButton } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import PersonIcon from "@mui/icons-material/Person";
@@ -8,10 +8,28 @@ import "./navbar.css";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { store } from "../State/store";
+import { Authentication } from "../Authentication/Authentication";
 
 export const Navbar = () => {
   const { auth, cart } = useSelector((store) => store);
   const navigate = useNavigate();
+
+  // const [authOpen, setAuthOpen] = useState(false);
+  // const [isRegister, setIsRegister] = useState(false);
+
+  // const handleOpenLogin = () => {
+  //   setIsRegister(false);
+  //   setAuthOpen(true);
+  // };
+
+  // const handleOpenRegister = () => {
+  //   setIsRegister(true);
+  //   setAuthOpen(true);
+  // };
+
+  // const handleClose = () => {
+  //   setAuthOpen(false);
+  // };
 
   const handleProfileClick = () => {
     if (auth?.user) {
@@ -22,12 +40,14 @@ export const Navbar = () => {
       }
     } else {
       navigate("/account/login");
+      // handleOpenLogin();
     }
   };
 
   const handleCartClick = () => {
     if (!auth?.user) {
       navigate("/account/login");
+      // handleOpenLogin();
     } else {
       navigate("/cart");
     }
@@ -73,6 +93,12 @@ export const Navbar = () => {
           </IconButton>
         </div>
       </div>
+      {/* ✅ Ensure Authentication Modal is Included */}
+      {/* <Authentication
+        open={authOpen}
+        onClose={handleClose}
+        isRegister={isRegister}
+      /> */}
     </div>
   );
 };

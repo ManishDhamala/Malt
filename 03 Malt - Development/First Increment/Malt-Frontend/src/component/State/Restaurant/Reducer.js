@@ -93,8 +93,17 @@ const restaurantReducer = (state = initialState, action) => {
                 categories: state.categories.filter(category => category.id !== action.payload)
             };
 
-        case actionTypes.CREATE_RESTAURANT_FAIL:
+
         case actionTypes.GET_ALL_RESTAURANT_FAIL:
+            return {
+                ...state,
+                restaurants: [],
+                loading: false,
+                error: action.payload
+            }
+
+
+        case actionTypes.CREATE_RESTAURANT_FAIL:
         case actionTypes.DELETE_RESTAURANT_FAIL:
         case actionTypes.UPDATE_RESTAURANT_FAIL:
         case actionTypes.GET_RESTAURANT_BY_ID_FAIL:

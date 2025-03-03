@@ -1,22 +1,49 @@
-import React from "react";
+import React, { useState } from "react";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addItemToCart } from "../State/Cart/Action";
 import { IconButton } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { Authentication } from "../Authentication/Authentication";
 
 export const MenuCard = ({ item }) => {
   const dispatch = useDispatch();
 
+  const { auth } = useSelector((store) => store);
+  const navigate = useNavigate();
+
+  // const [authOpen, setAuthOpen] = useState(false);
+  // const [isRegister, setIsRegister] = useState(false);
+
+  // const handleOpenLogin = () => {
+  //   setIsRegister(false);
+  //   setAuthOpen(true);
+  // };
+
+  // const handleOpenRegister = () => {
+  //   setIsRegister(true);
+  //   setAuthOpen(true);
+  // };
+
+  // const handleClose = () => {
+  //   setAuthOpen(false);
+  // };
+
   const handleAddItemToCart = () => {
-    const reqData = {
-      jwt: localStorage.getItem("jwt"),
-      cartItem: {
-        foodId: item.id,
-        quantity: 1,
-      },
-    };
-    dispatch(addItemToCart(reqData));
-    console.log("Req data", reqData);
+    if (auth?.user) {
+      const reqData = {
+        jwt: localStorage.getItem("jwt"),
+        cartItem: {
+          foodId: item.id,
+          quantity: 1,
+        },
+      };
+      dispatch(addItemToCart(reqData));
+      console.log("Req data", reqData);
+    } else {
+      // handleOpenLogin();
+      navigate("/account/login");
+    }
   };
 
   return (
@@ -53,6 +80,11 @@ export const MenuCard = ({ item }) => {
           className="absolute top-3 right-3 lg:static lg:self-center"
         />
       </IconButton>
+      {/* <Authentication
+        open={authOpen}
+        onClose={handleClose}
+        isRegister={isRegister}
+      /> */}
     </div>
   );
 };
