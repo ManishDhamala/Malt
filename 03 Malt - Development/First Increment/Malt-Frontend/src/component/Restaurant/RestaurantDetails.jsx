@@ -233,9 +233,11 @@ export const RestaurantDetails = () => {
         </div>
 
         <div className="space-y-3 lg:w-[80%] mr-20">
-          {menu.menuItems.map((item) => (
-            <MenuCard key={item.id} item={item} />
-          ))}
+          {menu.menuItems
+            .sort((a, b) => a.id - b.id)
+            .map((item) => (
+              <MenuCard key={item.id} item={item} />
+            ))}
         </div>
       </section>
     </div>

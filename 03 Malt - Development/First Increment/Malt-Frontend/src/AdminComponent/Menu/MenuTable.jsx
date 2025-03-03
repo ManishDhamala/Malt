@@ -1,6 +1,7 @@
 import {
   Avatar,
   Box,
+  Button,
   Card,
   CardActions,
   CardHeader,
@@ -21,6 +22,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   deleteFood,
   getMenuItemsByRestaurantId,
+  updateMenuItemsAvailability,
 } from "../../component/State/Menu/Action";
 
 export const MenuTable = () => {
@@ -44,6 +46,10 @@ export const MenuTable = () => {
 
   const handleDeleteFood = (foodId) => {
     dispatch(deleteFood({ foodId, jwt }));
+  };
+
+  const handleFoodAvailibilty = (id) => {
+    dispatch(updateMenuItemsAvailability({ foodId: id, jwt }));
   };
 
   return (
@@ -70,44 +76,51 @@ export const MenuTable = () => {
                 <TableCell sx={{ fontWeight: "bold" }} align="left">
                   Image
                 </TableCell>
-                <TableCell sx={{ fontWeight: "bold" }} align="left">
+                <TableCell sx={{ fontWeight: "bold" }} align="center">
                   Name
                 </TableCell>
-                <TableCell sx={{ fontWeight: "bold" }} align="left">
+                <TableCell sx={{ fontWeight: "bold" }} align="center">
                   Price
                 </TableCell>
-                <TableCell sx={{ fontWeight: "bold" }} align="left">
+                <TableCell sx={{ fontWeight: "bold" }} align="center">
                   Availability
                 </TableCell>
-                <TableCell sx={{ fontWeight: "bold" }} align="right">
+                <TableCell sx={{ fontWeight: "bold" }} align="center">
                   Delete
                 </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {menu?.menuItems.map((item) => (
-                <TableRow
-                  key={item.id}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell component="th" align="left" scope="row">
-                    <Avatar src={item.images[0]}></Avatar>
-                  </TableCell>
-                  <TableCell align="left">{item.name}</TableCell>
-                  <TableCell align="left">Rs {item.price}</TableCell>
-                  <TableCell align="left">
-                    {item.available ? "In Stock" : "Out of Stock"}
-                  </TableCell>
-                  <TableCell align="right">
-                    <IconButton
-                      onClick={() => handleDeleteFood(item.id)}
-                      color="primary"
-                    >
-                      <Delete />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
+              {menu?.menuItems
+                .sort((a, b) => a.id - b.id)
+                .map((item) => (
+                  <TableRow
+                    key={item.id}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <TableCell component="th" align="left" scope="row">
+                      <Avatar src={item.images[0]}></Avatar>
+                    </TableCell>
+                    <TableCell align="center">{item.name}</TableCell>
+                    <TableCell align="center">Rs {item.price}</TableCell>
+                    <TableCell align="center">
+                      <Button
+                        color={item.available ? "success" : "error"}
+                        onClick={() => handleFoodAvailibilty(item.id)}
+                      >
+                        {item.available ? "In Stock" : "Out of Stock"}
+                      </Button>
+                    </TableCell>
+                    <TableCell align="center">
+                      <IconButton
+                        onClick={() => handleDeleteFood(item.id)}
+                        color="primary"
+                      >
+                        <Delete />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </TableContainer>

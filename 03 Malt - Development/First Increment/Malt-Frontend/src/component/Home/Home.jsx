@@ -64,9 +64,9 @@ export const Home = () => {
         </h1>
         <div className="flex flex-wrap items-center justify-around gap-5">
           {Array.isArray(restaurant?.restaurants) ? (
-            restaurant.restaurants.map((item) => (
-              <RestaurantCard key={item.id} restaurant={item} />
-            ))
+            restaurant.restaurants
+              .sort((a, b) => a.id - b.id)
+              .map((item) => <RestaurantCard key={item.id} restaurant={item} />)
           ) : (
             <p className="text-gray-500">No restaurants available</p>
           )}
