@@ -50,7 +50,13 @@ const cartReducer = (state = initialState, action) => {
             return {
                 ...state,
                 loading: false,
-                cartItems: [...state.cartItems, action.payload], // Add new item
+                cartItems: state.cartItems.some(item => item.id === action.payload.id)
+                    ? state.cartItems.map(item =>
+                        item.id === action.payload.id
+                            ? { ...item, quantity: action.payload.quantity } // Update existing item quantity
+                            : item
+                    )
+                    : [...state.cartItems, action.payload], // Add new item if not in cart
                 message: "Item added to cart successfully!"
             };
 

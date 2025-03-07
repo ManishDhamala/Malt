@@ -50,6 +50,7 @@ export const RestaurantCard = ({ restaurant }) => {
         } relative`}
       >
         <img
+          onClick={handleNavigateToRestaurant}
           className="w-full h-[10rem] rounded-t-md object-cover"
           src={
             restaurant.images[0] ||
@@ -72,7 +73,10 @@ export const RestaurantCard = ({ restaurant }) => {
           >
             {restaurant.name || restaurant.title || "Unknown Restaurant"}
           </p>
-          <p className="text-gray-700 text-sm">
+          <p
+            onClick={handleNavigateToRestaurant}
+            className="text-gray-700 text-sm cursor-pointer"
+          >
             {restaurant.description || "No description available"}
           </p>
         </div>
