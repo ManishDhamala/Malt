@@ -48,10 +48,14 @@ public class CategoryController {
 
     // Endpoint to fetch all categories associated with a specific restaurant
     @GetMapping("/category/restaurant/{id}")
-    public ResponseEntity<List<Category>> getRestaurantCategories(@RequestHeader("Authorization") String jwt, @PathVariable Long id) throws Exception {
+    public ResponseEntity<List<Category>> getRestaurantCategories(
+            @PathVariable Long id
+//            @RequestHeader("Authorization") String jwt
+           )
+            throws Exception {
 
         // Retrieves the user based on the JWT token in the Authorization header
-        User user = userService.findUserByJwtToken(jwt);
+//        User user = userService.findUserByJwtToken(jwt);
 
         // Finds all categories by the restaurant's ID
         List<Category> categories = categoryService.getAllCategoriesByRestaurantId(id);

@@ -39,11 +39,11 @@ public class RestaurantController {
 
     @GetMapping()
     public ResponseEntity<List<Restaurant>> getAllRestaurants(
-            @RequestHeader("Authorization") String jwt
+//            @RequestHeader("Authorization") String jwt
 
     ) throws Exception {
 
-        User user = userService.findUserByJwtToken(jwt);
+//        User user = userService.findUserByJwtToken(jwt);
 
         List<Restaurant> restaurant = restaurantService.getAllRestaurants();
 
@@ -52,12 +52,12 @@ public class RestaurantController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Restaurant> findRestaurantById(
-            @RequestHeader("Authorization") String jwt,
             @PathVariable Long id
+//            @RequestHeader("Authorization") String jwt
 
     ) throws Exception {
 
-        User user = userService.findUserByJwtToken(jwt);
+//        User user = userService.findUserByJwtToken(jwt);
 
         Restaurant restaurant = restaurantService.findRestaurantById(id);
 

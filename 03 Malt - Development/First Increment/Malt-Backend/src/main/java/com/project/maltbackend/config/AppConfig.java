@@ -30,6 +30,16 @@ public class AppConfig {
 
                 // Authorization rules: Defines who can access which URLs
                 .authorizeHttpRequests(Authorize -> Authorize
+                        // Allow public access to fetch all restaurants
+                        .requestMatchers("/api/restaurants").permitAll()
+                        .requestMatchers("/api/restaurants/**").permitAll() // Allow restaurant details access
+
+                        // Allow public access to fetch all categories associated with the restaurant
+                        .requestMatchers("/api/category/restaurant/**").permitAll()
+
+                        // Allow public access to fetch all food items associated with the restaurant
+                        .requestMatchers("/api/food/restaurant/**").permitAll()
+
                         // URLs starting with /api/admin/** require roles of either RESTAURANT_OWNER or ADMIN
                         .requestMatchers("/api/admin/**").hasAnyRole("RESTAURANT_OWNER", "ADMIN")
 
