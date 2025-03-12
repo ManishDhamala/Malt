@@ -15,11 +15,13 @@ export const registerUser = (reqData) => async (dispatch) => {
         }
         dispatch({ type: REGISTER_SUCCESS, payload: data.jwt })
         console.log("Register Success", data)
+        return { success: true, data };  //  RETURN RESPONSE HERE
 
 
     } catch (error) {
         dispatch({ type: REGISTER_FAIL, payload: error })
         console.log("error", error)
+        return { error: error.response?.data?.message || "Email is already used" };  //  RETURN ERROR RESPONSE
     }
 }
 
@@ -37,10 +39,14 @@ export const loginUser = (reqData) => async (dispatch) => {
         dispatch({ type: LOGIN_SUCCESS, payload: data.jwt })
         console.log("Login Success", data)
 
+        return { success: true, data };  //  RETURN RESPONSE HERE
+
 
     } catch (error) {
         dispatch({ type: LOGIN_FAIL, payload: error })
         console.log("error", error)
+
+        return { error: error.response?.data?.message || "Invalid Username or Password" };  //  RETURN ERROR RESPONSE
     }
 
 }
