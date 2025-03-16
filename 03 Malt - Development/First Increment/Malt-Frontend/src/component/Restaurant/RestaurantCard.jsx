@@ -28,20 +28,19 @@ export const RestaurantCard = ({ restaurant }) => {
     }
   };
 
+  // This code will work if there is no missing vlaue in resaturant address (Optimized Code)
   // const handleNavigateToRestaurant = () => {
-  //   if (restaurant.open) {
-  //     if (auth?.user) {
-  //       navigate(
-  //         `/restaurant/${restaurant.address.city}/${restaurant.name}/${restaurant.id}`
-  //       );
-  //     } else {
-  //       navigate("/account/login");
-  //     }
+  //   if (restaurant.open && restaurant.address && restaurant.address.city) {
+  //     navigate(
+  //       `/restaurant/${restaurant.address.city}/${restaurant.name}/${restaurant.id}`
+  //     );
+  //   } else {
+  //     console.warn("Restaurant address is missing or restaurant is closed.");
   //   }
   // };
 
   return (
-    <Card className="m-2 w-[18rem]">
+    <Card className="m-2 w-[19rem]">
       <div
         className={`${
           restaurant.open ? "cursor-pointer" : "cursor-not-allowed"
@@ -84,7 +83,10 @@ export const RestaurantCard = ({ restaurant }) => {
               <FavoriteIcon sx={{ fontSize: "1.6rem", color: "#d91a1a" }} />
             ) : (
               <FavoriteBorderIcon
-                sx={{ fontSize: "1.6rem", color: "#242b2E" }}
+                sx={{
+                  fontSize: "1.6rem",
+                  color: "#242b2E",
+                }}
               />
             )}
           </IconButton>

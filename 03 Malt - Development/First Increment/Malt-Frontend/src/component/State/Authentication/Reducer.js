@@ -22,6 +22,7 @@ export const authReducer = (state = initialState, action) => {
 
         case REGISTER_SUCCESS:
         case LOGIN_SUCCESS:
+            localStorage.setItem("jwt", action.payload); // Store JWT in localStorage
             return {
                 ...state,
                 isLoading: false,
@@ -30,6 +31,7 @@ export const authReducer = (state = initialState, action) => {
             };
 
         case GET_USER_SUCCESS:
+            localStorage.setItem("user", JSON.stringify(action.payload)); //  Store user data in localStorage
             return {
                 ...state,
                 isLoading: false,
@@ -48,6 +50,8 @@ export const authReducer = (state = initialState, action) => {
             }
 
         case LOGOUT:
+            localStorage.removeItem("jwt"); // Remove JWT on logout
+            localStorage.removeItem("user");
             return initialState;
 
         case REGISTER_FAIL:

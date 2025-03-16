@@ -62,7 +62,7 @@ export const Home = () => {
         <h1 className="text-2xl font-semibold text-gray-800 pb-5">
           Featured Restaurants
         </h1>
-        <div className="flex flex-wrap items-center justify-around gap-5">
+        <div className="flex flex-wrap gap-5 justify-evenly">
           {Array.isArray(restaurant?.restaurants) ? (
             restaurant.restaurants
               .sort((a, b) => a.id - b.id)

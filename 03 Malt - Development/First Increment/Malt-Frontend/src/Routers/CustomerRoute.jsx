@@ -1,18 +1,26 @@
 // import { Home } from "@mui/icons-material";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
-import React from "react";
+import React, { useEffect } from "react";
 import { Home } from "../component/Home/Home";
 import { RestaurantDetails } from "../component/Restaurant/RestaurantDetails";
 import { Cart } from "../component/Cart/Cart";
 import { Profile } from "../component/Profile/Profile";
 import { Navbar } from "../component/Navbar/Navbar";
 import { PaymentSuccess } from "../component/PaymentSuccess/PaymentSuccess";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 export const CustomerRoute = () => {
+  const dispatch = useDispatch();
+
   const { auth } = useSelector((store) => store);
   const userRole = auth?.user?.role; // Get user role
   const isGuest = !userRole; // If no role is assigned, consider the user as a guest
+
+  useEffect(() => {
+    if (auth?.jwt && !auth?.user) {
+      dispatch(getUser(auth.jwt)); //  Fetch user details if JWT exists
+    }
+  }, [auth?.jwt, dispatch]);
 
   return (
     <div>

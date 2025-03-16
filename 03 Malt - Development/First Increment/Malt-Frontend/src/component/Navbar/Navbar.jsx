@@ -14,23 +14,6 @@ export const Navbar = () => {
   const { auth, cart } = useSelector((store) => store);
   const navigate = useNavigate();
 
-  // const [authOpen, setAuthOpen] = useState(false);
-  // const [isRegister, setIsRegister] = useState(false);
-
-  // const handleOpenLogin = () => {
-  //   setIsRegister(false);
-  //   setAuthOpen(true);
-  // };
-
-  // const handleOpenRegister = () => {
-  //   setIsRegister(true);
-  //   setAuthOpen(true);
-  // };
-
-  // const handleClose = () => {
-  //   setAuthOpen(false);
-  // };
-
   const handleProfileClick = () => {
     if (auth?.user) {
       if (auth.user.role === "ROLE_CUSTOMER") {
@@ -93,12 +76,6 @@ export const Navbar = () => {
           </IconButton>
         </div>
       </div>
-      {/* ✅ Ensure Authentication Modal is Included */}
-      {/* <Authentication
-        open={authOpen}
-        onClose={handleClose}
-        isRegister={isRegister}
-      /> */}
     </div>
   );
 };

@@ -7,6 +7,22 @@ import cartReducer from "./Cart/Reducer";
 import orderReducer from "./Order/Reducer";
 import restaurantOrderReducer from "./Restaurant Order/Reducer";
 
+
+const persistedJwt = localStorage.getItem("jwt");
+const persistedUser = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : null;
+
+const initialState = {
+    auth: {
+        user: persistedUser,
+        jwt: persistedJwt,
+        isLoading: false,
+        error: null,
+    },
+    cart: {
+        cartItems: [],
+    }
+};
+
 const rootReducer = combineReducers({
     auth: authReducer,
     restaurant: restaurantReducer,
@@ -17,4 +33,4 @@ const rootReducer = combineReducers({
 })
 
 
-export const store = legacy_createStore(rootReducer, applyMiddleware(thunk));
+export const store = legacy_createStore(rootReducer, initialState, applyMiddleware(thunk));

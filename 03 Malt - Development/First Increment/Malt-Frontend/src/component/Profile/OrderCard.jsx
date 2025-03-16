@@ -32,9 +32,9 @@ export const OrderCard = ({ item, order }) => {
         />
 
         <div className="text-sm text-gray-700 dark:text-gray-200 space-y-1">
-          <h5 className="font-semibold text-lg">
-            {item.food?.restaurant?.name}
-          </h5>
+          <h6 className="font-semibold text-lg">
+            Restaurant: {item.food?.restaurant?.name}
+          </h6>
           <p className="text-gray-500">
             Order No: <span className="font-medium">#{item.id}</span>
           </p>
