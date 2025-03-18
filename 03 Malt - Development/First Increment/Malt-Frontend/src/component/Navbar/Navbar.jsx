@@ -36,6 +36,10 @@ export const Navbar = () => {
     }
   };
 
+  const handleSearchIconClick = () => {
+    navigate("/search");
+  };
+
   return (
     <div className="px-5 z-50 py-[.8rem] bg-[#B20303] lg:px-20 flex justify-between fixed w-full top-0 left-0">
       <div className="lg:mr-10 cursor-pointer flex items-center space-x-4">
@@ -49,7 +53,7 @@ export const Navbar = () => {
 
       <div className="flex items-center space-x-2 lg:space-x-10">
         <div className="">
-          <IconButton>
+          <IconButton onClick={handleSearchIconClick}>
             <SearchIcon sx={{ fontSize: "1.6rem", color: "white" }} />
           </IconButton>
         </div>

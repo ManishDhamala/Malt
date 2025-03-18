@@ -15,6 +15,7 @@ const initialState = {
     auth: {
         user: persistedUser,
         jwt: persistedJwt,
+        favourites: [],
         isLoading: false,
         error: null,
     },

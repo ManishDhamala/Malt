@@ -17,7 +17,11 @@ export const RestaurantCard = ({ restaurant }) => {
   const { auth } = useSelector((store) => store);
 
   const handleAddToFavorite = () => {
-    dispatch(addToFavorite({ restaurantId: restaurant.id, jwt }));
+    if (!auth?.user) {
+      navigate("/account/login");
+    } else {
+      dispatch(addToFavorite({ restaurantId: restaurant.id, jwt }));
+    }
   };
 
   const handleNavigateToRestaurant = () => {

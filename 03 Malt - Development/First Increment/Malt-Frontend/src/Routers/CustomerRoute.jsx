@@ -8,6 +8,8 @@ import { Profile } from "../component/Profile/Profile";
 import { Navbar } from "../component/Navbar/Navbar";
 import { PaymentSuccess } from "../component/PaymentSuccess/PaymentSuccess";
 import { useDispatch, useSelector } from "react-redux";
+import { Search } from "../component/Search/Search";
+import { getUser } from "../component/State/Authentication/Action";
 
 export const CustomerRoute = () => {
   const dispatch = useDispatch();
@@ -29,6 +31,7 @@ export const CustomerRoute = () => {
         {/* Accessible to both Admin, Customer, and Guests */}
         <Route path="/" element={<Home />} />
         <Route path="/account/:register" element={<Home />} />
+        <Route path="/search" element={<Search />} />
 
         {/* Guests and Customers can access RestaurantDetails, but Admins are redirected */}
         <Route

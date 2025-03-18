@@ -4,30 +4,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { addItemToCart } from "../State/Cart/Action";
 import { IconButton } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { Authentication } from "../Authentication/Authentication";
 
 export const MenuCard = ({ item }) => {
   const dispatch = useDispatch();
 
   const { auth } = useSelector((store) => store);
   const navigate = useNavigate();
-
-  // const [authOpen, setAuthOpen] = useState(false);
-  // const [isRegister, setIsRegister] = useState(false);
-
-  // const handleOpenLogin = () => {
-  //   setIsRegister(false);
-  //   setAuthOpen(true);
-  // };
-
-  // const handleOpenRegister = () => {
-  //   setIsRegister(true);
-  //   setAuthOpen(true);
-  // };
-
-  // const handleClose = () => {
-  //   setAuthOpen(false);
-  // };
 
   const handleAddItemToCart = () => {
     if (auth?.user) {
@@ -47,7 +29,7 @@ export const MenuCard = ({ item }) => {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row items-center lg:items-start gap-3 sm:gap-4 lg:gap-5 shadow-md border border-gray-200 rounded-lg p-3 sm:p-4 lg:p-5 bg-white w-full max-w-2xl mx-auto relative">
+    <div className="flex flex-col lg:flex-row items-center lg:items-start gap-3 sm:gap-4 lg:gap-5 shadow-md border border-gray-200 rounded-lg p-3 sm:p-4 lg:p-5 bg-white w-160 max-w-2xl mx-auto relative">
       <img
         className="w-[5.5rem] h-[5.5rem] sm:w-[6.5rem] sm:h-[6.5rem] lg:w-[7rem] lg:h-[7rem] object-cover rounded-md"
         src={
@@ -80,11 +62,6 @@ export const MenuCard = ({ item }) => {
           className="absolute top-3 right-3 lg:static lg:self-center"
         />
       </IconButton>
-      {/* <Authentication
-        open={authOpen}
-        onClose={handleClose}
-        isRegister={isRegister}
-      /> */}
     </div>
   );
 };
