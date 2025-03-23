@@ -20,6 +20,7 @@ import {
 } from "../State/Restaurant/Action";
 import { getMenuItemsByRestaurantId } from "../State/Menu/Action";
 import { HomeFooter } from "../Home/HomeFooter";
+import { OrderBag } from "../Cart/OrderBag";
 
 const foodTypes = [
   {
@@ -179,7 +180,7 @@ export const RestaurantDetails = () => {
         </section>
         <Divider />
         <section className="pt-[1.8rem] lg:flex relative mb-10">
-          <div className="space-y-10 lg:w-[20%] filter p-5 shadow-md">
+          <div className="space-y-10 lg:w-[20%] filter p-5 shadow-md mr-3">
             <div className="box space-y-5 lg:sticky top-28">
               <div>
                 <Typography variant="h6" sx={{ paddingBottom: "1rem" }}>
@@ -237,12 +238,26 @@ export const RestaurantDetails = () => {
             </div>
           </div>
 
-          <div className="space-y-3 lg:w-[80%] mr-55">
+          {/* <div className="space-y-3 lg:w-[80%] mr-55">
             {menu.menuItems
               .sort((a, b) => a.id - b.id)
               .map((item) => (
                 <MenuCard key={item.id} item={item} />
               ))}
+          </div> */}
+
+          {/* Menu in center */}
+          <div className="space-y-3 lg:w-[60%] mr-3">
+            {menu.menuItems
+              .sort((a, b) => a.id - b.id)
+              .map((item) => (
+                <MenuCard key={item.id} item={item} />
+              ))}
+          </div>
+
+          {/* OrderBag inside the flex layout */}
+          <div className="hidden lg:block lg:w-[20%] relative mr-7">
+            <OrderBag />
           </div>
         </section>
       </div>

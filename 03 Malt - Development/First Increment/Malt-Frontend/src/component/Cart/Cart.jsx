@@ -134,7 +134,7 @@ export const Cart = () => {
               </div>
               <Divider />
             </div>
-            <div className="flex justify-between text-gray-900 font-bold pt-3">
+            <div className="flex justify-between text-gray-900 font-bold pt-3 pb-10">
               <p>Total Amount</p>
               <p>Rs {totalAmount}</p>
             </div>
