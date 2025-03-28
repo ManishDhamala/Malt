@@ -6,6 +6,7 @@ import menuItemReducer from "./Menu/Reducer";
 import cartReducer from "./Cart/Reducer";
 import orderReducer from "./Order/Reducer";
 import restaurantOrderReducer from "./Restaurant Order/Reducer";
+import { addressReducer } from "./Address/Reducer";
 
 
 const persistedJwt = localStorage.getItem("jwt");
@@ -30,7 +31,8 @@ const rootReducer = combineReducers({
     menu: menuItemReducer,
     cart: cartReducer,
     order: orderReducer,
-    restaurantOrder: restaurantOrderReducer
+    restaurantOrder: restaurantOrderReducer,
+    address: addressReducer
 })
 
 

@@ -18,7 +18,9 @@ export const Favorites = () => {
 
   //  Ensure both `auth.favourites` and `restaurant.restaurants` are defined
   const favorites = auth?.favourites || [];
-  const allRestaurants = restaurant?.restaurants || [];
+  const allRestaurants = Array.isArray(restaurant?.restaurants)
+    ? restaurant.restaurants
+    : [];
 
   if (favorites.length === 0 || allRestaurants.length === 0) {
     return <p className="mt-30 ml-90">Loading Favorites Restaurant...</p>;
@@ -40,6 +42,10 @@ export const Favorites = () => {
       };
     })
     .filter(Boolean); //  Remove null values
+
+  if (favorites.length === 0 || allRestaurants.length === 0) {
+    return <p className="mt-30 ml-90">Loading Favorites Restaurant...</p>;
+  }
 
   return (
     <div className="lg:mt-22">

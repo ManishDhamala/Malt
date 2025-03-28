@@ -2,7 +2,9 @@ import {
   Box,
   Button,
   Card,
+  Checkbox,
   Divider,
+  FormControlLabel,
   Grid,
   Modal,
   TextField,
@@ -18,6 +20,7 @@ import { store } from "../State/store";
 import { createOrder } from "../State/Order/Action";
 import { Login } from "../Authentication/Login";
 import { Authentication } from "../Authentication/Authentication";
+import { getSavedAddresses } from "../State/Address/Action";
 // import * as Yup from "yup";
 
 const style = {
@@ -49,14 +52,19 @@ const initialValues = {
 // });
 
 export const Cart = () => {
-  const createOrderUsingSelectedAddress = () => {};
   const handleOpenAddressModal = () => setOpen(true);
   const [open, setOpen] = React.useState(false);
   const handleClose = () => setOpen(false);
 
-  const { cart, auth } = useSelector((store) => store);
+  const { cart, auth, address } = useSelector((store) => store);
 
   const dispatch = useDispatch();
+
+  const [saveAddress, setSaveAddress] = useState(false);
+
+  const handleSaveAddressChange = (event) => {
+    setSaveAddress(event.target.checked);
+  };
 
   const handleSubmit = (values, { resetForm }) => {
     const data = {
@@ -71,6 +79,7 @@ export const Cart = () => {
           province: values?.province,
           postalCode: values.postalCode,
           landmark: values?.landmark,
+          savedAddress: saveAddress,
         },
       },
     };
@@ -78,8 +87,26 @@ export const Cart = () => {
     console.log("Address Form Value", values);
 
     resetForm();
+    setSaveAddress(false); // reset checkbox
 
     handleClose();
+  };
+
+  useEffect(() => {
+    const jwt = localStorage.getItem("jwt");
+    dispatch(getSavedAddresses(jwt));
+  }, []);
+
+  const createOrderUsingSelectedAddress = (address) => {
+    const data = {
+      jwt: localStorage.getItem("jwt"),
+      order: {
+        restaurantId: cart.cartItems[0].food?.restaurant.id,
+        addressId: address.id, // ✅ sending saved address ID
+      },
+    };
+
+    dispatch(createOrder(data));
   };
 
   const deliveryFee = 100;
@@ -148,13 +175,16 @@ export const Cart = () => {
               <span className="ml-2">Choose Delivery Address</span>
             </h1>
             <div className="flex gap-5 flex-wrap justify-center">
-              {[1, 1, 1, 1, 1].map((item) => (
-                <AddressCard
-                  handleSelectAddress={createOrderUsingSelectedAddress}
-                  item={item}
-                  showButton={true}
-                />
-              ))}
+              {address.savedAddresses
+                .sort((a, b) => b.id - a.id)
+                .map((item, index) => (
+                  <AddressCard
+                    key={index}
+                    handleSelectAddress={createOrderUsingSelectedAddress}
+                    item={item}
+                    showButton={true}
+                  />
+                ))}
               <Card className="flex gap-5 w-64 p-5">
                 <AddLocationAltIcon />
                 <div className="space-y-3 text-gray-700 ">
@@ -258,6 +288,18 @@ export const Cart = () => {
                     label="Landmark"
                     fullWidth
                     variant="outlined"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={saveAddress}
+                        onChange={handleSaveAddressChange}
+                        color="primary"
+                      />
+                    }
+                    label="Save this address for future orders"
                   />
                 </Grid>
 

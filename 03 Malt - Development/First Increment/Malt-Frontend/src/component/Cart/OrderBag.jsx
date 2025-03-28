@@ -78,7 +78,7 @@ export const OrderBag = () => {
               <img
                 src={item.food.images[0]}
                 alt={item.food.name}
-                className="w-14 h-14 object-cover rounded-md"
+                className="w-12 h-12 object-cover rounded-md"
               />
               <div className="flex-grow">
                 <Typography className="font-medium text-sm">
@@ -115,7 +115,7 @@ export const OrderBag = () => {
       {cart?.cartItems?.length > 0 && (
         <div className="pt-4 text-sm mt-4">
           <Divider className="mb-4" />
-          <Typography className="font-bold pb-2 underline">
+          <Typography className="font-semibold pb-2 underline">
             Bill Summary:
           </Typography>
           <div className="flex justify-between">

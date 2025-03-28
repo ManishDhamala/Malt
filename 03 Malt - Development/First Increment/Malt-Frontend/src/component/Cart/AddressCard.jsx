@@ -1,14 +1,21 @@
 import React from "react";
-import HomeIcon from "@mui/icons-material/Home";
 import { Button, Card } from "@mui/material";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
 
 export const AddressCard = ({ item, showButton, handleSelectAddress }) => {
   return (
     <Card className="flex gap-5 w-64 p-5 shadow-md border border-gray-200 ">
-      <HomeIcon />
+      <LocationOnIcon />
       <div className="space-y-3 text-gray-700 ">
-        <h1 className="font-semibold text-lg text-black">Home</h1>
-        <p>Pokhara, Chipledhunga, Panthi gali, 3306, Gandaki, Nepal</p>
+        <h1 className="font-semibold text-lg text-black">
+          {item?.streetAddress}
+        </h1>
+        <p>
+          {" "}
+          {item?.streetAddress}, {item?.landmark && `${item?.landmark}, `}
+          {item?.postalCode && `${item?.postalCode}, `}
+          {item?.city}, {item?.province}, {item?.country}
+        </p>
         {showButton && (
           <Button
             variant="contained"

@@ -19,7 +19,7 @@ export const Orders = () => {
       <h1 className="text-xl text-center py-7 font-semibold">Order History</h1>
       <div className="space-y-5 w-full lg:w-1/2">
         {order.orders
-          .sort((a, b) => a.id - b.id)
+          .sort((a, b) => b.id - a.id)
           .map((order) =>
             order.items?.map((item) => <OrderCard order={order} item={item} />)
           )}

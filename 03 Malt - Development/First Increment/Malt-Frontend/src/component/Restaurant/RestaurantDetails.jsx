@@ -102,7 +102,7 @@ export const RestaurantDetails = () => {
 
   return (
     <div>
-      <div className="px-5 lg:px-20 lg:mt-22">
+      <div className="px-5 lg:px-20 mt-22">
         <section>
           <h3 className="text-gray-700 py-2 mt-5">
             Nepal/{restaurant.restaurants?.address?.city}/
@@ -237,14 +237,6 @@ export const RestaurantDetails = () => {
               </div>
             </div>
           </div>
-
-          {/* <div className="space-y-3 lg:w-[80%] mr-55">
-            {menu.menuItems
-              .sort((a, b) => a.id - b.id)
-              .map((item) => (
-                <MenuCard key={item.id} item={item} />
-              ))}
-          </div> */}
 
           {/* Menu in center */}
           <div className="space-y-3 lg:w-[60%] mr-3">
