@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -37,6 +38,19 @@ public class JwtProvider {
 
         return jwt; // Return the generated JWT
     }
+
+    public String generateToken(OAuth2AuthenticationToken auth) {
+        String email = auth.getPrincipal().getAttribute("email");
+
+        // Build the JWT with email and roles
+        return Jwts.builder()
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 86400000))
+                .claim("email", email)
+                .signWith(key)
+                .compact();
+    }
+
 
     // Method to extract the email from a given JWT
     public String getEmailFromJwtToken(String jwt) {

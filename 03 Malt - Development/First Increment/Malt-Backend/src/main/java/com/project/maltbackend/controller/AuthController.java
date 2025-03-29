@@ -9,6 +9,7 @@ import com.project.maltbackend.repository.UserRepository;
 import com.project.maltbackend.request.LoginRequest;
 import com.project.maltbackend.response.AuthResponse;
 import com.project.maltbackend.service.CustomerUserDetailsService;
+import com.project.maltbackend.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,6 +46,9 @@ public class AuthController {
     @Autowired
     private CartRepository cartRepository;
 
+    @Autowired
+    private EmailService emailService;
+
     @PostMapping("/signup")
     public ResponseEntity<AuthResponse> createUserHandler(@RequestBody User user) throws Exception {
 
@@ -79,6 +83,16 @@ public class AuthController {
         authResponse.setMessage("Registered Successfully");
         authResponse.setRole(savedUser.getRole());
 
+        if(user.getRole() == USER_ROLE.ROLE_CUSTOMER) {
+            // Loading welcome.html template
+            String template = emailService.loadTemplate("welcome.html");
+            String htmlContent = template.replace("[[name]]", user.getFullName()); // Replacing name in HTML Content
+
+            //Sending Register / Welcome Mail to User
+            emailService.sendHtmlEmail(user.getEmail(), "Welcome to Malt!", htmlContent);
+        }
+
+
         // Return the response with HTTP status 201 (Created)
         return new ResponseEntity<>(authResponse, HttpStatus.CREATED);
 
@@ -106,6 +120,7 @@ public class AuthController {
         authResponse.setJwt(jwt);
         authResponse.setMessage("Login Successfully");
         authResponse.setRole(USER_ROLE.valueOf(role));  // Convert the role string to USER_ROLE enum
+
 
         // Return the response with HTTP status 200 (OK)
         return new ResponseEntity<>(authResponse, HttpStatus.OK);

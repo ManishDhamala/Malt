@@ -15,4 +15,6 @@ public class OrderRequest {
 //    @Valid
     private Address deliveryAddress;
 
+    private Long addressId;
+
 }

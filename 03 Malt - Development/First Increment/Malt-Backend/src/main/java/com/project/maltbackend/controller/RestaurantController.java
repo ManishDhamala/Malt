@@ -25,12 +25,11 @@ public class RestaurantController {
 
     @GetMapping("/search")
     public ResponseEntity<List<Restaurant>> searchRestaurant(
-            @RequestHeader("Authorization") String jwt,
             @RequestParam String keyword
 
     ) throws Exception {
 
-        User user = userService.findUserByJwtToken(jwt);
+//        User user = userService.findUserByJwtToken(jwt);
 
         List<Restaurant> restaurant = restaurantService.searchRestaurants(keyword);
 

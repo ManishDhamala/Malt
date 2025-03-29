@@ -1,8 +1,11 @@
 package com.project.maltbackend.config;
 
+import com.project.maltbackend.service.CustomOAuth2UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -19,6 +22,12 @@ import java.util.Collections;
 @Configuration
 @EnableWebSecurity
 public class AppConfig {
+
+    @Autowired
+    private CustomOAuth2UserService customOAuth2UserService;
+
+    @Autowired
+    private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 
     // This method configures Spring Security's filter chain.
     // It defines how requests should be authorized, enables CORS, disables CSRF, and adds JWT validation.
@@ -48,6 +57,11 @@ public class AppConfig {
 
                         // All other requests are publicly accessible (no authentication needed)
                         .anyRequest().permitAll()
+                )
+                // Google Login
+                .oauth2Login(oauth2 -> oauth2
+                        .userInfoEndpoint(userInfo ->userInfo.userService(customOAuth2UserService))
+                        .successHandler(oAuth2LoginSuccessHandler)
                 )
 
                 // Add a custom filter to validate JWT tokens before Spring's default BasicAuthenticationFilter
