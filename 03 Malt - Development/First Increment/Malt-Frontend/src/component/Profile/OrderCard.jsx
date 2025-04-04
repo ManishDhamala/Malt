@@ -4,9 +4,9 @@ import { useSelector } from "react-redux";
 
 const orderStatus = [
   { label: "Pending", value: "PENDING" },
+  { label: "Confirmed", value: "CONFIRMED" },
   { label: "Out for Delivery", value: "OUT_FOR_DELIVERY" },
   { label: "Delivered", value: "DELIVERED" },
-  { label: "Completed", value: "COMPLETED" },
 ];
 
 const formatDate = (isoString) => {
@@ -36,7 +36,7 @@ export const OrderCard = ({ item, order }) => {
             Restaurant: {item.food?.restaurant?.name}
           </h6>
           <p className="text-gray-500">
-            Order No: <span className="font-medium">#{item.id}</span>
+            Order No: <span className="font-medium">#{order.id}</span>
           </p>
           <p className="text-gray-500">
             Date:{" "}

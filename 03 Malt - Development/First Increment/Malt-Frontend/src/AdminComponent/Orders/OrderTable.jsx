@@ -25,9 +25,9 @@ import {
 
 const orderStatus = [
   { label: "Pending", value: "PENDING" },
+  { label: "Confirmed", value: "CONFIRMED" },
   { label: "Out for Delivery", value: "OUT_FOR_DELIVERY" },
   { label: "Delivered", value: "DELIVERED" },
-  { label: "Completed", value: "COMPLETED" },
 ];
 
 export const OrderTable = ({ filterValue }) => {
@@ -119,7 +119,7 @@ export const OrderTable = ({ filterValue }) => {
             <TableBody>
               {filteredOrders?.length > 0 ? (
                 filteredOrders
-                  .sort((a, b) => a.id - b.id) // Keep order consistent
+                  .sort((a, b) => b.id - a.id) // Keep order consistent
                   .map((item) => (
                     <TableRow
                       key={item.id}
@@ -141,7 +141,7 @@ export const OrderTable = ({ filterValue }) => {
 
                       {/* Customer Name */}
                       <TableCell align="center">
-                        {item?.customer?.fullName}
+                        {item?.user?.fullName}
                       </TableCell>
 
                       {/* Price*/}
@@ -154,7 +154,7 @@ export const OrderTable = ({ filterValue }) => {
                         {item.items?.map((orderItem, index) => (
                           <Chip
                             key={index}
-                            label={orderItem.food?.name}
+                            label={`${orderItem.food?.name} x ${orderItem?.quantity}`}
                             variant="outlined"
                             sx={{ margin: "2px" }}
                           />

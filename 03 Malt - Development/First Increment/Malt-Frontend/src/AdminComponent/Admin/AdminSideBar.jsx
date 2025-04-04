@@ -1,94 +1,77 @@
-import { Dashboard, ShoppingBag } from "@mui/icons-material";
+import {
+  Dashboard,
+  ShoppingBag,
+  RestaurantMenu,
+  Category,
+  Event,
+  AdminPanelSettings,
+  Logout,
+} from "@mui/icons-material";
+import { Drawer, useMediaQuery, Divider } from "@mui/material";
 import React from "react";
-import RestaurantMenuIcon from "@mui/icons-material/RestaurantMenu";
-import CategoryIcon from "@mui/icons-material/Category";
-import EventIcon from "@mui/icons-material/Event";
-import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
-import LogoutIcon from "@mui/icons-material/Logout";
-import { Divider, Drawer, useMediaQuery } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logout } from "../../component/State/Authentication/Action";
 
 const menu = [
-  {
-    title: "Dashboard",
-    icon: <Dashboard />,
-    path: "/",
-  },
-  {
-    title: "Orders",
-    icon: <ShoppingBag />,
-    path: "/orders",
-  },
-  {
-    title: "Menu",
-    icon: <RestaurantMenuIcon />,
-    path: "/menu",
-  },
-  {
-    title: "Food Category",
-    icon: <CategoryIcon />,
-    path: "/category",
-  },
-  {
-    title: "Events",
-    icon: <EventIcon />,
-    path: "/event",
-  },
-  {
-    title: "Details",
-    icon: <AdminPanelSettingsIcon />,
-    path: "/details",
-  },
-  {
-    title: "Logout",
-    icon: <LogoutIcon />,
-    path: "/",
-  },
+  { title: "Dashboard", icon: <Dashboard />, path: "/" },
+  { title: "Orders", icon: <ShoppingBag />, path: "/orders" },
+  { title: "Menu", icon: <RestaurantMenu />, path: "/menu" },
+  { title: "Food Category", icon: <Category />, path: "/category" },
+  { title: "Events", icon: <Event />, path: "/event" },
+  { title: "Details", icon: <AdminPanelSettings />, path: "/details" },
+  { title: "Logout", icon: <Logout /> },
 ];
 
 export const AdminSideBar = ({ handleClose }) => {
   const isSmallScreen = useMediaQuery("(max-width:1080px)");
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
 
   const handleNavigate = (item) => {
-    navigate(`/admin/restaurant${item.path}`);
     if (item.title === "Logout") {
-      navigate("/");
       dispatch(logout());
+      navigate("/");
       handleClose();
+    } else {
+      navigate(`/admin/restaurant${item.path}`);
     }
   };
 
+  // To highlight the selected side menu
+  const getActiveClass = (path) => {
+    const fullPath = `/admin/restaurant${path}`;
+    return location.pathname === fullPath ||
+      (path === "/" && location.pathname === "/admin/restaurant")
+      ? "bg-blue-100 text-blue-600 font-semibold"
+      : "text-gray-700 hover:bg-gray-100";
+  };
+
   return (
-    <div>
-      <>
-        <Drawer
-          variant={isSmallScreen ? "temporary" : "permanent"}
-          onClose={handleClose}
-          open={true}
-          anchor="left"
-          sx={{ zIndex: 1 }}
-        >
-          <div className="w-[70vw] lg:w-[20vw] h-screen flex flex-col justify-center text-xl space-y-[2.95rem]">
-            {menu.map((item, i) => (
-              <>
-                <div
-                  onClick={() => handleNavigate(item)}
-                  className="px-5 flex items-center gap-5 cursor-pointer"
-                >
-                  {item.icon}
-                  <span>{item.title}</span>
-                </div>
-                {i !== menu.length - 1 && <Divider />}
-              </>
-            ))}
-          </div>
-        </Drawer>
-      </>
-    </div>
+    <Drawer
+      variant={isSmallScreen ? "temporary" : "permanent"}
+      onClose={handleClose}
+      open={true}
+      anchor="left"
+      sx={{ zIndex: 1 }}
+    >
+      <div className="w-[70vw] lg:w-[20vw] h-screen flex flex-col justify-start pt-2 text-base">
+        {menu.map((item, i) => (
+          <React.Fragment key={i}>
+            <div
+              onClick={() => handleNavigate(item)}
+              className={`flex items-center gap-4 px-7 py-5 cursor-pointer rounded-md transition-all duration-200 ${getActiveClass(
+                item.path
+              )}`}
+            >
+              <span className="text-[1.5rem]">{item.icon}</span>
+              <span>{item.title}</span>
+            </div>
+            {i !== menu.length - 1 && <Divider />}
+          </React.Fragment>
+        ))}
+      </div>
+    </Drawer>
   );
 };

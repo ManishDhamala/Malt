@@ -122,7 +122,7 @@ export const Login = () => {
             />
 
             <Button
-              sx={{ mt: 2, padding: "1rem", borderRadius: "50px" }}
+              sx={{ mt: 1, padding: "1rem", borderRadius: "50px" }}
               fullWidth
               type="submit"
               variant="contained"

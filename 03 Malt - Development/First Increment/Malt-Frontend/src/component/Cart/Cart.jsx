@@ -8,20 +8,20 @@ import {
   Grid,
   Modal,
   TextField,
+  Radio,
+  RadioGroup,
+  FormControl,
+  FormLabel,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { CartItem } from "./CartItem";
 import { AddressCard } from "./AddressCard";
 import AddLocationAltIcon from "@mui/icons-material/AddLocationAlt";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
-import { ErrorMessage, Field, Form, Formik } from "formik";
+import { Field, Form, Formik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
-import { store } from "../State/store";
 import { createOrder } from "../State/Order/Action";
-import { Login } from "../Authentication/Login";
-import { Authentication } from "../Authentication/Authentication";
 import { getSavedAddresses } from "../State/Address/Action";
-// import * as Yup from "yup";
 
 const style = {
   position: "absolute",
@@ -44,16 +44,9 @@ const initialValues = {
   city: "",
 };
 
-// const validationSchema = Yup.object.shape({
-//   streetAddress: Yup.string().required("Street address is required"),
-//   province: Yup.string().required("Province is required"),
-//   country: Yup.string().required("Country is required"),
-//   city: Yup.string().required("City is required"),
-// });
-
 export const Cart = () => {
   const handleOpenAddressModal = () => setOpen(true);
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const handleClose = () => setOpen(false);
 
   const { cart, auth, address } = useSelector((store) => store);
@@ -61,12 +54,49 @@ export const Cart = () => {
   const dispatch = useDispatch();
 
   const [saveAddress, setSaveAddress] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("COD");
+  const [subtotal, setSubtotal] = useState(0);
+  const [totalAmount, setTotalAmount] = useState(0);
 
   const handleSaveAddressChange = (event) => {
     setSaveAddress(event.target.checked);
   };
 
-  const handleSubmit = (values, { resetForm }) => {
+  // const handleSubmit = (values, { resetForm }) => {
+  //   if (!paymentMethod) {
+  //     alert("Please select a payment method");
+  //     return;
+  //   }
+
+  //   const data = {
+  //     jwt: localStorage.getItem("jwt"),
+  //     order: {
+  //       restaurantId: cart.cartItems[0].food?.restaurant.id,
+  //       deliveryAddress: {
+  //         fullName: auth.user?.fullName,
+  //         streetAddress: values.streetAddress,
+  //         city: values.city,
+  //         country: values.country,
+  //         province: values?.province,
+  //         postalCode: values.postalCode,
+  //         landmark: values?.landmark,
+  //         savedAddress: saveAddress,
+  //       },
+  //       paymentMethod: paymentMethod,
+  //     },
+  //   };
+  //   dispatch(createOrder(data));
+  //   resetForm();
+  //   setSaveAddress(false);
+  //   handleClose();
+  // };
+
+  const handleSubmit = async (values, { resetForm }) => {
+    if (!paymentMethod) {
+      alert("Please select a payment method");
+      return;
+    }
+
     const data = {
       jwt: localStorage.getItem("jwt"),
       order: {
@@ -81,15 +111,132 @@ export const Cart = () => {
           landmark: values?.landmark,
           savedAddress: saveAddress,
         },
+        paymentMethod: paymentMethod,
       },
     };
-    dispatch(createOrder(data));
-    console.log("Address Form Value", values);
 
-    resetForm();
-    setSaveAddress(false); // reset checkbox
+    try {
+      const res = await dispatch(createOrder(data));
 
-    handleClose();
+      if (res.paymentUrl) {
+        // Stripe payment
+        window.location.href = res.paymentUrl;
+      } else if (res.paymentProvider === "ESEWA") {
+        // Handle eSewa form submission
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = "https://rc-epay.esewa.com.np/api/epay/main/v2/form";
+
+        const fields = {
+          amount: res.order.totalPrice,
+          tax_amount: 0,
+          total_amount: res.order.totalPrice,
+          transaction_uuid: "ORD-" + res.order.id,
+          product_code: "EPAYTEST",
+          product_service_charge: 0,
+          product_delivery_charge: 0,
+          success_url: `http://localhost:5173/payment/success/${res.order.id}`,
+          failure_url: `http://localhost:5173/payment/fail`,
+          signed_field_names: "total_amount,transaction_uuid,product_code",
+          signature: res.signature, // MUST be provided by backend
+        };
+
+        for (const key in fields) {
+          const input = document.createElement("input");
+          input.type = "hidden";
+          input.name = key;
+          input.value = fields[key];
+          form.appendChild(input);
+        }
+
+        document.body.appendChild(form);
+        form.submit();
+      } else {
+        // COD fallback
+        window.location.href = `/payment/success/${res.order?.id || res.id}`;
+      }
+
+      resetForm();
+      setSaveAddress(false);
+      handleClose();
+    } catch (error) {
+      console.error("Order failed", error);
+      alert("Order could not be processed. Please try again.");
+    }
+  };
+
+  // const createOrderUsingSelectedAddress = (address) => {
+  //   if (!paymentMethod) {
+  //     alert("Please select a payment method");
+  //     return;
+  //   }
+
+  //   const data = {
+  //     jwt: localStorage.getItem("jwt"),
+  //     order: {
+  //       restaurantId: cart.cartItems[0].food?.restaurant.id,
+  //       addressId: address.id,
+  //       paymentMethod: paymentMethod,
+  //     },
+  //   };
+
+  //   dispatch(createOrder(data));
+  // };
+
+  const createOrderUsingSelectedAddress = async (address) => {
+    if (!paymentMethod) {
+      alert("Please select a payment method");
+      return;
+    }
+
+    const data = {
+      jwt: localStorage.getItem("jwt"),
+      order: {
+        restaurantId: cart.cartItems[0].food?.restaurant.id,
+        addressId: address.id,
+        paymentMethod: paymentMethod,
+      },
+    };
+
+    try {
+      const res = await dispatch(createOrder(data));
+
+      if (res.paymentUrl) {
+        window.location.href = res.paymentUrl;
+      } else if (res.paymentProvider === "ESEWA") {
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = "https://rc-epay.esewa.com.np/api/epay/main/v2/form";
+
+        const fields = {
+          amount: res.order.totalPrice,
+          tax_amount: 0,
+          total_amount: res.order.totalPrice,
+          transaction_uuid: "ORD-" + res.order.id,
+          product_code: "EPAYTEST",
+          product_service_charge: 0,
+          product_delivery_charge: 0,
+          success_url: `http://localhost:5173/payment/success/${res.order.id}`,
+          failure_url: `http://localhost:5173/payment/fail`,
+        };
+
+        for (const key in fields) {
+          const input = document.createElement("input");
+          input.type = "hidden";
+          input.name = key;
+          input.value = fields[key];
+          form.appendChild(input);
+        }
+
+        document.body.appendChild(form);
+        form.submit();
+      } else {
+        window.location.href = `/payment/success/${res.id}`;
+      }
+    } catch (error) {
+      console.error("Order failed", error);
+      alert("Order could not be processed. Please try again.");
+    }
   };
 
   useEffect(() => {
@@ -97,26 +244,6 @@ export const Cart = () => {
     dispatch(getSavedAddresses(jwt));
   }, []);
 
-  const createOrderUsingSelectedAddress = (address) => {
-    const data = {
-      jwt: localStorage.getItem("jwt"),
-      order: {
-        restaurantId: cart.cartItems[0].food?.restaurant.id,
-        addressId: address.id, // ✅ sending saved address ID
-      },
-    };
-
-    dispatch(createOrder(data));
-  };
-
-  const deliveryFee = 100;
-  const restaurantCharges = 10;
-
-  const [subtotal, setSubtotal] = useState(0);
-  const [totalAmount, setTotalAmount] = useState(0);
-
-  //  Refresh bill details when cart updates
-  // **Recalculate total when cartItems change**
   useEffect(() => {
     if (cart?.cartItems?.length > 0) {
       const newSubtotal = cart.cartItems.reduce(
@@ -124,7 +251,7 @@ export const Cart = () => {
         0
       );
       setSubtotal(newSubtotal);
-      setTotalAmount(newSubtotal + deliveryFee + restaurantCharges);
+      setTotalAmount(newSubtotal + 100 + 10);
     } else {
       setSubtotal(0);
       setTotalAmount(0);
@@ -152,12 +279,12 @@ export const Cart = () => {
 
               <div className="flex justify-between text-gray-900">
                 <p>Delivery Fee</p>
-                <p>Rs {deliveryFee}</p>
+                <p>Rs 100</p>
               </div>
 
               <div className="flex justify-between text-gray-900">
                 <p>Restaurant Charges</p>
-                <p>Rs {restaurantCharges}</p>
+                <p>Rs 10</p>
               </div>
               <Divider />
             </div>
@@ -166,8 +293,42 @@ export const Cart = () => {
               <p>Rs {totalAmount}</p>
             </div>
           </div>
+
+          {/* ✅ Payment Method Radio Group */}
+          <div className="px-5 py-5">
+            <FormControl component="fieldset">
+              <FormLabel component="legend" className="font-semibold text-lg">
+                Select Payment Method
+              </FormLabel>
+              <RadioGroup
+                row
+                aria-label="payment-method"
+                name="paymentMethod"
+                value={paymentMethod}
+                onChange={(e) => setPaymentMethod(e.target.value)}
+              >
+                <FormControlLabel
+                  value="COD"
+                  control={<Radio />}
+                  label="Cash On Delivery"
+                />
+                <FormControlLabel
+                  value="STRIPE"
+                  control={<Radio />}
+                  label="Stripe"
+                />
+                <FormControlLabel
+                  value="ESEWA"
+                  control={<Radio />}
+                  label="eSewa"
+                />
+              </RadioGroup>
+            </FormControl>
+          </div>
         </section>
+
         <Divider orientation="vertical" flexItem />
+
         <section className="lg:w-[70%] flex justify-center px-5 pb-10">
           <div>
             <h1 className="text-center font-semibold text-2xl py-8">
@@ -187,7 +348,7 @@ export const Cart = () => {
                 ))}
               <Card className="flex gap-5 w-64 p-5">
                 <AddLocationAltIcon />
-                <div className="space-y-3 text-gray-700 ">
+                <div className="space-y-3 text-gray-700">
                   <h1 className="font-semibold text-lg text-black">
                     Add New Address
                   </h1>
@@ -204,12 +365,8 @@ export const Cart = () => {
           </div>
         </section>
       </main>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
+
+      <Modal open={open} onClose={handleClose}>
         <Box sx={style}>
           <h2
             className="text-center font-semibold text-3xl mb-4"
@@ -217,104 +374,94 @@ export const Cart = () => {
           >
             Delivery Address
           </h2>
-          <Formik
-            initialValues={initialValues}
-            onSubmit={handleSubmit}
-            // validationSchema={validationSchema}
-          >
-            <Form>
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <Field
-                    as={TextField}
-                    name="country"
-                    label="Country"
-                    fullWidth
-                    variant="outlined"
-                    required
-                  />
+          <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+            {({ isSubmitting }) => (
+              <Form>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <Field
+                      as={TextField}
+                      name="country"
+                      label="Country"
+                      fullWidth
+                      variant="outlined"
+                      required
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Field
+                      as={TextField}
+                      name="province"
+                      label="Province"
+                      fullWidth
+                      variant="outlined"
+                      required
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Field
+                      as={TextField}
+                      name="city"
+                      label="City"
+                      fullWidth
+                      variant="outlined"
+                      required
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Field
+                      as={TextField}
+                      name="postalCode"
+                      label="Postal Code"
+                      fullWidth
+                      variant="outlined"
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Field
+                      as={TextField}
+                      name="streetAddress"
+                      label="Street Address"
+                      fullWidth
+                      variant="outlined"
+                      required
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Field
+                      as={TextField}
+                      name="landmark"
+                      label="Landmark"
+                      fullWidth
+                      variant="outlined"
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={saveAddress}
+                          onChange={handleSaveAddressChange}
+                          color="primary"
+                        />
+                      }
+                      label="Save this address for future orders"
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Button
+                      fullWidth
+                      variant="contained"
+                      type="submit"
+                      color="primary"
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? "Processing..." : "Deliver Here"}
+                    </Button>
+                  </Grid>
                 </Grid>
-                <Grid item xs={12}>
-                  <Field
-                    as={TextField}
-                    name="province"
-                    label="Province"
-                    fullWidth
-                    variant="outlined"
-                    required
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <Field
-                    as={TextField}
-                    name="city"
-                    label="City"
-                    fullWidth
-                    variant="outlined"
-                    required
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <Field
-                    as={TextField}
-                    name="postalCode"
-                    label="Postal Code"
-                    fullWidth
-                    variant="outlined"
-                  />
-                </Grid>
-
-                <Grid item xs={12}>
-                  <Field
-                    as={TextField}
-                    name="streetAddress"
-                    label="Street Address"
-                    fullWidth
-                    variant="outlined"
-                    required
-                    // error={!ErrorMessage("streetAddress")}
-                    // helperText={
-                    //   <ErrorMessage>
-                    //     {(msg) => <span className="text-red-600">{msg}</span>}
-                    //   </ErrorMessage>
-                    // }
-                  />
-                </Grid>
-
-                <Grid item xs={12}>
-                  <Field
-                    as={TextField}
-                    name="landmark"
-                    label="Landmark"
-                    fullWidth
-                    variant="outlined"
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={saveAddress}
-                        onChange={handleSaveAddressChange}
-                        color="primary"
-                      />
-                    }
-                    label="Save this address for future orders"
-                  />
-                </Grid>
-
-                <Grid item xs={12}>
-                  <Button
-                    fullWidth
-                    variant="contained"
-                    type="submit"
-                    color="primary"
-                  >
-                    Deliver Here
-                  </Button>
-                </Grid>
-              </Grid>
-            </Form>
+              </Form>
+            )}
           </Formik>
         </Box>
       </Modal>

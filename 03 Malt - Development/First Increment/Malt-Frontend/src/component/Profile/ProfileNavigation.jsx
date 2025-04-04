@@ -7,7 +7,7 @@ import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import EventIcon from "@mui/icons-material/Event";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { Divider, Drawer, useMediaQuery } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logout } from "../State/Authentication/Action";
 
@@ -23,9 +23,9 @@ const menu = [
 
 export const ProfileNavigation = ({ open, handleClose }) => {
   const isSmallScreen = useMediaQuery("(max-width: 900px)");
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
 
   const handleNavigate = (item) => {
     if (item.title === "Logout") {
@@ -36,6 +36,13 @@ export const ProfileNavigation = ({ open, handleClose }) => {
     }
   };
 
+  const getActiveClass = (title) => {
+    const path = `/my-profile/${title.toLowerCase()}`;
+    return location.pathname === path
+      ? "bg-blue-100 text-blue-600 font-semibold"
+      : "text-gray-700 hover:bg-gray-100";
+  };
+
   return (
     <div>
       <Drawer
@@ -44,18 +51,20 @@ export const ProfileNavigation = ({ open, handleClose }) => {
         open={open}
         anchor="left"
       >
-        <div className="w-[50vw] lg:w-[20vw] h-[70vh] flex flex-col justify-center text-xl gap-5 pt-60">
+        <div className="w-[50vw] lg:w-[20vw] h-full flex flex-col justify-start text-base pt-17">
           {menu.map((item, i) => (
-            <>
+            <React.Fragment key={i}>
               <div
                 onClick={() => handleNavigate(item)}
-                className="px-5 flex items-center space-x-5 cursor-pointer"
+                className={`w-full flex items-center gap-4 px-6 py-4 cursor-pointer rounded-md transition-all duration-200 ${getActiveClass(
+                  item.title
+                )}`}
               >
-                {item.icon}
+                <span className="text-[1.5rem]">{item.icon}</span>
                 <span>{item.title}</span>
               </div>
-              {i !== menu.length - 1 && <Divider />}
-            </>
+              {i !== menu.length - 1 && <Divider className="w-full" />}
+            </React.Fragment>
           ))}
         </div>
       </Drawer>

@@ -1,4 +1,5 @@
 import {
+  Card,
   Divider,
   FormControl,
   FormControlLabel,
@@ -21,6 +22,7 @@ import {
 import { getMenuItemsByRestaurantId } from "../State/Menu/Action";
 import { HomeFooter } from "../Home/HomeFooter";
 import { OrderBag } from "../Cart/OrderBag";
+import SortIcon from "@mui/icons-material/Sort";
 
 const foodTypes = [
   {
@@ -40,6 +42,7 @@ const foodTypes = [
 export const RestaurantDetails = () => {
   const [foodType, setFoodType] = useState("");
   const [loading, setLoading] = useState(true); // Track loading state
+  const [sortOrder, setSortOrder] = useState(""); // "asc" or "desc"
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -179,9 +182,27 @@ export const RestaurantDetails = () => {
           </div>
         </section>
         <Divider />
-        <section className="pt-[1.8rem] lg:flex relative mb-10">
-          <div className="space-y-10 lg:w-[20%] filter p-5 shadow-md mr-3">
-            <div className="box space-y-5 lg:sticky top-28">
+
+        <Card className="p-3.5 mt-3 mb-0.5 shadow-md border border-gray-200 rounded-md bg-white flex items-center gap-2 max-w-full">
+          <SortIcon className="text-gray-700" />
+          <label htmlFor="sort" className="text-gray-700 font-medium">
+            Sort by Price:
+          </label>
+          <select
+            id="sort"
+            className="border rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-red-700"
+            value={sortOrder}
+            onChange={(e) => setSortOrder(e.target.value)}
+          >
+            <option value="">Default</option>
+            <option value="asc">Lowest to Highest</option>
+            <option value="desc">Highest to Lowest</option>
+          </select>
+        </Card>
+
+        <section className="pt-4 lg:flex relative mb-10">
+          <div className="space-y-6 lg:w-[20%] filter p-5 shadow-md mr-3">
+            <div className="box space-y-4 lg:sticky top-28">
               <div>
                 <Typography variant="h6" sx={{ paddingBottom: "1rem" }}>
                   Food Type
@@ -240,8 +261,13 @@ export const RestaurantDetails = () => {
 
           {/* Menu in center */}
           <div className="space-y-3 lg:w-[60%] mr-3">
-            {menu.menuItems
-              .sort((a, b) => a.id - b.id)
+            {[...menu.menuItems]
+              .filter((item) => item) // Ensure valid
+              .sort((a, b) => {
+                if (sortOrder === "asc") return a.price - b.price;
+                if (sortOrder === "desc") return b.price - a.price;
+                return a.id - b.id; // Default sorting
+              })
               .map((item) => (
                 <MenuCard key={item.id} item={item} />
               ))}

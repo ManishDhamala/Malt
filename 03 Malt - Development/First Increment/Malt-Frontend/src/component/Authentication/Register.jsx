@@ -167,13 +167,22 @@ export const Register = () => {
                 </MenuItem>
               </Field>
             </FormControl>
-            <Button
+            {/* <Button
               sx={{ mt: 1, padding: "1rem", borderRadius: "50px" }}
               fullWidth
               type="submit"
               variant="contained"
             >
               Register
+            </Button> */}
+            <Button
+              sx={{ mt: 1, padding: "1rem", borderRadius: "50px" }}
+              fullWidth
+              type="submit"
+              variant="contained"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Registering..." : "Register"}
             </Button>
           </Form>
         )}

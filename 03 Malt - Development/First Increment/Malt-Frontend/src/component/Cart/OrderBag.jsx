@@ -71,7 +71,7 @@ export const OrderBag = () => {
       </h2>
 
       <Divider />
-      <div className="mt-4 space-y-3">
+      <div className="mt-3 space-y-1">
         {cart?.cartItems?.length > 0 ? (
           cart.cartItems.map((item) => (
             <Card key={item.id} className="p-3 flex items-center gap-3">
@@ -81,10 +81,10 @@ export const OrderBag = () => {
                 className="w-12 h-12 object-cover rounded-md"
               />
               <div className="flex-grow">
-                <Typography className="font-medium text-sm">
+                <Typography className="font-medium text-xs">
                   {item.food.name}
                 </Typography>
-                <Typography className="text-sm text-gray-600">
+                <Typography className="text-xs text-gray-600">
                   Rs {item.food.price} × {item.quantity}
                 </Typography>
               </div>
@@ -113,7 +113,7 @@ export const OrderBag = () => {
       </div>
 
       {cart?.cartItems?.length > 0 && (
-        <div className="pt-4 text-sm mt-4">
+        <div className="text-sm mt-2">
           <Divider className="mb-4" />
           <Typography className="font-semibold pb-2 underline">
             Bill Summary:
@@ -139,6 +139,7 @@ export const OrderBag = () => {
             <Button
               fullWidth
               variant="contained"
+              size="small"
               color="primary"
               onClick={handleCheckout}
             >

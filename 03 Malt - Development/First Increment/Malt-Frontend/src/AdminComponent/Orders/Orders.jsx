@@ -12,9 +12,9 @@ import { OrderTable } from "./OrderTable";
 const orderStatus = [
   { label: "All", value: "all" },
   { label: "Pending", value: "PENDING" },
+  { label: "Confirmed", value: "CONFIRMED" },
   { label: "Out for Delivery", value: "OUT_FOR_DELIVERY" },
   { label: "Delivered", value: "DELIVERED" },
-  { label: "Completed", value: "COMPLETED" },
 ];
 
 export const Orders = () => {
