@@ -1,5 +1,6 @@
 package com.project.maltbackend.controller;
 
+import com.project.maltbackend.dto.OrderDto;
 import com.project.maltbackend.model.Order;
 import com.project.maltbackend.model.User;
 import com.project.maltbackend.service.OrderService;
@@ -24,12 +25,12 @@ public class AdminOrderController {
 
 
     @GetMapping("/order/restaurant/{id}")
-    public ResponseEntity<List<Order>> getOrderHistory(@PathVariable Long id,
+    public ResponseEntity<List<OrderDto>> getOrderHistory(@PathVariable Long id,
                                                        @RequestParam(required = false) String order_status,
                                                        @RequestHeader("Authorization") String jwt) throws Exception {
 
         User user = userService.findUserByJwtToken(jwt);
-        List<Order> orders = orderService.getRestaurantsOrders(id,order_status);
+        List<OrderDto> orders = orderService.getRestaurantsOrders(id,order_status);
 
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }

@@ -17,4 +17,6 @@ public class OrderRequest {
 
     private Long addressId;
 
+    @NotNull(message = "Payment method is required")
+    private String paymentMethod; // "COD", "STRIPE", "ESEWA"
 }

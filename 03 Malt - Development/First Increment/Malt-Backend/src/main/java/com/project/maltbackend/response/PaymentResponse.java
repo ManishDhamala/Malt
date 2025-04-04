@@ -6,5 +6,7 @@ import lombok.Data;
 public class PaymentResponse {
 
     private String payment_url;
+    private String signature;
+    private String signedFieldNames;
 
 }

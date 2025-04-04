@@ -22,13 +22,13 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JsonIgnoreProperties("orders") // Ignore 'orders' field in User when serializing
     private User customer;
 
     //@JsonIgnore
     @ManyToOne
-    @JsonBackReference
+    @JsonIgnoreProperties("orders")
     private Restaurant restaurant;
 
     private Long totalPrice;
@@ -43,9 +43,12 @@ public class Order {
     @OneToMany
     private List<OrderItem> items;
 
-//    private Payment payment;
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
+    private Payment payment;
 
 
-
+//    private String paymentMethod;
+//    private boolean isPaid = false; // Optional but useful
+//    private String paymentStatus = "UNPAID"; // Or "PAID", "FAILED"
 
 }
