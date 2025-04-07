@@ -65,7 +65,7 @@ public class StripeWebhookController {
                         order.setOrderStatus("CONFIRMED");
                         orderRepository.save(order);
 
-                        // Optionally: send confirmation email here
+
                         User user = order.getCustomer();
                         Address address = order.getDeliveryAddress();
                         Restaurant restaurant = order.getRestaurant();

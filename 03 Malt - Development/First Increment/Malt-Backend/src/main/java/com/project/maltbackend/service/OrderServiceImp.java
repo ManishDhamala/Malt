@@ -45,6 +45,9 @@ public class OrderServiceImp implements OrderService{
     private EsewaService esewaService;
 
     @Autowired
+    private KhaltiService khaltiService;
+
+    @Autowired
     private EmailService emailService;
 
     private int deliveryCharge = 100;
@@ -246,6 +249,15 @@ public class OrderServiceImp implements OrderService{
 
                 return esewaMap;
 
+            case "KHALTI":
+                PaymentResponse khaltiResponse = khaltiService.createKhaltiPayment(savedOrder);
+
+                Map<String, Object> khaltiMap = new HashMap<>();
+                khaltiMap.put("order", savedOrder);
+                khaltiMap.put("paymentProvider", "KHALTI");
+                khaltiMap.put("payment_url", khaltiResponse.getPayment_url());
+                return khaltiMap;
+
 
             default:
                 throw new IllegalArgumentException("Invalid payment method: " + request.getPaymentMethod());
@@ -276,6 +288,12 @@ public class OrderServiceImp implements OrderService{
                 || orderStatus.equals("CONFIRMED")
                 || orderStatus.equals("OUT_FOR_DELIVERY")
                 || orderStatus.equals("DELIVERED")) {
+
+            // Prevent re-sending email for already updated status
+            if (orderStatus.equals(order.getOrderStatus())) {
+                System.out.println("⚠️ Order is already in status: " + orderStatus + ". Skipping email.");
+                return order;
+            }
 
             order.setOrderStatus(orderStatus);
             Order updatedOrder = orderRepository.save(order);
@@ -358,6 +376,9 @@ public class OrderServiceImp implements OrderService{
                     .replace("[[deliveryCharge]]", String.valueOf(deliveryCharge))
                     .replace("[[restaurantCharge]]", String.valueOf(restaurantCharge))
                     .replace("[[totalPrice]]", String.valueOf(order.getTotalPrice()));
+
+            System.out.println("✅ Sending confirmation email to {}"+ user.getEmail());
+
 
             emailService.sendHtmlEmail(user.getEmail(), "Your Order Confirmation - Malt", htmlContent);
 
