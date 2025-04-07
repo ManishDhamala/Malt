@@ -1,35 +1,22 @@
-import React from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { CreateRestaurantForm } from "../AdminComponent/RestaurantForm/CreateRestaurantForm";
 import { Admin } from "../AdminComponent/Admin/Admin";
 import { useSelector } from "react-redux";
+import { PrivateRoute } from "./PrivateRoute";
 
 export const AdminRoute = () => {
-  const { auth, restaurant } = useSelector((store) => store);
-
-  // Only admin should be able to access
-  const isAdmin =
-    auth.user?.role === "ROLE_RESTAURANT_OWNER" ||
-    auth.user?.role === "ROLE_ADMIN";
+  const { restaurant } = useSelector((store) => store);
 
   return (
-    <div>
+    <PrivateRoute allowedRoles={["ROLE_ADMIN", "ROLE_RESTAURANT_OWNER"]}>
       <Routes>
         <Route
           path="/*"
           element={
-            isAdmin ? (
-              !restaurant.usersRestaurant ? (
-                <CreateRestaurantForm />
-              ) : (
-                <Admin />
-              )
-            ) : (
-              <Navigate to="/" replace />
-            )
+            restaurant.usersRestaurant ? <Admin /> : <CreateRestaurantForm />
           }
-        ></Route>
+        />
       </Routes>
-    </div>
+    </PrivateRoute>
   );
 };

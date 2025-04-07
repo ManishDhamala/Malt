@@ -183,7 +183,7 @@ export const RestaurantDetails = () => {
         </section>
         <Divider />
 
-        <Card className="p-3.5 mt-3 mb-0.5 shadow-md border border-gray-200 rounded-md bg-white flex items-center gap-2 max-w-full">
+        <Card className="p-3.5 mt-3 mb-0.5 shadow-md border border-gray-200 rounded-md bg-white flex items-center gap-2 lg:w-310 xs:max-w-full">
           <SortIcon className="text-gray-700" />
           <label htmlFor="sort" className="text-gray-700 font-medium">
             Sort by Price:

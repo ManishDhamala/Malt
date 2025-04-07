@@ -17,10 +17,10 @@ export const SearchFood = () => {
   const debouncedSearch = useCallback(
     debounce((value) => {
       if (value.trim() !== "") {
-        dispatch(searchMenuItem({ keyword: value, jwt }));
+        dispatch(searchMenuItem({ keyword: value }));
       }
     }, 500),
-    []
+    [dispatch]
   );
 
   const handleInputChange = (e) => {

@@ -1,6 +1,7 @@
 import axios from "axios"
 import { ADD_TO_FAVORITE_FAIL, ADD_TO_FAVORITE_REQUEST, ADD_TO_FAVORITE_SUCCESS, GET_USER_FAIL, GET_USER_REQUEST, GET_USER_SUCCESS, LOGIN_FAIL, LOGIN_REQUEST, LOGIN_SUCCESS, LOGOUT, REGISTER_FAIL, REGISTER_REQUEST, REGISTER_SUCCESS } from "./ActionType"
 import { api, API_URL } from "../../config/api"
+import { RESET_RESTAURANT_STATE } from "../Restaurant/ActionType"
 
 
 export const registerUser = (reqData) => async (dispatch) => {
@@ -94,6 +95,7 @@ export const logout = () => async (dispatch) => {
     try {
         localStorage.clear();
         dispatch({ type: LOGOUT })
+        dispatch({ type: RESET_RESTAURANT_STATE }); // Clear previous user's restaurant data
         console.log("Logout Success")
 
     } catch (error) {

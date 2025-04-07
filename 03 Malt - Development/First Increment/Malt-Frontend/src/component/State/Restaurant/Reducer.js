@@ -129,6 +129,19 @@ const restaurantReducer = (state = initialState, action) => {
             }
 
 
+        case actionTypes.RESET_RESTAURANT_STATE:
+            return {
+                ...initialState,
+                restaurants: [],
+                usersRestaurant: null,
+                restaurant: null,
+                categories: [],
+                searchedRestaurants: [],
+                loading: false,
+                error: null,
+            };
+
+
         case actionTypes.CREATE_RESTAURANT_FAIL:
         case actionTypes.DELETE_RESTAURANT_FAIL:
         case actionTypes.UPDATE_RESTAURANT_FAIL:

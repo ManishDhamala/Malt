@@ -33,7 +33,7 @@ export const OrderCard = ({ item, order }) => {
 
         <div className="text-sm text-gray-700 dark:text-gray-200 space-y-1">
           <h6 className="font-semibold text-lg">
-            Restaurant: {item.food?.restaurant?.name}
+            Restaurant: {order?.restaurant?.title || Unknown}
           </h6>
           <p className="text-gray-500">
             Order No: <span className="font-medium">#{order.id}</span>

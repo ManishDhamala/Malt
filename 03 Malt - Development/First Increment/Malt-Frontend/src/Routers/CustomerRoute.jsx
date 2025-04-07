@@ -11,17 +11,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { Search } from "../component/Search/Search";
 import { getUser } from "../component/State/Authentication/Action";
 import KhaltiCallback from "../component/Cart/KhaltiCallBack";
+import { PrivateRoute } from "./PrivateRoute";
 
 export const CustomerRoute = () => {
   const dispatch = useDispatch();
-
   const { auth } = useSelector((store) => store);
-  const userRole = auth?.user?.role; // Get user role
-  const isGuest = !userRole; // If no role is assigned, consider the user as a guest
+  const userRole = auth?.user?.role;
 
   useEffect(() => {
     if (auth?.jwt && !auth?.user) {
-      dispatch(getUser(auth.jwt)); //  Fetch user details if JWT exists
+      dispatch(getUser(auth.jwt));
     }
   }, [auth?.jwt, dispatch]);
 
@@ -29,51 +28,68 @@ export const CustomerRoute = () => {
     <div>
       <Navbar />
       <Routes>
-        {/* Accessible to both Admin, Customer, and Guests */}
+        {/* Accessible to everyone */}
         <Route path="/" element={<Home />} />
         <Route path="/account/:register" element={<Home />} />
-        <Route path="/search" element={<Search />} />
 
-        {/* Guests and Customers can access RestaurantDetails, but Admins are redirected */}
+        {/* Block Admin/Owner from Restaurant Details and Search */}
         <Route
           path="/restaurant/:city/:title/:id"
           element={
-            userRole === "ROLE_RESTAURANT_OWNER" ||
-            userRole === "ROLE_ADMIN" ? (
+            userRole === "ROLE_ADMIN" ||
+            userRole === "ROLE_RESTAURANT_OWNER" ? (
               <Navigate to="/" />
             ) : (
               <RestaurantDetails />
             )
           }
         />
+        <Route
+          path="/search"
+          element={
+            userRole === "ROLE_ADMIN" ||
+            userRole === "ROLE_RESTAURANT_OWNER" ? (
+              <Navigate to="/" />
+            ) : (
+              <Search />
+            )
+          }
+        />
 
-        {/* Restrict these routes to only Customers */}
-        {userRole === "ROLE_CUSTOMER" ? (
-          <>
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/my-profile/*" element={<Profile />} />
-            <Route
-              path="/payment/khalti/callback"
-              element={<KhaltiCallback />}
-            />
-            <Route path="/payment/success/:id" element={<PaymentSuccess />} />
-          </>
-        ) : isGuest ? (
-          // Redirect guests (unauthenticated users) to login page (Second time condition)
-          <>
-            <Route path="/cart" element={<Navigate to="/account/login" />} />
-            <Route
-              path="/my-profile/*"
-              element={<Navigate to="/account/login" />}
-            />
-          </>
-        ) : (
-          // Redirect Admins and other roles to home
-          <>
-            <Route path="/cart" element={<Navigate to="/" />} />
-            <Route path="/my-profile/*" element={<Navigate to="/" />} />
-          </>
-        )}
+        {/* Customer Only Routes (Protected) */}
+        <Route
+          path="/cart"
+          element={
+            <PrivateRoute allowedRoles={["ROLE_CUSTOMER"]}>
+              <Cart />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/my-profile/*"
+          element={
+            <PrivateRoute allowedRoles={["ROLE_CUSTOMER"]}>
+              <Profile />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/payment/khalti/callback"
+          element={
+            <PrivateRoute allowedRoles={["ROLE_CUSTOMER"]}>
+              <KhaltiCallback />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/payment/success/:id"
+          element={
+            <PrivateRoute allowedRoles={["ROLE_CUSTOMER"]}>
+              <PaymentSuccess />
+            </PrivateRoute>
+          }
+        />
       </Routes>
     </div>
   );

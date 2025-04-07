@@ -106,10 +106,13 @@ export const OrderTable = ({ filterValue }) => {
                   Customer
                 </TableCell>
                 <TableCell sx={{ fontWeight: "bold" }} align="center">
+                  Food Item
+                </TableCell>
+                <TableCell sx={{ fontWeight: "bold" }} align="center">
                   Price
                 </TableCell>
                 <TableCell sx={{ fontWeight: "bold" }} align="center">
-                  Name
+                  Delivery Address
                 </TableCell>
                 <TableCell sx={{ fontWeight: "bold" }} align="center">
                   Order Status
@@ -144,11 +147,6 @@ export const OrderTable = ({ filterValue }) => {
                         {item?.user?.fullName}
                       </TableCell>
 
-                      {/* Price*/}
-                      <TableCell align="center">
-                        Rs {item?.totalPrice}
-                      </TableCell>
-
                       {/* Food Items */}
                       <TableCell align="center">
                         {item.items?.map((orderItem, index) => (
@@ -159,6 +157,17 @@ export const OrderTable = ({ filterValue }) => {
                             sx={{ margin: "2px" }}
                           />
                         ))}
+                      </TableCell>
+
+                      {/* Price*/}
+                      <TableCell align="center">
+                        Rs {item?.totalPrice}
+                      </TableCell>
+
+                      {/* {Delivery Address} */}
+                      <TableCell align="center">
+                        {item?.deliveryAddress?.city},
+                        {item?.deliveryAddress?.streetAddress}
                       </TableCell>
 
                       {/* Order Status Button */}

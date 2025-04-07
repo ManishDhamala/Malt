@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { getUserOrders } from "../State/Order/Action";
 
 export const Orders = () => {
-  const { auth, cart, order } = useSelector((store) => store);
+  const { auth, order } = useSelector((store) => store);
   const navigate = useNavigate();
   const jwt = localStorage.getItem("jwt");
   const dispatch = useDispatch();
@@ -18,7 +18,7 @@ export const Orders = () => {
     <div className="flex items-center flex-col lg:mt-20 pb-10">
       <h1 className="text-xl text-center py-7 font-semibold">Order History</h1>
       <div className="space-y-5 w-full lg:w-1/2">
-        {order.orders
+        {order?.orders
           .sort((a, b) => b.id - a.id)
           .map((order) =>
             order.items?.map((item) => <OrderCard order={order} item={item} />)
