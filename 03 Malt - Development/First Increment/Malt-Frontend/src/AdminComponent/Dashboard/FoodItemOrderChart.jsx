@@ -28,10 +28,18 @@ const FoodItemOrderChart = ({ filteredOrders }) => {
   }, [filteredOrders]);
 
   return (
-    <Card sx={{ mt: 5 }}>
+    <Card sx={{ mt: 5, boxShadow: 3 }}>
       <CardContent>
-        <Typography variant="h6" gutterBottom>
-          Orders Graph
+        <Typography
+          variant="h5"
+          gutterBottom
+          sx={{ fontWeight: "bold", color: "#333" }}
+        >
+          📊 Most Ordered Foods
+        </Typography>
+
+        <Typography variant="subtitle2" sx={{ mb: 2, color: "#555" }}>
+          Top 5 menu items with the highest quantity ordered
         </Typography>
 
         <BarChart
@@ -42,13 +50,24 @@ const FoodItemOrderChart = ({ filteredOrders }) => {
               scaleType: "band",
               tickPlacement: "middle",
               tickLabelPlacement: "middle",
+              label: "🍽️ Menu Items",
+              labelStyle: { fontWeight: "bold", fill: "#333" },
             },
           ]}
-          yAxis={[{ label: "Quantity Ordered" }]}
-          series={[
-            { data: chartData.yValues, label: "Quantity", color: "#B20303" },
+          yAxis={[
+            {
+              label: "🛒 Quantity Ordered", // Adjust automatically with the  maximum value
+              labelStyle: { fontWeight: "bold", fill: "#333" },
+            },
           ]}
-          width={700}
+          series={[
+            {
+              data: chartData.yValues,
+              label: "Quantity",
+              color: "#B20303",
+            },
+          ]}
+          width={600}
           height={400}
         />
       </CardContent>

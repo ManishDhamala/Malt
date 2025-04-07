@@ -39,10 +39,10 @@ export const Home = () => {
     <div className="lg:mt-16">
       <section className="banner -z-50 relative flex flex-col justify-center items-center">
         <div className="w-[50vw] z-10 text-center">
-          <p className="text2xl text-gray-300 lg:text-6xl font-bold z-10 py-5">
+          <p className="text2xl text-gray-200 lg:text-6xl font-bold z-10 py-5">
             Malt
           </p>
-          <p className="z-10 text-gray-200 text-xl lg:text-4xl">
+          <p className="z-10 text-gray-100 text-xl lg:text-4xl">
             Discover the Joy of Eating - Eat, Sleep and Repeat
           </p>
         </div>

@@ -119,8 +119,10 @@ export const Cart = () => {
       const res = await dispatch(createOrder(data));
 
       if (res.paymentUrl) {
-        // Stripe payment
+        // Stripe OR Khalti
         window.location.href = res.paymentUrl;
+      } else if (res.paymentProvider === "KHALTI") {
+        window.location.href = res.payment_url; // ← Add this check (optional if you unify both above)
       } else if (res.paymentProvider === "ESEWA") {
         // Handle eSewa form submission
         const form = document.createElement("form");
@@ -202,7 +204,10 @@ export const Cart = () => {
       const res = await dispatch(createOrder(data));
 
       if (res.paymentUrl) {
+        // Stripe OR Khalti
         window.location.href = res.paymentUrl;
+      } else if (res.paymentProvider === "KHALTI") {
+        window.location.href = res.payment_url; // ← Add this check (optional if you unify both above)
       } else if (res.paymentProvider === "ESEWA") {
         const form = document.createElement("form");
         form.method = "POST";
@@ -321,6 +326,11 @@ export const Cart = () => {
                   value="ESEWA"
                   control={<Radio />}
                   label="eSewa"
+                />
+                <FormControlLabel
+                  value="KHALTI"
+                  control={<Radio />}
+                  label="Khalti"
                 />
               </RadioGroup>
             </FormControl>

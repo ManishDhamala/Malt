@@ -10,6 +10,7 @@ import { PaymentSuccess } from "../component/PaymentSuccess/PaymentSuccess";
 import { useDispatch, useSelector } from "react-redux";
 import { Search } from "../component/Search/Search";
 import { getUser } from "../component/State/Authentication/Action";
+import KhaltiCallback from "../component/Cart/KhaltiCallBack";
 
 export const CustomerRoute = () => {
   const dispatch = useDispatch();
@@ -51,6 +52,10 @@ export const CustomerRoute = () => {
           <>
             <Route path="/cart" element={<Cart />} />
             <Route path="/my-profile/*" element={<Profile />} />
+            <Route
+              path="/payment/khalti/callback"
+              element={<KhaltiCallback />}
+            />
             <Route path="/payment/success/:id" element={<PaymentSuccess />} />
           </>
         ) : isGuest ? (

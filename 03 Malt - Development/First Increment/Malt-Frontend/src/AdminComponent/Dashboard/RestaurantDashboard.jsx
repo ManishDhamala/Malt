@@ -19,6 +19,7 @@ import { getMenuItemsByRestaurantId } from "../../component/State/Menu/Action";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import RestaurantMenuIcon from "@mui/icons-material/RestaurantMenu";
 import PaidIcon from "@mui/icons-material/Paid";
+import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 import FoodItemOrderChart from "./FoodItemOrderChart";
 
 const currentYear = new Date().getFullYear();
@@ -72,19 +73,41 @@ export const RestaurantDashboard = () => {
   const DashboardCard = ({ title, count, icon }) => (
     <Card
       sx={{
-        transition: "transform 0.3s ease, box-shadow 0.3s ease",
+        borderRadius: 4,
+        boxShadow: "0 4px 20px rgba(0, 0, 0, 0.09)",
+        transition: "all 0.3s ease",
         "&:hover": {
           transform: "scale(1.03)",
-          boxShadow: 6,
+          boxShadow: "0 6px 30px rgba(0, 0, 0, 0.3)",
         },
       }}
     >
-      <CardContent className="shadow-md border border-gray-200 rounded-md bg-white">
+      <CardContent>
         <Box display="flex" alignItems="center" gap={2}>
-          {icon}
+          <Box
+            sx={{
+              backgroundColor: "#e0e7ff",
+              p: 1.5,
+              borderRadius: "50%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {icon}
+          </Box>
+
           <Box>
-            <Typography variant="h6">{title}</Typography>
-            <Typography variant="h4">{count}</Typography>
+            <Typography
+              variant="subtitle2"
+              color="text.secondary"
+              fontWeight={600}
+            >
+              {title}
+            </Typography>
+            <Typography variant="h5" fontWeight={700}>
+              {count}
+            </Typography>
           </Box>
         </Box>
       </CardContent>
@@ -99,7 +122,7 @@ export const RestaurantDashboard = () => {
         alignItems="center"
         mb={3}
       >
-        <Typography variant="h5">
+        <Typography variant="h5" fontWeight={"bold"} fontStyle={"italic"}>
           {restaurant.usersRestaurant?.name} Dashboard
         </Typography>
 
@@ -161,7 +184,7 @@ export const RestaurantDashboard = () => {
           <DashboardCard
             title="Total Income"
             count={totalIncome || 0}
-            icon={<PaidIcon fontSize="large" color="success" />}
+            icon={<CurrencyRupeeIcon fontSize="large" color="success" />}
           />
         </Grid>
 
