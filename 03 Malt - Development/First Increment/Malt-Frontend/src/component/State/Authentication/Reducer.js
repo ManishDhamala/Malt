@@ -1,5 +1,5 @@
 import { isPresentInFavourites } from "../../config/logic";
-import { ADD_TO_FAVORITE_FAIL, ADD_TO_FAVORITE_REQUEST, ADD_TO_FAVORITE_SUCCESS, GET_USER_FAIL, GET_USER_REQUEST, GET_USER_SUCCESS, LOGIN_FAIL, LOGIN_REQUEST, LOGIN_SUCCESS, LOGOUT, REGISTER_FAIL, REGISTER_REQUEST, REGISTER_SUCCESS } from "./ActionType";
+import { ADD_TO_FAVORITE_FAIL, ADD_TO_FAVORITE_REQUEST, ADD_TO_FAVORITE_SUCCESS, GET_USER_FAIL, GET_USER_REQUEST, GET_USER_SUCCESS, LOGIN_FAIL, LOGIN_REQUEST, LOGIN_SUCCESS, LOGOUT, REGISTER_FAIL, REGISTER_REQUEST, REGISTER_SUCCESS, UPDATE_USER_FAIL, UPDATE_USER_REQUEST, UPDATE_USER_SUCCESS } from "./ActionType";
 
 const initialState = {
     user: null,
@@ -18,6 +18,7 @@ export const authReducer = (state = initialState, action) => {
         case LOGIN_REQUEST:
         case GET_USER_REQUEST:
         case ADD_TO_FAVORITE_REQUEST:
+        case UPDATE_USER_REQUEST:
             return { ...state, isLoading: true, error: null, success: null }
 
         case REGISTER_SUCCESS:
@@ -31,12 +32,14 @@ export const authReducer = (state = initialState, action) => {
             };
 
         case GET_USER_SUCCESS:
+        case UPDATE_USER_SUCCESS:
             localStorage.setItem("user", JSON.stringify(action.payload)); //  Store user data in localStorage
             return {
                 ...state,
                 isLoading: false,
                 user: action.payload,
-                favourites: action.payload.favourites
+                favourites: action.payload.favourites || state.favourites,
+                success: "User updated successfully",
             };
 
         case ADD_TO_FAVORITE_SUCCESS:
@@ -58,6 +61,7 @@ export const authReducer = (state = initialState, action) => {
         case LOGIN_FAIL:
         case GET_USER_FAIL:
         case ADD_TO_FAVORITE_FAIL:
+        case UPDATE_USER_FAIL:
             return {
                 ...state,
                 isLoading: false,

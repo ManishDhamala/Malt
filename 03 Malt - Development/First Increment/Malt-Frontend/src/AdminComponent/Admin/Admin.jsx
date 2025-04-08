@@ -16,6 +16,7 @@ import {
 } from "../../component/State/Restaurant/Action";
 import { getMenuItemsByRestaurantId } from "../../component/State/Menu/Action";
 import { getRestaurantOrders } from "../../component/State/Restaurant Order/Action";
+import { EditRestaurantForm } from "../RestaurantForm/EditRestaurantForm";
 
 export const Admin = () => {
   const dispatch = useDispatch();
@@ -56,6 +57,7 @@ export const Admin = () => {
             <Route path="/event" element={<Events />} />
             <Route path="/details" element={<RestaurantDetails />} />
             <Route path="/add-menu" element={<CreateMenuForm />} />
+            <Route path="/edit" element={<EditRestaurantForm />} />
           </Routes>
         </div>
       </div>

@@ -6,11 +6,13 @@ import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import { useDispatch, useSelector } from "react-redux";
 import { updateRestaurantStatus } from "../../component/State/Restaurant/Action";
+import { useNavigate } from "react-router-dom";
 
 export const RestaurantDetails = () => {
   const { restaurant } = useSelector((store) => store);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const jwt = localStorage.getItem("jwt");
 
   console.log("Restaurant Details: ", restaurant);
@@ -26,11 +28,21 @@ export const RestaurantDetails = () => {
 
   return (
     <div className="lg:px-20 px-5 pb-10 ">
-      <div className="py-5 flex justify-center items-center gap-5">
-        <h1 className="text-2xl lg:text-5xl text-center font-bold p-5">
+      <div className="py-5 flex justify-center items-center gap-1">
+        <h1 className="text-2xl lg:text-5xl text-center font-bold p-4">
           {restaurant.usersRestaurant?.name}
         </h1>
         <div>
+          <Button
+            variant="contained"
+            color="warning"
+            size="medium"
+            sx={{ marginRight: "1rem" }}
+            onClick={() => navigate("/admin/restaurant/edit")}
+          >
+            Edit
+          </Button>
+
           <Button
             color={restaurant.usersRestaurant?.open ? "primary" : "success"}
             className="py-[1rem] px-[2rem]"

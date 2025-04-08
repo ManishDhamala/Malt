@@ -29,14 +29,32 @@ const initialValues = {
   images: [],
 };
 
-export const CreateRestaurantForm = () => {
+export const CreateRestaurantForm = ({
+  initialData = null,
+  onSubmit,
+  isEdit = false,
+}) => {
   const [uploadImage, setUploadImage] = useState(false);
 
   const dispatch = useDispatch();
   const jwt = localStorage.getItem("jwt");
 
   const formik = useFormik({
-    initialValues,
+    initialValues: initialData || {
+      name: "",
+      description: "",
+      streetAddress: "",
+      city: "",
+      province: "",
+      postalCode: "",
+      country: "",
+      email: "",
+      mobile: "",
+      twitter: "",
+      instagram: "",
+      openingHours: "Sun-Fri: 9:00 AM - 8:00 PM",
+      images: [],
+    },
     onSubmit: (values) => {
       const data = {
         name: values.name,
@@ -57,9 +75,13 @@ export const CreateRestaurantForm = () => {
         openingHours: values.openingHours,
         images: values.images,
       };
-      console.log("Data ---- ", data);
 
-      dispatch(createRestaurant({ data, jwt: jwt }));
+      // Use passed `onSubmit` or default to create
+      if (onSubmit) {
+        onSubmit(data);
+      } else {
+        dispatch(createRestaurant({ data, jwt }));
+      }
     },
   });
 
@@ -81,7 +103,7 @@ export const CreateRestaurantForm = () => {
     <div className="py-10 px-5 lg:flex items-center justify-center min-h-screen">
       <div className="lg:max-w-4xl">
         <h1 className="font-bold text-2xl text-center py-5">
-          Add New Restaurant
+          {isEdit ? "Edit Restaurant" : "Add New Restaurant"}
         </h1>
         <form onSubmit={formik.handleSubmit} className="space-y-4">
           <Grid container spacing={2}>
@@ -276,7 +298,7 @@ export const CreateRestaurantForm = () => {
             </Grid>
           </Grid>
           <Button fullWidth variant="contained" color="primary" type="submit">
-            Create Restaurant
+            {isEdit ? "Update Restaurant" : "Create Restaurant"}
           </Button>
         </form>
       </div>

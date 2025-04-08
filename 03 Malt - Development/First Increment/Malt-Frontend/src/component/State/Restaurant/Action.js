@@ -147,7 +147,7 @@ export const updateRestaurant = ({ restaurantId, restaurantData, jwt }) => {
     return async (dispatch) => {
         dispatch({ type: UPDATE_RESTAURANT_REQUEST })
         try {
-            const response = await api.put(`/api/admin/restaurant/${restaurantId}`,
+            const response = await api.put(`/api/admin/restaurants/${restaurantId}`,
                 restaurantData, {
                 headers: {
                     Authorization: `Bearer ${jwt}`
@@ -155,7 +155,7 @@ export const updateRestaurant = ({ restaurantId, restaurantData, jwt }) => {
             })
 
             dispatch({ type: UPDATE_RESTAURANT_SUCCESS, payload: response.data })
-            console.log("Update Restaurant By Id", response.data)
+            console.log("Updated Restaurant", response.data)
 
         } catch (error) {
             dispatch({ type: UPDATE_RESTAURANT_FAIL, payload: error })

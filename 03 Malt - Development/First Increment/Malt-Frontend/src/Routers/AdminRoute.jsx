@@ -3,6 +3,7 @@ import { CreateRestaurantForm } from "../AdminComponent/RestaurantForm/CreateRes
 import { Admin } from "../AdminComponent/Admin/Admin";
 import { useSelector } from "react-redux";
 import { PrivateRoute } from "./PrivateRoute";
+import { EditRestaurantForm } from "../AdminComponent/RestaurantForm/EditRestaurantForm";
 
 export const AdminRoute = () => {
   const { restaurant } = useSelector((store) => store);
@@ -16,6 +17,7 @@ export const AdminRoute = () => {
             restaurant.usersRestaurant ? <Admin /> : <CreateRestaurantForm />
           }
         />
+        <Route path="restaurant/edit" element={<EditRestaurantForm />} />
       </Routes>
     </PrivateRoute>
   );

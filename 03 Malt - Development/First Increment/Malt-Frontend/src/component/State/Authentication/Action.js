@@ -1,5 +1,5 @@
 import axios from "axios"
-import { ADD_TO_FAVORITE_FAIL, ADD_TO_FAVORITE_REQUEST, ADD_TO_FAVORITE_SUCCESS, GET_USER_FAIL, GET_USER_REQUEST, GET_USER_SUCCESS, LOGIN_FAIL, LOGIN_REQUEST, LOGIN_SUCCESS, LOGOUT, REGISTER_FAIL, REGISTER_REQUEST, REGISTER_SUCCESS } from "./ActionType"
+import { ADD_TO_FAVORITE_FAIL, ADD_TO_FAVORITE_REQUEST, ADD_TO_FAVORITE_SUCCESS, GET_USER_FAIL, GET_USER_REQUEST, GET_USER_SUCCESS, LOGIN_FAIL, LOGIN_REQUEST, LOGIN_SUCCESS, LOGOUT, REGISTER_FAIL, REGISTER_REQUEST, REGISTER_SUCCESS, UPDATE_USER_FAIL, UPDATE_USER_REQUEST, UPDATE_USER_SUCCESS } from "./ActionType"
 import { api, API_URL } from "../../config/api"
 import { RESET_RESTAURANT_STATE } from "../Restaurant/ActionType"
 
@@ -71,6 +71,25 @@ export const getUser = (jwt) => async (dispatch) => {
     }
 }
 
+
+export const updateUser = ({ jwt, user }) => async (dispatch) => {
+    dispatch({ type: UPDATE_USER_REQUEST })
+    try {
+        const { data } = await api.put(`/api/users/update`,
+            user, {
+            headers: {
+                Authorization: `Bearer ${jwt}`
+            }
+        })
+
+        dispatch({ type: UPDATE_USER_SUCCESS, payload: data })
+        console.log("User Updated: ", data)
+
+    } catch (error) {
+        dispatch({ type: UPDATE_USER_FAIL, payload: error })
+        console.log("error", error)
+    }
+}
 
 export const addToFavorite = ({ jwt, restaurantId }) => async (dispatch) => {
     dispatch({ type: ADD_TO_FAVORITE_REQUEST })
