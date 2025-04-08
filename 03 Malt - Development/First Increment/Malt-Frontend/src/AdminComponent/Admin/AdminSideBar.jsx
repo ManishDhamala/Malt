@@ -19,7 +19,11 @@ const menu = [
   { title: "Menu", icon: <RestaurantMenu />, path: "/menu" },
   { title: "Food Category", icon: <Category />, path: "/category" },
   { title: "Events", icon: <Event />, path: "/event" },
-  { title: "Details", icon: <AdminPanelSettings />, path: "/details" },
+  {
+    title: "Restaurant Details",
+    icon: <AdminPanelSettings />,
+    path: "/details",
+  },
   { title: "Logout", icon: <Logout /> },
 ];
 

@@ -2,6 +2,7 @@ import { Button, TextField } from "@mui/material";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createCategory } from "../../component/State/Restaurant/Action";
+import { useAlert } from "../../component/Templates/AlertProvider";
 
 const initialValues = {
   categoryName: "",
@@ -15,6 +16,9 @@ export const CreateFoodCategoryForm = () => {
 
   const [formData, setFormData] = useState(initialValues);
 
+  // Using AlertProvider(Global) Template
+  const { showAlert } = useAlert();
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const data = {
@@ -24,6 +28,9 @@ export const CreateFoodCategoryForm = () => {
     dispatch(createCategory({ reqData: data, jwt }));
     console.log("Food Category ", data);
     setFormData(initialValues);
+
+    // Alert, Message
+    showAlert("success", "New food category added");
   };
 
   const handleInputChange = (e) => {

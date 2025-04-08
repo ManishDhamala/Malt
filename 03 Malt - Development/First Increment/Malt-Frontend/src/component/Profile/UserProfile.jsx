@@ -55,7 +55,7 @@ export const UserProfile = () => {
             </div>
           ) : (
             <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-semibold ml-10">
+              <h1 className="text-2xl font-semibold ml-15">
                 {auth.user?.fullName}
               </h1>
               <IconButton onClick={() => setEditMode(true)}>
