@@ -1,15 +1,13 @@
 package com.project.maltbackend.controller;
 
+import com.project.maltbackend.dto.UserDto;
 import com.project.maltbackend.model.Address;
 import com.project.maltbackend.model.User;
 import com.project.maltbackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,6 +26,22 @@ public class UserController {
         return new ResponseEntity<>(user, HttpStatus.OK);
 
     }
+
+
+    @PutMapping("/update")
+    public ResponseEntity<UserDto> updateUser(
+            @RequestHeader("Authorization") String jwt,
+            @RequestBody UserDto userDto) {
+
+        try {
+            UserDto updatedUser = userService.updateUser(jwt, userDto);
+            return ResponseEntity.ok(updatedUser);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
 
     @GetMapping("/saved-addresses")
     public ResponseEntity<List<Address>> getSavedAddresses(@RequestHeader("Authorization") String jwt) throws Exception {

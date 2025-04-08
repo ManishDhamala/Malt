@@ -1,6 +1,7 @@
 package com.project.maltbackend.service;
 
 import com.project.maltbackend.config.JwtProvider;
+import com.project.maltbackend.dto.UserDto;
 import com.project.maltbackend.model.User;
 import com.project.maltbackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,21 @@ public class UserServiceImp implements UserService {
 
     @Autowired
     private JwtProvider jwtProvider;
+
+    @Override
+    public UserDto updateUser(String jwt, UserDto userDto) throws Exception {
+        User user = findUserByJwtToken(jwt);
+
+        if (userDto.getFullName() != null) {
+            user.setFullName(userDto.getFullName());
+        }
+
+        User updatedUser = userRepository.save(user);
+
+        // Convert back to DTO before returning
+        return new UserDto(updatedUser.getId(), updatedUser.getFullName(), updatedUser.getEmail(), updatedUser.getRole());
+    }
+
 
     @Override
     public User findUserByJwtToken(String jwt) throws Exception {
@@ -30,4 +46,7 @@ public class UserServiceImp implements UserService {
         }
         return user;
     }
+
+
+
 }

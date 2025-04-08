@@ -456,7 +456,7 @@ public class OrderServiceImp implements OrderService{
 
     private UserDto convertUserToDto(User user) {
         // Simplified example
-        return new UserDto(user.getId(), user.getFullName(), user.getEmail());
+        return new UserDto(user.getId(), user.getFullName(), user.getEmail(), user.getRole());
     }
 
     private RestaurantDto convertRestaurantToDto(Restaurant restaurant) {

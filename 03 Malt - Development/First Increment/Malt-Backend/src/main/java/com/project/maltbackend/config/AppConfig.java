@@ -49,6 +49,9 @@ public class AppConfig {
                         // Allow public access to fetch all food items associated with the restaurant
                         .requestMatchers("/api/food/restaurant/**").permitAll()
 
+                        // Allow public access to search food
+                        .requestMatchers("/api/food/search").permitAll()
+
                         // URLs starting with /api/admin/** require roles of either RESTAURANT_OWNER or ADMIN
                         .requestMatchers("/api/admin/**").hasAnyRole("RESTAURANT_OWNER", "ADMIN")
 

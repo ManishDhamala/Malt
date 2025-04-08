@@ -2,6 +2,7 @@ package com.project.maltbackend.service;
 
 import com.project.maltbackend.dto.RestaurantDto;
 import com.project.maltbackend.model.Address;
+import com.project.maltbackend.model.ContactInformation;
 import com.project.maltbackend.model.Restaurant;
 import com.project.maltbackend.model.User;
 import com.project.maltbackend.repository.AddressRepository;
@@ -67,12 +68,53 @@ public class RestaurantServiceImp implements RestaurantService{
         Restaurant restaurant= findRestaurantById(restaurantId);
 
         // Update fields if provided in the request
-        if(restaurant.getDescription() != null){
+        if(updatedRestaurant.getName() != null){
+            restaurant.setName(updatedRestaurant.getName());
+        }
+
+        if(updatedRestaurant.getDescription() != null){
             restaurant.setDescription(updatedRestaurant.getDescription());
         }
 
-        if(restaurant.getName() != null){
-            restaurant.setName(updatedRestaurant.getName());
+        if(updatedRestaurant.getImages() != null){
+            restaurant.setImages(updatedRestaurant.getImages());
+        }
+
+        if(updatedRestaurant.getOpeningHours() != null){
+            restaurant.setOpeningHours(updatedRestaurant.getOpeningHours());
+        }
+
+        if (updatedRestaurant.getAddress() != null) {
+            Address address = restaurant.getAddress();
+            Address updated = updatedRestaurant.getAddress();
+
+            if (address == null) {
+                address = new Address();
+            }
+
+            address.setStreetAddress(updated.getStreetAddress());
+            address.setCity(updated.getCity());
+            address.setProvince(updated.getProvince());
+            address.setPostalCode(updated.getPostalCode());
+            address.setCountry(updated.getCountry());
+
+            restaurant.setAddress(address); // Ensure it's linked back
+        }
+
+        if (updatedRestaurant.getContactInformation() != null) {
+            ContactInformation contact = restaurant.getContactInformation();
+            ContactInformation updated = updatedRestaurant.getContactInformation();
+
+            if (contact == null) {
+                contact = new ContactInformation();
+            }
+
+            contact.setEmail(updated.getEmail());
+            contact.setMobile(updated.getMobile());
+            contact.setInstagram(updated.getInstagram());
+            contact.setTwitter(updated.getTwitter());
+
+            restaurant.setContactInformation(contact); // update reference (in case it was null)
         }
 
         return restaurantRepository.save(restaurant);
