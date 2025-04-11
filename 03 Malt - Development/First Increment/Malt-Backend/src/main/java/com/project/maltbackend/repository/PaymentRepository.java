@@ -15,6 +15,5 @@ public interface PaymentRepository  extends JpaRepository<Payment, Long> {
 
     Payment findByTransactionId(String transactionId);
 
-
     Payment findFirstByPaidFalseOrderByIdDesc();
 }

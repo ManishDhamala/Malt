@@ -8,13 +8,16 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import org.apache.commons.codec.binary.Base64;
 
+import java.nio.charset.StandardCharsets;
+
+
 @Service
 public class EsewaService {
 
     private final String ESEWA_MERCHANT_ID = "EPAYTEST";
     private final String ESEWA_BASE_URL = "https://rc-epay.esewa.com.np/api/epay/main/v2/form";
     private final String SUCCESS_URL = "http://localhost:5173/payment/success";
-    private final String FAILURE_URL = "http://localhost:5173/payment/fail";
+    private final String FAILURE_URL = "https://developer.esewa.com.np/failure";
 
     @Value("${esewa.secretKey}")
     private String secretKey;
@@ -22,41 +25,44 @@ public class EsewaService {
 
     public String generateSignature(String totalAmount, String transactionUUID, String productCode) {
         try {
+            // Signature string: Only signed fields
             String message = "total_amount=" + totalAmount +
                     ",transaction_uuid=" + transactionUUID +
-                    ",product_code=" + productCode +
-                    ",secret=" + secretKey;
+                    ",product_code=" + productCode;
 
             Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
-            SecretKeySpec secret_key = new SecretKeySpec(secretKey.getBytes(), "HmacSHA256");
+            SecretKeySpec secret_key = new SecretKeySpec(secretKey.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
             sha256_HMAC.init(secret_key);
 
-            return Base64.encodeBase64String(sha256_HMAC.doFinal(message.getBytes()));
+            return Base64.encodeBase64String(sha256_HMAC.doFinal(message.getBytes(StandardCharsets.UTF_8)));
         } catch (Exception e) {
             throw new RuntimeException("Error generating signature", e);
         }
     }
 
 
+
     public PaymentResponse createEsewaPaymentLink(Order order) {
         String referenceId = "ORD-" + order.getId().toString().replaceAll("[^a-zA-Z0-9-]", "");
-        String totalAmount = String.valueOf(order.getTotalPrice());
+        String totalAmount = String.valueOf(order.getTotalPrice().intValue()); // Ensure integer amount
         String productCode = "EPAYTEST";
-
-        String signature = generateSignature(totalAmount, referenceId, productCode);
         String signedFields = "total_amount,transaction_uuid,product_code";
 
-        // (Optional) Generate a preview form URL for debugging/testing
+        String signature = generateSignature(totalAmount, referenceId, productCode);
+        String successUrl = "http://localhost:5173/payment/success/" + order.getId();
+
+
+        // Build form URL (mostly for preview/debug; form is submitted via frontend)
         StringBuilder formBuilder = new StringBuilder();
         formBuilder.append(ESEWA_BASE_URL)
-                .append("?amount=").append(order.getTotalPrice())
+                .append("?amount=").append(totalAmount) // Not part of signature, but expected in form
                 .append("&tax_amount=0")
-                .append("&total_amount=").append(order.getTotalPrice())
+                .append("&total_amount=").append(totalAmount)
                 .append("&transaction_uuid=").append(referenceId)
                 .append("&product_code=").append(productCode)
                 .append("&product_service_charge=0")
                 .append("&product_delivery_charge=0")
-                .append("&success_url=").append(SUCCESS_URL)
+                .append("&success_url=").append(successUrl)
                 .append("&failure_url=").append(FAILURE_URL)
                 .append("&signed_field_names=").append(signedFields)
                 .append("&signature=").append(signature);

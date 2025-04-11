@@ -2,6 +2,7 @@ package com.project.maltbackend.config;
 
 import com.project.maltbackend.service.CustomOAuth2UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -54,6 +55,9 @@ public class AppConfig {
 
                         // URLs starting with /api/admin/** require roles of either RESTAURANT_OWNER or ADMIN
                         .requestMatchers("/api/admin/**").hasAnyRole("RESTAURANT_OWNER", "ADMIN")
+
+                        //  Authentication is required for notifications
+                        .requestMatchers("/api/notifications/**").authenticated()
 
                         // Any other /api/** URLs require authentication
                         .requestMatchers("/api/**").authenticated()
@@ -115,6 +119,12 @@ public class AppConfig {
     @Bean
     PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
+    }
+
+    //Convert DTOs into entities automatically
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
     }
 
 }

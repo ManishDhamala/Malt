@@ -50,6 +50,9 @@ public class OrderServiceImp implements OrderService{
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private NotificationService notificationService;
+
     private int deliveryCharge = 100;
 
     private int restaurantCharge = 10;
@@ -217,6 +220,8 @@ public class OrderServiceImp implements OrderService{
         order.setTotalPrice(finalTotal);
         Order savedOrder = orderRepository.save(order);
 
+        notificationService.createOrderNotification(user, savedOrder);
+
         // Step 3: Save Payment Info
         Payment payment = new Payment();
         payment.setPaymentMethod(request.getPaymentMethod());
@@ -283,6 +288,7 @@ public class OrderServiceImp implements OrderService{
     @Override
     public Order updateOrder(Long orderId, String orderStatus) throws Exception {
         Order order = findOrderById(orderId);
+        String previousStatus = order.getOrderStatus();
 
         if (orderStatus.equals("PENDING")
                 || orderStatus.equals("CONFIRMED")
@@ -297,6 +303,9 @@ public class OrderServiceImp implements OrderService{
 
             order.setOrderStatus(orderStatus);
             Order updatedOrder = orderRepository.save(order);
+
+            // Create notification for status update
+            notificationService.createOrderStatusNotification(order.getCustomer(), updatedOrder, previousStatus);
 
             switch (orderStatus) {
                 case "OUT_FOR_DELIVERY":

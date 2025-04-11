@@ -10,6 +10,7 @@ import com.project.maltbackend.request.LoginRequest;
 import com.project.maltbackend.response.AuthResponse;
 import com.project.maltbackend.service.CustomerUserDetailsService;
 import com.project.maltbackend.service.EmailService;
+import com.project.maltbackend.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,6 +50,9 @@ public class AuthController {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private NotificationService notificationService;
+
     @PostMapping("/signup")
     public ResponseEntity<AuthResponse> createUserHandler(@RequestBody User user) throws Exception {
 
@@ -64,6 +68,11 @@ public class AuthController {
         createdUser.setPassword(passwordEncoder.encode(user.getPassword()));
 
         User savedUser = userRepository.save(createdUser);
+
+        if(user.getRole() == USER_ROLE.ROLE_CUSTOMER) {
+            // Create welcome notification
+            notificationService.createWelcomeNotification(savedUser);
+        }
 
         // Create a cart for the new user and save it in the database
         Cart cart = new Cart();
