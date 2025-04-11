@@ -194,7 +194,7 @@ export const RestaurantDetails = () => {
             value={sortOrder}
             onChange={(e) => setSortOrder(e.target.value)}
           >
-            <option value="">Default</option>
+            <option value="">Select Price</option>
             <option value="asc">Lowest to Highest</option>
             <option value="desc">Highest to Lowest</option>
           </select>

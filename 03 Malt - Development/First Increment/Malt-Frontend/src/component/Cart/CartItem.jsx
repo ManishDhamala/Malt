@@ -5,12 +5,14 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { removeCartItem, updateCartItem } from "../State/Cart/Action";
+import { useAlert } from "../Templates/AlertProvider";
 
 export const CartItem = ({ item }) => {
   const { auth, cart } = useSelector((store) => store);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const jwt = localStorage.getItem("jwt");
+  const { showAlert } = useAlert();
 
   const handleUpdateCartItem = (value) => {
     if (value === -1 && item.quantity === 1) {
@@ -22,6 +24,7 @@ export const CartItem = ({ item }) => {
 
   const handleRemoveCartItem = () => {
     dispatch(removeCartItem({ cartItemId: item.id, jwt: auth.jwt || jwt }));
+    showAlert("error", "Food item removed from cart");
   };
 
   return (

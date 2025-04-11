@@ -7,6 +7,7 @@ import { Address } from "./Address";
 import { Favorites } from "./Favorites";
 import { Events } from "./Events";
 import { PrivateRoute } from "../../Routers/PrivateRoute";
+import PaymentHistory from "./PaymentHistory";
 
 export const Profile = () => {
   return (
@@ -22,6 +23,7 @@ export const Profile = () => {
             <Route path="/address" element={<Address />} />
             <Route path="/favorites" element={<Favorites />} />
             <Route path="/events" element={<Events />} />
+            <Route path="/payment" element={<PaymentHistory />} />
           </Routes>
         </div>
       </div>

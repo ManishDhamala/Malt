@@ -7,6 +7,8 @@ import cartReducer from "./Cart/Reducer";
 import orderReducer from "./Order/Reducer";
 import restaurantOrderReducer from "./Restaurant Order/Reducer";
 import { addressReducer } from "./Address/Reducer";
+import { paymentHistoryReducer } from "./Payment/Reducer";
+import { notificationReducer } from "./Notification/Reducer";
 
 
 const persistedJwt = localStorage.getItem("jwt");
@@ -32,7 +34,9 @@ const rootReducer = combineReducers({
     cart: cartReducer,
     order: orderReducer,
     restaurantOrder: restaurantOrderReducer,
-    address: addressReducer
+    address: addressReducer,
+    payment: paymentHistoryReducer,
+    notification: notificationReducer
 })
 
 

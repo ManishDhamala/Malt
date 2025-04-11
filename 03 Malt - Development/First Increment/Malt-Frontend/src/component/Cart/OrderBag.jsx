@@ -17,6 +17,7 @@ import {
 } from "../State/Cart/Action";
 import { useNavigate } from "react-router-dom";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
+import { useAlert } from "../Templates/AlertProvider";
 
 export const OrderBag = () => {
   const dispatch = useDispatch();
@@ -29,6 +30,8 @@ export const OrderBag = () => {
   const [subtotal, setSubtotal] = useState(0);
   const [totalAmount, setTotalAmount] = useState(0);
   const jwt = localStorage.getItem("jwt");
+
+  const { showAlert } = useAlert();
 
   useEffect(() => {
     if (cart?.cartItems?.length > 0) {
@@ -55,6 +58,7 @@ export const OrderBag = () => {
 
   const handleRemoveCartItem = (item) => {
     dispatch(removeCartItem({ cartItemId: item.id, jwt }));
+    showAlert("error", "Food item removed from cart");
   };
 
   const handleCheckout = () => {

@@ -12,16 +12,20 @@ import {
   RadioGroup,
   FormControl,
   FormLabel,
+  CircularProgress,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { CartItem } from "./CartItem";
 import { AddressCard } from "./AddressCard";
 import AddLocationAltIcon from "@mui/icons-material/AddLocationAlt";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import { Field, Form, Formik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { createOrder } from "../State/Order/Action";
 import { getSavedAddresses } from "../State/Address/Action";
+import { HomeFooter } from "../Home/HomeFooter";
+import { useAlert } from "../Templates/AlertProvider";
 
 const style = {
   position: "absolute",
@@ -48,6 +52,7 @@ export const Cart = () => {
   const handleOpenAddressModal = () => setOpen(true);
   const [open, setOpen] = useState(false);
   const handleClose = () => setOpen(false);
+  const { showAlert } = useAlert();
 
   const { cart, auth, address } = useSelector((store) => store);
 
@@ -62,36 +67,12 @@ export const Cart = () => {
     setSaveAddress(event.target.checked);
   };
 
-  // const handleSubmit = (values, { resetForm }) => {
-  //   if (!paymentMethod) {
-  //     alert("Please select a payment method");
-  //     return;
-  //   }
-
-  //   const data = {
-  //     jwt: localStorage.getItem("jwt"),
-  //     order: {
-  //       restaurantId: cart.cartItems[0].food?.restaurant.id,
-  //       deliveryAddress: {
-  //         fullName: auth.user?.fullName,
-  //         streetAddress: values.streetAddress,
-  //         city: values.city,
-  //         country: values.country,
-  //         province: values?.province,
-  //         postalCode: values.postalCode,
-  //         landmark: values?.landmark,
-  //         savedAddress: saveAddress,
-  //       },
-  //       paymentMethod: paymentMethod,
-  //     },
-  //   };
-  //   dispatch(createOrder(data));
-  //   resetForm();
-  //   setSaveAddress(false);
-  //   handleClose();
-  // };
-
   const handleSubmit = async (values, { resetForm }) => {
+    if (!cart?.cartItems?.length) {
+      showAlert("error", "Your cart is empty");
+      return;
+    }
+
     if (!paymentMethod) {
       alert("Please select a payment method");
       return;
@@ -124,7 +105,6 @@ export const Cart = () => {
       } else if (res.paymentProvider === "KHALTI") {
         window.location.href = res.payment_url; // ← Add this check (optional if you unify both above)
       } else if (res.paymentProvider === "ESEWA") {
-        // Handle eSewa form submission
         const form = document.createElement("form");
         form.method = "POST";
         form.action = "https://rc-epay.esewa.com.np/api/epay/main/v2/form";
@@ -138,9 +118,9 @@ export const Cart = () => {
           product_service_charge: 0,
           product_delivery_charge: 0,
           success_url: `http://localhost:5173/payment/success/${res.order.id}`,
-          failure_url: `http://localhost:5173/payment/fail`,
-          signed_field_names: "total_amount,transaction_uuid,product_code",
-          signature: res.signature, // MUST be provided by backend
+          failure_url: `https://developer.esewa.com.np/failure`,
+          signed_field_names: res.signedFieldNames, //  Provided by backend response
+          signature: res.signature, //  Provided by backend response
         };
 
         for (const key in fields) {
@@ -166,24 +146,6 @@ export const Cart = () => {
       alert("Order could not be processed. Please try again.");
     }
   };
-
-  // const createOrderUsingSelectedAddress = (address) => {
-  //   if (!paymentMethod) {
-  //     alert("Please select a payment method");
-  //     return;
-  //   }
-
-  //   const data = {
-  //     jwt: localStorage.getItem("jwt"),
-  //     order: {
-  //       restaurantId: cart.cartItems[0].food?.restaurant.id,
-  //       addressId: address.id,
-  //       paymentMethod: paymentMethod,
-  //     },
-  //   };
-
-  //   dispatch(createOrder(data));
-  // };
 
   const createOrderUsingSelectedAddress = async (address) => {
     if (!paymentMethod) {
@@ -223,7 +185,11 @@ export const Cart = () => {
           product_delivery_charge: 0,
           success_url: `http://localhost:5173/payment/success/${res.order.id}`,
           failure_url: `http://localhost:5173/payment/fail`,
+          signed_field_names: res.signedFieldNames, //  Provided by backend
+          signature: res.signature, // Provided by backend
         };
+
+        console.log("Esewa fields: ", fields);
 
         for (const key in fields) {
           const input = document.createElement("input");
@@ -293,13 +259,53 @@ export const Cart = () => {
               </div>
               <Divider />
             </div>
-            <div className="flex justify-between text-gray-900 font-bold pt-3 pb-10">
+            <div className="flex justify-between text-gray-900 font-bold pt-3">
               <p>Total Amount</p>
               <p>Rs {totalAmount}</p>
             </div>
           </div>
 
+          <Divider />
           {/* ✅ Payment Method Radio Group */}
+          {/* <div className="px-4 py-4">
+            <FormControl component="fieldset" fullWidth>
+              <p className="  mb-2 font-medium ">Select a payment method:</p>
+              <div className="grid grid-cols-1 sm:grid-cols-1 gap-3">
+                {paymentOptions.map((option) => (
+                  <label
+                    key={option.value}
+                    className={`flex items-center p-1 border rounded-2xl cursor-pointer transition ${
+                      paymentMethod === option.value
+                        ? "border-blue-600 bg-blue-50"
+                        : "border-gray-300"
+                    }`}
+                  >
+                    <Radio
+                      checked={paymentMethod === option.value}
+                      onChange={(e) => setPaymentMethod(e.target.value)}
+                      value={option.value}
+                      icon={
+                        <span className="w-5 h-5 border border-gray-400 rounded-full" />
+                      }
+                      checkedIcon={
+                        <CheckCircleIcon className="text-blue-600" />
+                      }
+                    />
+                    <img
+                      src={option.logo}
+                      alt={option.label}
+                      className="w-6 h-6 object-contain ml-2"
+                    />
+                    <span className="font-medium text-m ml-3">
+                      {option.label}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </FormControl>
+          </div> */}
+
+          {/* ✅ Payment Method Radio Group - YT */}
           <div className="px-5 py-5">
             <FormControl component="fieldset">
               <FormLabel component="legend" className="font-semibold text-lg">
@@ -354,6 +360,8 @@ export const Cart = () => {
                     handleSelectAddress={createOrderUsingSelectedAddress}
                     item={item}
                     showButton={true}
+                    cart={cart}
+                    showAlert={showAlert}
                   />
                 ))}
               <Card className="flex gap-5 w-64 p-5">
@@ -475,6 +483,7 @@ export const Cart = () => {
           </Formik>
         </Box>
       </Modal>
+      <HomeFooter />
     </>
   );
 };

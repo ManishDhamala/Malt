@@ -11,7 +11,7 @@ import {
 
 export const HomeFooter = () => {
   return (
-    <footer className="bg-neutral-100 text-center text-neutral-700 dark:bg-neutral-600 dark:text-neutral-200 lg:text-left mt-10">
+    <footer className="bg-neutral-100 text-center text-neutral-700 dark:bg-neutral-600 dark:text-neutral-200 lg:text-left">
       <div className="container mx-auto px-6 py-6">
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {/* Logo & Description */}

@@ -4,11 +4,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { addItemToCart } from "../State/Cart/Action";
 import { IconButton } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useAlert } from "../Templates/AlertProvider";
 
 export const MenuCard = ({ item }) => {
   const dispatch = useDispatch();
   const { auth } = useSelector((store) => store);
   const navigate = useNavigate();
+  const { showAlert } = useAlert();
 
   const handleAddItemToCart = () => {
     if (auth?.user) {
@@ -20,6 +22,7 @@ export const MenuCard = ({ item }) => {
         },
       };
       dispatch(addItemToCart(reqData));
+      showAlert("success", "Food item added to cart");
     } else {
       navigate("/account/login");
     }

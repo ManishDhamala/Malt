@@ -10,8 +10,9 @@ import { PaymentSuccess } from "../component/PaymentSuccess/PaymentSuccess";
 import { useDispatch, useSelector } from "react-redux";
 import { Search } from "../component/Search/Search";
 import { getUser } from "../component/State/Authentication/Action";
-import KhaltiCallback from "../component/Cart/KhaltiCallBack";
 import { PrivateRoute } from "./PrivateRoute";
+import EsewaCallback from "../component/Cart/EsewaCallback";
+import KhaltiCallback from "../component/Cart/KhaltiCallback";
 
 export const CustomerRoute = () => {
   const dispatch = useDispatch();
@@ -87,6 +88,15 @@ export const CustomerRoute = () => {
           element={
             <PrivateRoute allowedRoles={["ROLE_CUSTOMER"]}>
               <PaymentSuccess />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/payment/success/:orderId"
+          element={
+            <PrivateRoute allowedRoles={["ROLE_CUSTOMER"]}>
+              <EsewaCallback />
             </PrivateRoute>
           }
         />

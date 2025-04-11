@@ -3,12 +3,12 @@ import React, { useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import PersonIcon from "@mui/icons-material/Person";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import "./navbar.css";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { store } from "../State/store";
 import { Authentication } from "../Authentication/Authentication";
+import { Notification } from "./Notification";
 
 export const Navbar = () => {
   const { auth, cart } = useSelector((store) => store);
@@ -57,9 +57,6 @@ export const Navbar = () => {
             <SearchIcon sx={{ fontSize: "1.6rem", color: "white" }} />
           </IconButton>
         </div>
-        {/* <div className="">
-          <Avatar sx={{ bgcolor: "white", color: "#B20303" }}>M</Avatar>
-        </div> */}
         <div className="">
           <IconButton onClick={handleCartClick}>
             <Badge color="secondary" badgeContent={cart.cartItems.length}>
@@ -73,11 +70,7 @@ export const Navbar = () => {
           </IconButton>
         </div>
         <div className="">
-          <IconButton>
-            <Badge color="secondary" badgeContent={2}>
-              <NotificationsIcon sx={{ fontSize: "1.6rem", color: "white" }} />
-            </Badge>
-          </IconButton>
+          <Notification />
         </div>
       </div>
     </div>

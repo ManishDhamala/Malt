@@ -22,11 +22,6 @@ export const Address = () => {
 
   return (
     <div className="lg:mt-22">
-      {/* <h1 className="text-center font-semibold text-2xl py-8">
-        <LocalShippingIcon sx={{ fontSize: 32 }} />
-        <span className="ml-2">Choose Delivery Address</span>
-      </h1> */}
-
       <h1 className="py-5 text-xl font-semibold text-center">
         <BookmarkAddedIcon sx={{ fontSize: 23 }} />
         <span className="ml-2">Saved Address </span>

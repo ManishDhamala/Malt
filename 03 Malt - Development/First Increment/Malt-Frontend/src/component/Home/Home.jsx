@@ -58,7 +58,7 @@ export const Home = () => {
         <MultipleItemCarousel />
       </section>
 
-      <section className="px-5 lg:px-20 pt-5">
+      <section className="px-5 lg:px-20 pt-5 mb-10">
         <h1 className="text-2xl font-semibold text-gray-800 pb-5">
           Featured Restaurants
         </h1>
