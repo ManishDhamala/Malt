@@ -32,7 +32,6 @@ export const CustomerRoute = () => {
         {/* Accessible to everyone */}
         <Route path="/" element={<Home />} />
         <Route path="/account/:register" element={<Home />} />
-
         {/* Block Admin/Owner from Restaurant Details and Search */}
         <Route
           path="/restaurant/:city/:title/:id"
@@ -56,7 +55,6 @@ export const CustomerRoute = () => {
             )
           }
         />
-
         {/* Customer Only Routes (Protected) */}
         <Route
           path="/cart"
@@ -74,7 +72,6 @@ export const CustomerRoute = () => {
             </PrivateRoute>
           }
         />
-
         <Route
           path="/payment/khalti/callback"
           element={
@@ -83,6 +80,7 @@ export const CustomerRoute = () => {
             </PrivateRoute>
           }
         />
+        // For regular payment success
         <Route
           path="/payment/success/:id"
           element={
@@ -91,9 +89,9 @@ export const CustomerRoute = () => {
             </PrivateRoute>
           }
         />
-
+        // For eSewa callback specifically
         <Route
-          path="/payment/success/:orderId"
+          path="/payment/esewa/success/:orderId"
           element={
             <PrivateRoute allowedRoles={["ROLE_CUSTOMER"]}>
               <EsewaCallback />

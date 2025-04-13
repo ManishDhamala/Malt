@@ -117,7 +117,7 @@ export const Cart = () => {
           product_code: "EPAYTEST",
           product_service_charge: 0,
           product_delivery_charge: 0,
-          success_url: `http://localhost:5173/payment/success/${res.order.id}`,
+          success_url: `http://localhost:5173/payment/esewa/success/${res.order.id}`,
           failure_url: `https://developer.esewa.com.np/failure`,
           signed_field_names: res.signedFieldNames, //  Provided by backend response
           signature: res.signature, //  Provided by backend response
@@ -183,7 +183,7 @@ export const Cart = () => {
           product_code: "EPAYTEST",
           product_service_charge: 0,
           product_delivery_charge: 0,
-          success_url: `http://localhost:5173/payment/success/${res.order.id}`,
+          success_url: `http://localhost:5173/payment/esewa/success/${res.order.id}`,
           failure_url: `http://localhost:5173/payment/fail`,
           signed_field_names: res.signedFieldNames, //  Provided by backend
           signature: res.signature, // Provided by backend
