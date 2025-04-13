@@ -64,7 +64,7 @@ export const SearchRestaurant = () => {
         Restaurants
       </h1>
 
-      <div className="flex flex-wrap gap-6 ml-6">
+      <div className="flex flex-wrap gap-6 ml-6 mb-10">
         {Array.isArray(results) && results.length > 0 ? (
           results
             .sort((a, b) => a.id - b.id)

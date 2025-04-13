@@ -61,12 +61,18 @@ export const SearchFood = () => {
       )}
 
       {/* Display Search Results */}
-      <div className="flex flex-col items-center gap-4">
+      <div className="flex flex-col items-center gap-4 mb-10">
         {!loading && searchResults?.length > 0 ? (
           Array.from(
             new Map(searchResults.map((item) => [item.id, item])).values()
           )
-            .filter((item) => item.restaurant && item.restaurant.name)
+            .filter(
+              (item) =>
+                item.available && // FIlter only available food
+                item.restaurant && // Ensure the restaurant object exists
+                item.restaurant.name && // Ensure the restaurant name is present
+                item.restaurant.open // Filter only open restaurant
+            )
             .map((item) => (
               <div key={item.id} className="w-full max-w-3xl">
                 <p className="inline-block bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm font-medium mb-2">

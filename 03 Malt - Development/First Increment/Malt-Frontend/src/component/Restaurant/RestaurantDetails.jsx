@@ -262,7 +262,7 @@ export const RestaurantDetails = () => {
           {/* Menu in center */}
           <div className="space-y-3 lg:w-[60%] mr-3">
             {[...menu.menuItems]
-              .filter((item) => item) // Ensure valid
+              .filter((item) => item && item.available) // Filtering only available items
               .sort((a, b) => {
                 if (sortOrder === "asc") return a.price - b.price;
                 if (sortOrder === "desc") return b.price - a.price;

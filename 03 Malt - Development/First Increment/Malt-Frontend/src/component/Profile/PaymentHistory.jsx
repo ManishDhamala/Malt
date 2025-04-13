@@ -79,6 +79,9 @@ const PaymentHistory = () => {
                     Payment Method
                   </TableCell>
                   <TableCell sx={{ fontWeight: "bold" }} align="center">
+                    Order ID
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: "bold" }} align="center">
                     Status
                   </TableCell>
                 </TableRow>
@@ -98,6 +101,7 @@ const PaymentHistory = () => {
                         <TableCell align="center">
                           {payment.paymentMethod}
                         </TableCell>
+                        <TableCell align="center">#{payment.orderId}</TableCell>
                         <TableCell align="center">
                           {renderStatus(payment.status)}
                         </TableCell>

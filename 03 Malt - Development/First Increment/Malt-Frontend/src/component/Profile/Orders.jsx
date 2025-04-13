@@ -3,6 +3,7 @@ import { OrderCard } from "./OrderCard";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getUserOrders } from "../State/Order/Action";
+import CenterLoader from "../Templates/CenterLoader";
 
 export const Orders = () => {
   const { auth, order } = useSelector((store) => store);
@@ -13,6 +14,10 @@ export const Orders = () => {
   useEffect(() => {
     dispatch(getUserOrders(jwt));
   }, [auth.jwt]);
+
+  if (!order.orders || order.orders.length === 0) {
+    return <CenterLoader message="Loading order history..." />;
+  }
 
   return (
     <div className="flex items-center flex-col lg:mt-20 pb-10">

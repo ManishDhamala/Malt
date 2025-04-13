@@ -45,55 +45,57 @@ export const RestaurantCard = ({ restaurant }) => {
 
   return (
     <Card className="m-2 w-[19rem]">
-      <div
-        className={`${
-          restaurant.open ? "cursor-pointer" : "cursor-not-allowed"
-        } relative`}
-      >
-        <img
-          onClick={handleNavigateToRestaurant}
-          className="w-full h-[10rem] rounded-t-md object-cover"
-          src={
-            restaurant.images[0] ||
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRv1ank-wR_C1doFKGVu5XKmO5bg6RTaVub5A&s"
-          }
-          alt={restaurant.name || restaurant.title || "Restaurant Image"}
-        />
-        <Chip
-          size="small"
-          className="absolute top-2 left-2"
-          color={restaurant?.open ? "success" : "error"}
-          label={restaurant?.open ? "open" : "closed"}
-        />
-      </div>
-      <div className="p-4 textPart lg:flex w-full justify-between">
-        <div className="space-y-1">
-          <p
+      <div className="transition-transform ease-in-out duration-200 hover:scale-105">
+        <div
+          className={`${
+            restaurant.open ? "cursor-pointer" : "cursor-not-allowed"
+          } relative`}
+        >
+          <img
             onClick={handleNavigateToRestaurant}
-            className="text-gray-700 font-semibold text-lg cursor-pointer"
-          >
-            {restaurant.name || restaurant.title || "Unknown Restaurant"}
-          </p>
-          <p
-            onClick={handleNavigateToRestaurant}
-            className="text-gray-700 text-sm cursor-pointer"
-          >
-            {restaurant.description || "No description available"}
-          </p>
+            className="w-full h-[10rem] rounded-t-md object-cover"
+            src={
+              restaurant.images[0] ||
+              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRv1ank-wR_C1doFKGVu5XKmO5bg6RTaVub5A&s"
+            }
+            alt={restaurant.name || restaurant.title || "Restaurant Image"}
+          />
+          <Chip
+            size="small"
+            className="absolute top-2 left-2"
+            color={restaurant?.open ? "success" : "error"}
+            label={restaurant?.open ? "open" : "closed"}
+          />
         </div>
-        <div>
-          <IconButton onClick={handleAddToFavorite}>
-            {isPresentInFavourites(auth?.favourites, restaurant) ? (
-              <FavoriteIcon sx={{ fontSize: "1.6rem", color: "#d91a1a" }} />
-            ) : (
-              <FavoriteBorderIcon
-                sx={{
-                  fontSize: "1.6rem",
-                  color: "#242b2E",
-                }}
-              />
-            )}
-          </IconButton>
+        <div className="p-4 textPart lg:flex w-full justify-between">
+          <div className="space-y-1">
+            <p
+              onClick={handleNavigateToRestaurant}
+              className="text-gray-700 font-semibold text-lg cursor-pointer"
+            >
+              {restaurant.name || restaurant.title || "Unknown Restaurant"}
+            </p>
+            <p
+              onClick={handleNavigateToRestaurant}
+              className="text-gray-700 text-sm cursor-pointer"
+            >
+              {restaurant.description || "No description available"}
+            </p>
+          </div>
+          <div>
+            <IconButton onClick={handleAddToFavorite}>
+              {isPresentInFavourites(auth?.favourites, restaurant) ? (
+                <FavoriteIcon sx={{ fontSize: "1.6rem", color: "#d91a1a" }} />
+              ) : (
+                <FavoriteBorderIcon
+                  sx={{
+                    fontSize: "1.6rem",
+                    color: "#242b2E",
+                  }}
+                />
+              )}
+            </IconButton>
+          </div>
         </div>
       </div>
     </Card>

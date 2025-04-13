@@ -105,6 +105,7 @@ export const MenuTable = () => {
                     <TableCell align="center">Rs {item.price}</TableCell>
                     <TableCell align="center">
                       <Button
+                        variant="contained"
                         color={item.available ? "success" : "error"}
                         onClick={() => handleFoodAvailibilty(item.id)}
                       >

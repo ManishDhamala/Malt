@@ -54,7 +54,7 @@ export const Notification = () => {
       dispatch(getUnreadNotificationCount(jwt)).then((res) => {
         if (res.error) {
           console.error("Error fetching notification count:", res.error);
-          setErrorMsg("Failed to load notification count");
+          // setErrorMsg("Failed to load notification count");
         }
       });
     }

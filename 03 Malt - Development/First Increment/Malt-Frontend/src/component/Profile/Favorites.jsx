@@ -4,6 +4,8 @@ import { RestaurantCard } from "../Restaurant/RestaurantCard";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getAllRestaurantsAction } from "../State/Restaurant/Action";
+import { Backdrop, CircularProgress } from "@mui/material";
+import CenterLoader from "../Templates/CenterLoader";
 
 export const Favorites = () => {
   const { auth, restaurant } = useSelector((store) => store);
@@ -23,7 +25,7 @@ export const Favorites = () => {
     : [];
 
   if (favorites.length === 0 || allRestaurants.length === 0) {
-    return <p className="mt-30 ml-90">Loading Favorites Restaurant...</p>;
+    return <CenterLoader message="Loading favorite restaurants..." />;
   }
 
   // Safely map favorites and attach "open" status
@@ -42,10 +44,6 @@ export const Favorites = () => {
       };
     })
     .filter(Boolean); //  Remove null values
-
-  if (favorites.length === 0 || allRestaurants.length === 0) {
-    return <p className="mt-30 ml-90">Loading Favorites Restaurant...</p>;
-  }
 
   return (
     <div className="lg:mt-22">

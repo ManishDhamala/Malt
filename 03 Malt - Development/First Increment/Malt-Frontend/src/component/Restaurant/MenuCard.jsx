@@ -29,7 +29,7 @@ export const MenuCard = ({ item }) => {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row items-center lg:items-start gap-2 sm:gap-3 lg:gap-4 shadow-md border border-gray-200 rounded-md p-2 sm:p-3 lg:p-4 bg-white w-full max-w-2xl mx-auto relative">
+    <div className="flex flex-col lg:flex-row items-center lg:items-start gap-2 sm:gap-3 lg:gap-4 shadow-md border border-gray-200 rounded-md p-2 sm:p-3 lg:p-4 bg-white w-full max-w-2xl mx-auto relative transition-transform hover:scale-103">
       <img
         className="w-[4rem] h-[4rem] sm:w-[4.5rem] sm:h-[4.5rem] lg:w-[5.5rem] lg:h-[5.5rem] object-cover rounded-md"
         src={
