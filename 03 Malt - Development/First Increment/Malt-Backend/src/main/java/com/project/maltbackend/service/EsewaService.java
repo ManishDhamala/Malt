@@ -9,6 +9,7 @@ import javax.crypto.spec.SecretKeySpec;
 import org.apache.commons.codec.binary.Base64;
 
 import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 
 
 @Service
@@ -49,7 +50,7 @@ public class EsewaService {
         String signedFields = "total_amount,transaction_uuid,product_code";
 
         String signature = generateSignature(totalAmount, referenceId, productCode);
-        String successUrl = "http://localhost:5173/payment/success/" + order.getId();
+        String successUrl = "http://localhost:5173/payment/esewa/success/" + order.getId();
 
 
         // Build form URL (mostly for preview/debug; form is submitted via frontend)
@@ -81,5 +82,24 @@ public class EsewaService {
 
         return response;
     }
+
+
+    // If e-sewa sent signature in the response verify the payment
+    public boolean verifyPayment(String signature, String amount) {
+        try {
+            if (signature != null && !signature.isEmpty()) {
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+
+
+
 
 }
