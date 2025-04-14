@@ -254,7 +254,7 @@ export const Cart = () => {
 
   return (
     <>
-      <main className="lg:flex justify-between lg:mt-16">
+      <main className="lg:flex justify-between mt-16">
         <section className="lg:w-[30%] space-y-6 lg:min-h-screen pt-10">
           {cart?.cartItems?.length > 0 ? (
             cart.cartItems.map((item) => <CartItem key={item.id} item={item} />)

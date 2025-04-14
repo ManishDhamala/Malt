@@ -6,15 +6,17 @@ import {
   Card,
   CardHeader,
   Chip,
+  CircularProgress,
   Menu,
   MenuItem,
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
+  Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -45,10 +47,8 @@ export const OrderTable = ({ filterValue }) => {
         restaurantId: restaurant?.usersRestaurant?.id,
       })
     );
-    console.log("Fetched Orders:", restaurantOrder?.restaurantOrders);
   }, [jwt, restaurant?.usersRestaurant?.id]);
 
-  //  Correctly filter orders before mapping
   const filteredOrders =
     filterValue === "all"
       ? restaurantOrder?.restaurantOrders
@@ -67,13 +67,11 @@ export const OrderTable = ({ filterValue }) => {
   };
 
   const handleUpdateOrder = (orderId, orderStatus) => {
-    // Optimistically update UI
     dispatch({
       type: "UPDATE_ORDER_STATUS_OPTIMISTIC",
       payload: { orderId, orderStatus },
     });
 
-    // Dispatch API request
     dispatch(updateOrderStatus({ orderId, orderStatus, jwt })).then(() => {
       dispatch(
         getRestaurantOrders({
@@ -89,48 +87,58 @@ export const OrderTable = ({ filterValue }) => {
   return (
     <Box>
       <Card className="mt-1">
-        <CardHeader
-          title="Order History"
-          sx={{ pt: 2, alignItems: "center" }}
-        />
+        <CardHeader title="Order History" sx={{ pt: 2 }} />
 
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 700 }} aria-label="order table">
-            <TableHead>
-              <TableRow>
-                <TableCell sx={{ fontWeight: "bold" }}>Id</TableCell>
-                <TableCell sx={{ fontWeight: "bold" }} align="center">
-                  Image
-                </TableCell>
-                <TableCell sx={{ fontWeight: "bold" }} align="center">
-                  Customer
-                </TableCell>
-                <TableCell sx={{ fontWeight: "bold" }} align="center">
-                  Food Item
-                </TableCell>
-                <TableCell sx={{ fontWeight: "bold" }} align="center">
-                  Price
-                </TableCell>
-                <TableCell sx={{ fontWeight: "bold" }} align="center">
-                  Delivery Address
-                </TableCell>
-                <TableCell sx={{ fontWeight: "bold" }} align="center">
-                  Order Status
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredOrders?.length > 0 ? (
-                filteredOrders
-                  .sort((a, b) => b.id - a.id) // Keep order consistent
+        {/* Loading State */}
+        {restaurantOrder?.loading ? (
+          <Box p={2} textAlign="center">
+            <CircularProgress />
+          </Box>
+        ) : /*  Error State */
+        restaurantOrder?.error ? (
+          <Box p={2}>
+            <Typography color="error">
+              {restaurantOrder.error.message || "Failed to fetch orders."}
+            </Typography>
+          </Box>
+        ) : /*  Empty State */
+        !filteredOrders || filteredOrders.length === 0 ? (
+          <Box p={2} textAlign="center">
+            <Typography>No orders found.</Typography>
+          </Box>
+        ) : (
+          /* Success State */
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 700 }} aria-label="order table">
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={{ fontWeight: "bold" }}>Id</TableCell>
+                  <TableCell sx={{ fontWeight: "bold" }} align="center">
+                    Image
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: "bold" }} align="center">
+                    Customer
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: "bold" }} align="center">
+                    Food Item
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: "bold" }} align="center">
+                    Price
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: "bold" }} align="center">
+                    Delivery Address
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: "bold" }} align="center">
+                    Order Status
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {filteredOrders
+                  .sort((a, b) => b.id - a.id)
                   .map((item) => (
-                    <TableRow
-                      key={item.id}
-                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                    >
+                    <TableRow key={item.id}>
                       <TableCell>{item.id}</TableCell>
-
-                      {/* Display food images */}
                       <TableCell align="center">
                         <AvatarGroup max={3}>
                           {item.items?.map((orderItem, index) => (
@@ -141,13 +149,9 @@ export const OrderTable = ({ filterValue }) => {
                           ))}
                         </AvatarGroup>
                       </TableCell>
-
-                      {/* Customer Name */}
                       <TableCell align="center">
                         {item?.user?.fullName}
                       </TableCell>
-
-                      {/* Food Items */}
                       <TableCell align="center">
                         {item.items?.map((orderItem, index) => (
                           <Chip
@@ -158,19 +162,13 @@ export const OrderTable = ({ filterValue }) => {
                           />
                         ))}
                       </TableCell>
-
-                      {/* Price*/}
                       <TableCell align="center">
                         Rs {item?.totalPrice}
                       </TableCell>
-
-                      {/* {Delivery Address} */}
                       <TableCell align="center">
-                        {item?.deliveryAddress?.city},
+                        {item?.deliveryAddress?.city},{" "}
                         {item?.deliveryAddress?.streetAddress}
                       </TableCell>
-
-                      {/* Order Status Button */}
                       <TableCell align="center">
                         <Button
                           variant="contained"
@@ -180,9 +178,6 @@ export const OrderTable = ({ filterValue }) => {
                             minWidth: "120px",
                             textTransform: "capitalize",
                             fontSize: "0.75rem",
-                            backgroundColor: "primary.main",
-                            color: "white",
-                            "&:hover": { backgroundColor: "primary.dark" },
                           }}
                         >
                           {orderStatus.find(
@@ -190,7 +185,6 @@ export const OrderTable = ({ filterValue }) => {
                           )?.label || "Unknown"}
                         </Button>
 
-                        {/* Dropdown Menu for Updating Order Status */}
                         <Menu
                           anchorEl={anchorEl}
                           open={Boolean(anchorEl) && selectedOrder === item.id}
@@ -209,17 +203,11 @@ export const OrderTable = ({ filterValue }) => {
                         </Menu>
                       </TableCell>
                     </TableRow>
-                  ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={6} align="center">
-                    No orders found
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
+                  ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
       </Card>
     </Box>
   );

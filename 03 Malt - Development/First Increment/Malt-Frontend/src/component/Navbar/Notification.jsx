@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Badge,
   Box,
@@ -50,13 +50,7 @@ export const Notification = () => {
 
   useEffect(() => {
     if (jwt) {
-      console.log("Fetching notification count with JWT:", jwt);
-      dispatch(getUnreadNotificationCount(jwt)).then((res) => {
-        if (res.error) {
-          console.error("Error fetching notification count:", res.error);
-          // setErrorMsg("Failed to load notification count");
-        }
-      });
+      dispatch(getUnreadNotificationCount(jwt));
     }
   }, [jwt, dispatch]);
 
@@ -65,26 +59,8 @@ export const Notification = () => {
     setOpen((prev) => !prev);
 
     if (!open && jwt) {
-      console.log("Opening notifications dropdown with JWT:", jwt);
-
-      // Only fetch notifications when opening the menu
-      dispatch(getAllNotifications(jwt)).then((res) => {
-        if (res.error) {
-          console.error("Error fetching all notifications:", res.error);
-          setErrorMsg("Failed to load notifications");
-        } else {
-          console.log("All notifications loaded:", res.data);
-        }
-      });
-
-      dispatch(getUnreadNotifications(jwt)).then((res) => {
-        if (res.error) {
-          console.error("Error fetching unread notifications:", res.error);
-          setErrorMsg("Failed to load unread notifications");
-        } else {
-          console.log("Unread notifications loaded:", res.data);
-        }
-      });
+      dispatch(getAllNotifications(jwt));
+      dispatch(getUnreadNotifications(jwt));
     }
   };
 
@@ -93,46 +69,25 @@ export const Notification = () => {
   };
 
   const handleNotificationClick = (notif) => {
-    // Mark as read when clicked
     if (!notif.isRead && jwt) {
-      dispatch(markNotificationAsRead({ jwt, notificationId: notif.id })).then(
-        (res) => {
-          if (res.error) {
-            console.error("Error marking notification as read:", res.error);
-            setErrorMsg("Failed to mark notification as read");
-          }
-        }
-      );
+      dispatch(markNotificationAsRead({ jwt, notificationId: notif.id }));
     }
-
-    // Handle navigation based on notification type
     if (notif.data && notif.data.url) {
       navigate(notif.data.url);
     }
-
     setOpen(false);
   };
 
   const handleMarkAllAsRead = () => {
     if (jwt) {
-      dispatch(markAllNotificationsAsRead(jwt)).then((res) => {
-        if (res.error) {
-          console.error("Error marking all notifications as read:", res.error);
-          setErrorMsg("Failed to mark all notifications as read");
-        }
-      });
+      dispatch(markAllNotificationsAsRead(jwt));
     }
   };
 
   const handleDeleteNotification = (event, notificationId) => {
-    event.stopPropagation(); // Prevent firing the parent click event
+    event.stopPropagation();
     if (jwt) {
-      dispatch(deleteNotification({ jwt, notificationId })).then((res) => {
-        if (res.error) {
-          console.error("Error deleting notification:", res.error);
-          setErrorMsg("Failed to delete notification");
-        }
-      });
+      dispatch(deleteNotification({ jwt, notificationId }));
     }
   };
 
@@ -144,24 +99,17 @@ export const Notification = () => {
     setErrorMsg(null);
   };
 
-  // Format the time difference
   const formatTimeAgo = (timestamp) => {
     return moment(timestamp).fromNow();
   };
 
-  // Get notifications based on current tab
   const getNotificationsToDisplay = () => {
-    if (tabValue === 0) {
-      return notification.notifications || [];
-    } else {
-      return notification.unreadNotifications || [];
-    }
+    if (tabValue === 0) return notification.notifications || [];
+    return notification.unreadNotifications || [];
   };
 
   const notificationsToDisplay = getNotificationsToDisplay();
-  console.log("Notifications to display:", notificationsToDisplay);
 
-  // Get notification type icon
   const getNotificationIcon = (type) => {
     switch (type?.toLowerCase()) {
       case "order":
@@ -179,7 +127,7 @@ export const Notification = () => {
     <div>
       <IconButton onClick={handleClick}>
         <Badge color="secondary" badgeContent={notification.unreadCount || 0}>
-          <NotificationsIcon sx={{ fontSize: "1.6rem", color: "white" }} />
+          <NotificationsIcon sx={{ fontSize: "1.5rem", color: "white" }} />
         </Badge>
       </IconButton>
 
@@ -193,19 +141,19 @@ export const Notification = () => {
           <Paper
             elevation={3}
             sx={{
-              width: { xs: "320px", sm: "350px" },
-              maxHeight: "400px",
+              width: { xs: "280px", sm: "300px" },
+              maxHeight: "360px",
               overflow: "hidden",
               borderRadius: "8px",
             }}
           >
-            <Box sx={{ p: 2, borderBottom: "1px solid #eee" }}>
+            <Box sx={{ p: 1.5, borderBottom: "1px solid #eee" }}>
               <Box
                 display="flex"
                 justifyContent="space-between"
                 alignItems="center"
               >
-                <Typography variant="h6" fontWeight="600">
+                <Typography variant="h6" fontWeight="600" fontSize="0.95rem">
                   Notifications
                 </Typography>
                 {notification.unreadCount > 0 && (
@@ -213,22 +161,23 @@ export const Notification = () => {
                     startIcon={<DoneAllIcon />}
                     size="small"
                     onClick={handleMarkAllAsRead}
-                    sx={{ color: "#B20303" }}
+                    sx={{ color: "#B20303", fontSize: "0.75rem" }}
                   >
                     Mark all as read
                   </Button>
                 )}
               </Box>
-
               <Tabs
                 value={tabValue}
                 onChange={handleTabChange}
                 variant="fullWidth"
                 sx={{
-                  mt: 1,
+                  mt: 0.5,
                   "& .MuiTab-root": {
                     textTransform: "none",
                     fontWeight: 500,
+                    fontSize: "0.8rem",
+                    py: 0.5,
                   },
                   "& .Mui-selected": {
                     color: "#B20303 !important",
@@ -245,7 +194,7 @@ export const Notification = () => {
 
             <List
               sx={{
-                maxHeight: "315px",
+                maxHeight: "265px",
                 overflow: "auto",
                 padding: 0,
                 "&::-webkit-scrollbar": {
@@ -259,7 +208,7 @@ export const Notification = () => {
             >
               {notification.isLoading ? (
                 <Box sx={{ display: "flex", justifyContent: "center", p: 3 }}>
-                  <CircularProgress size={30} sx={{ color: "#B20303" }} />
+                  <CircularProgress size={24} sx={{ color: "#B20303" }} />
                 </Box>
               ) : notificationsToDisplay.length > 0 ? (
                 notificationsToDisplay.map((notif) => (
@@ -270,7 +219,7 @@ export const Notification = () => {
                         cursor: "pointer",
                         backgroundColor: notif.isRead ? "white" : "#faf6f6",
                         "&:hover": { backgroundColor: "#f5f5f5" },
-                        py: 1.5,
+                        py: 1,
                       }}
                       onClick={() => handleNotificationClick(notif)}
                       secondaryAction={
@@ -287,7 +236,9 @@ export const Notification = () => {
                       }
                     >
                       <ListItemAvatar>
-                        <Avatar sx={{ bgcolor: "#f7e9e9" }}>
+                        <Avatar
+                          sx={{ bgcolor: "#f7e9e9", width: 30, height: 30 }}
+                        >
                           {getNotificationIcon(notif.type)}
                         </Avatar>
                       </ListItemAvatar>
@@ -297,9 +248,9 @@ export const Notification = () => {
                             variant="subtitle1"
                             sx={{
                               fontWeight: notif.isRead ? 400 : 600,
-                              fontSize: "0.95rem",
+                              fontSize: "0.85rem",
                               lineHeight: 1.2,
-                              mb: 0.5,
+                              mb: 0.3,
                             }}
                           >
                             {notif.title}
@@ -310,14 +261,18 @@ export const Notification = () => {
                             <Typography
                               variant="body2"
                               color="text.secondary"
-                              sx={{ display: "block", mb: 0.5 }}
+                              sx={{ fontSize: "0.75rem", mb: 0.3 }}
                             >
                               {notif.content}
                             </Typography>
                             <Typography
                               variant="caption"
+                              sx={{
+                                fontSize: "0.65rem",
+                                fontStyle: "italic",
+                                display: "block",
+                              }}
                               color="text.secondary"
-                              sx={{ display: "block", fontStyle: "italic" }}
                             >
                               {formatTimeAgo(notif.createdAt)}
                             </Typography>
@@ -325,12 +280,12 @@ export const Notification = () => {
                         }
                       />
                     </ListItem>
-                    <Divider component="li" />
+                    <Divider component="li" sx={{ my: 0.5 }} />
                   </React.Fragment>
                 ))
               ) : (
                 <Box sx={{ p: 3, textAlign: "center" }}>
-                  <Typography variant="body1" color="text.secondary">
+                  <Typography variant="body2" color="text.secondary">
                     {tabValue === 0
                       ? "No notifications yet"
                       : "No unread notifications"}
@@ -342,7 +297,6 @@ export const Notification = () => {
         </ClickAwayListener>
       </Popper>
 
-      {/* Error Snackbar */}
       <Snackbar
         open={!!errorMsg}
         autoHideDuration={6000}

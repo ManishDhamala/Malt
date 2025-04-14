@@ -8,10 +8,12 @@ import {
   searchRestaurant,
 } from "../State/Restaurant/Action";
 import { RestaurantCard } from "../Restaurant/RestaurantCard";
+import CenterLoader from "../Templates/CenterLoader";
+import NoDataFound from "../Templates/NoDataFound";
 
 export const SearchRestaurant = () => {
   const dispatch = useDispatch();
-  const { restaurants, searchedRestaurants } = useSelector(
+  const { restaurants, searchedRestaurants, loading } = useSelector(
     (store) => store.restaurant
   );
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -64,26 +66,27 @@ export const SearchRestaurant = () => {
         Restaurants
       </h1>
 
-      <div className="flex flex-wrap gap-6 ml-6 mb-10">
-        {Array.isArray(results) && results.length > 0 ? (
-          results
-            .sort((a, b) => a.id - b.id)
-            .map((restaurant) => (
-              <RestaurantCard key={restaurant.id} restaurant={restaurant} />
-            ))
-        ) : (
-          <div className="text-center w-full mt-10">
-            <p className="text-gray-500 text-lg font-medium">
-              No restaurants found.
-            </p>
-            <img
-              className="w-[250px] mx-auto mt-4 opacity-80 rounded-full"
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRd8LWlb8l34MXvr3BonwEYsd11lw1QKQVEiQ&s"
-              alt="Not Found"
+      {loading ? (
+        <CenterLoader message="Loading restaurants..." />
+      ) : (
+        <div className="flex flex-wrap gap-6 ml-6 mb-10">
+          {Array.isArray(results) && results.length > 0 ? (
+            results
+              .sort((a, b) => a.id - b.id)
+              .map((restaurant) => (
+                <RestaurantCard key={restaurant.id} restaurant={restaurant} />
+              ))
+          ) : (
+            <NoDataFound
+              title="No Restaurants Found"
+              description="Try a different search or explore all restaurants."
+              icon={
+                <SearchIcon fontSize="large" className="text-gray-400 mb-4" />
+              }
             />
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

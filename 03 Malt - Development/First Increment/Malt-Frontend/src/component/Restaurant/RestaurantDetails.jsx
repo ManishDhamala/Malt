@@ -23,6 +23,7 @@ import { getMenuItemsByRestaurantId } from "../State/Menu/Action";
 import { HomeFooter } from "../Home/HomeFooter";
 import { OrderBag } from "../Cart/OrderBag";
 import SortIcon from "@mui/icons-material/Sort";
+import CenterLoader from "../Templates/CenterLoader";
 
 const foodTypes = [
   {
@@ -86,22 +87,10 @@ export const RestaurantDetails = () => {
 
   // Show loading until restaurant data is available
   if (loading || !restaurant?.restaurants) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <p className="text-gray-700 text-lg">Loading restaurant details...</p>
-      </div>
-    );
+    return <CenterLoader message="Loading restaurant details..." />;
   }
 
   console.log("Restaurant Details ", restaurant);
-
-  if (!restaurant) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <p className="text-gray-700 text-lg">Loading restaurant details...</p>
-      </div>
-    );
-  }
 
   return (
     <div>
@@ -183,7 +172,8 @@ export const RestaurantDetails = () => {
         </section>
         <Divider />
 
-        <Card className="p-3.5 mt-3 mb-0.5 shadow-md border border-gray-200 rounded-md bg-white flex items-center gap-2 lg:w-310 xs:max-w-full">
+        {/* Sorting food items on the basis of price */}
+        <Card className="p-3.5 mt-3 mb-0.5 shadow-md border border-gray-200 rounded-md bg-white flex items-center gap-2 lg:max-w-full xs:max-w-full">
           <SortIcon className="text-gray-700" />
           <label htmlFor="sort" className="text-gray-700 font-medium">
             Sort by Price:
@@ -273,7 +263,6 @@ export const RestaurantDetails = () => {
               ))}
           </div>
 
-          {/* OrderBag inside the flex layout */}
           <div className="hidden lg:block lg:w-[20%] relative mr-7">
             <OrderBag />
           </div>

@@ -20,10 +20,7 @@ import { getUserPaymentHistory } from "../State/Payment/Action";
 const PaymentHistory = () => {
   const dispatch = useDispatch();
   const jwt = localStorage.getItem("jwt");
-
-  const { loading, paymentHistory, error } = useSelector(
-    (store) => store.payment
-  );
+  const { payment } = useSelector((store) => store);
 
   useEffect(() => {
     if (jwt) {
@@ -58,15 +55,25 @@ const PaymentHistory = () => {
           title="Payment History"
           sx={{ pt: 2, alignItems: "center", fontWeight: "bold" }}
         />
-        {loading ? (
-          <Box p={2}>
+
+        {payment?.loading ? (
+          <Box p={2} textAlign="center">
             <CircularProgress />
           </Box>
-        ) : error ? (
+        ) : /* Error */
+        payment?.error ? (
           <Box p={2}>
-            <Typography color="error">{error}</Typography>
+            <Typography color="error">
+              {payment.error.message || "Failed to fetch payment history"}
+            </Typography>
+          </Box>
+        ) : /* Success but empty */
+        payment?.paymentHistory?.length === 0 ? (
+          <Box p={2}>
+            <Typography>No payment history found.</Typography>
           </Box>
         ) : (
+          /*  Success with data */
           <TableContainer component={Paper}>
             <Table sx={{ minWidth: 700 }} aria-label="payment history table">
               <TableHead>
@@ -87,33 +94,23 @@ const PaymentHistory = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {paymentHistory?.length > 0 ? (
-                  paymentHistory
-                    .sort((a, b) => new Date(b.paidAt) - new Date(a.paidAt))
-                    .map((payment) => (
-                      <TableRow key={payment.id}>
-                        <TableCell>
-                          {moment(payment.paidAt).format("DD/MM/YY HH:mm")}
-                        </TableCell>
-                        <TableCell align="center">
-                          Rs {payment.amount}
-                        </TableCell>
-                        <TableCell align="center">
-                          {payment.paymentMethod}
-                        </TableCell>
-                        <TableCell align="center">#{payment.orderId}</TableCell>
-                        <TableCell align="center">
-                          {renderStatus(payment.status)}
-                        </TableCell>
-                      </TableRow>
-                    ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={4} align="center">
-                      No payment history found
-                    </TableCell>
-                  </TableRow>
-                )}
+                {payment.paymentHistory
+                  .sort((a, b) => new Date(b.paidAt) - new Date(a.paidAt))
+                  .map((payment) => (
+                    <TableRow key={payment.id}>
+                      <TableCell>
+                        {moment(payment.paidAt).format("DD/MM/YY HH:mm")}
+                      </TableCell>
+                      <TableCell align="center">Rs {payment.amount}</TableCell>
+                      <TableCell align="center">
+                        {payment.paymentMethod}
+                      </TableCell>
+                      <TableCell align="center">#{payment.orderId}</TableCell>
+                      <TableCell align="center">
+                        {renderStatus(payment.status)}
+                      </TableCell>
+                    </TableRow>
+                  ))}
               </TableBody>
             </Table>
           </TableContainer>

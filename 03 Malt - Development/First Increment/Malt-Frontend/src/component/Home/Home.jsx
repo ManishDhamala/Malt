@@ -8,6 +8,7 @@ import { RestaurantCard } from "../Restaurant/RestaurantCard";
 import { useNavigate } from "react-router-dom";
 import { findCart } from "../State/Cart/Action";
 import { HomeFooter } from "./HomeFooter";
+import CenterLoader from "../Templates/CenterLoader";
 
 export const Home = () => {
   const [loading, setLoading] = useState(true);
@@ -28,11 +29,7 @@ export const Home = () => {
 
   // Show loading until restaurant data is available
   if (loading || !restaurant?.restaurants) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <p className="text-gray-700 text-lg">Loading restaurant details...</p>
-      </div>
-    );
+    return <CenterLoader message="Loading restaurant details..." />;
   }
 
   return (
@@ -63,12 +60,13 @@ export const Home = () => {
           Featured Restaurants
         </h1>
         <div className="flex flex-wrap gap-5 justify-evenly">
-          {Array.isArray(restaurant?.restaurants) ? (
+          {Array.isArray(restaurant?.restaurants) &&
+          restaurant.restaurants.length > 0 ? (
             restaurant.restaurants
               .sort((a, b) => a.id - b.id)
               .map((item) => <RestaurantCard key={item.id} restaurant={item} />)
           ) : (
-            <p className="text-gray-500">No restaurants available</p>
+            <CenterLoader message="Loading featured restaurants..." />
           )}
         </div>
       </section>

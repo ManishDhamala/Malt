@@ -67,7 +67,7 @@ const FoodItemOrderChart = ({ filteredOrders }) => {
               color: "#B20303",
             },
           ]}
-          width={600}
+          width={700}
           height={400}
         />
       </CardContent>

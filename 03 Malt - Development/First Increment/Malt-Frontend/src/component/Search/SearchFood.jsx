@@ -5,6 +5,8 @@ import { debounce } from "lodash";
 import { useDispatch, useSelector } from "react-redux";
 import { MenuCard } from "../Restaurant/MenuCard";
 import { searchMenuItem } from "../State/Menu/Action";
+import CenterLoader from "../Templates/CenterLoader";
+import NoDataFound from "../Templates/NoDataFound";
 
 export const SearchFood = () => {
   const dispatch = useDispatch();
@@ -55,47 +57,46 @@ export const SearchFood = () => {
         Food Items
       </h1>
 
-      {/* Loading State */}
-      {loading && (
-        <div className="text-center text-gray-600 mt-6">Searching...</div>
-      )}
-
       {/* Display Search Results */}
       <div className="flex flex-col items-center gap-4 mb-10">
-        {!loading && searchResults?.length > 0 ? (
-          Array.from(
+        {(() => {
+          const filteredResults = Array.from(
             new Map(searchResults.map((item) => [item.id, item])).values()
-          )
-            .filter(
-              (item) =>
-                item.available && // FIlter only available food
-                item.restaurant && // Ensure the restaurant object exists
-                item.restaurant.name && // Ensure the restaurant name is present
-                item.restaurant.open // Filter only open restaurant
-            )
-            .map((item) => (
-              <div key={item.id} className="w-full max-w-3xl">
-                <p className="inline-block bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm font-medium mb-2">
-                  Restaurant: {item.restaurant.name}
-                </p>
+          ).filter(
+            (item) =>
+              item.available &&
+              item.restaurant &&
+              item.restaurant.name &&
+              item.restaurant.open
+          );
 
-                <div className="ml-2">
-                  <MenuCard item={item} />
-                </div>
+          if (loading) {
+            return <CenterLoader message="Searching Food..." />;
+          }
+
+          if (keyword.trim() !== "" && filteredResults.length === 0) {
+            return (
+              <NoDataFound
+                title="No Food items found"
+                description="Try a different search or explore restaurants."
+                icon={
+                  <SearchIcon fontSize="large" className="text-gray-400 mb-4" />
+                }
+              />
+            );
+          }
+
+          return filteredResults.map((item) => (
+            <div key={item.id} className="w-full max-w-3xl">
+              <p className="inline-block bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm font-medium mb-2">
+                Restaurant: {item.restaurant.name}
+              </p>
+              <div className="ml-2">
+                <MenuCard item={item} />
               </div>
-            ))
-        ) : !loading && keyword.trim() !== "" ? (
-          <div className="text-center mt-8">
-            <p className="text-gray-500 text-lg font-medium">
-              No food items found.
-            </p>
-            <img
-              className="w-[250px] mx-auto mt-4 opacity-80 rounded-full"
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRd8LWlb8l34MXvr3BonwEYsd11lw1QKQVEiQ&s"
-              alt="Not Found"
-            />
-          </div>
-        ) : null}
+            </div>
+          ));
+        })()}
       </div>
     </div>
   );

@@ -21,6 +21,10 @@ export const whiteTheme = createTheme({
             main: "#20232d",  // light-black
             secondary: "#4a4a4a" // lighter secondary text
         }
+    },
 
-    }
+    typography: {
+        fontFamily: "'Poppins', sans-serif, Arial, Helvetica",
+    },
+
 })

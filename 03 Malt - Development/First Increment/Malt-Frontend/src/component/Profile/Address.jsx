@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getSavedAddresses } from "../State/Address/Action";
 import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
+import CenterLoader from "../Templates/CenterLoader";
 
 export const Address = () => {
   const { address } = useSelector((store) => store);
@@ -19,6 +20,10 @@ export const Address = () => {
     navigate("/cart");
     console.log("Address");
   };
+
+  if (address.savedAddresses.length === 0) {
+    return <CenterLoader message="Loading saved address..." />;
+  }
 
   return (
     <div className="lg:mt-22">

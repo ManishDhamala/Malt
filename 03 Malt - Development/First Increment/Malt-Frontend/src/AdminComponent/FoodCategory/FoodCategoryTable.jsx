@@ -4,17 +4,19 @@ import {
   Card,
   CardActions,
   CardHeader,
+  CircularProgress,
   IconButton,
   Modal,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
 } from "@mui/material";
-import React, { useEffect } from "react";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
+import React, { useEffect, useState } from "react";
 import CreateIcon from "@mui/icons-material/Create";
 import { Delete } from "@mui/icons-material";
 import { CreateFoodCategoryForm } from "./CreateFoodCategoryForm";
@@ -39,15 +41,13 @@ export const FoodCategoryTable = () => {
   const dispatch = useDispatch();
   const jwt = localStorage.getItem("jwt");
 
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   const handleDeleteFoodCategory = (categoryId) => {
     dispatch(deleteFoodCategory({ categoryId, jwt }));
   };
-
-  // console.log("Restaurant Details ", restaurant);
 
   useEffect(() => {
     dispatch(
@@ -56,25 +56,43 @@ export const FoodCategoryTable = () => {
         restaurantId: restaurant?.usersRestaurant?.id,
       })
     );
-  }, [jwt]);
+  }, [jwt, restaurant?.usersRestaurant?.id]);
 
   return (
-    <div>
-      <Box>
-        <Card className="mt-1">
-          <CardHeader
-            title={"Food Categotry"}
-            sx={{ pt: 2, alignItems: "center" }}
-            action={
-              <IconButton onClick={handleOpen} aria-label="settings">
-                <CreateIcon />
-              </IconButton>
-            }
-          />
-          <CardActions />
+    <Box>
+      <Card className="mt-1">
+        <CardHeader
+          title={"Food Category"}
+          sx={{ pt: 2, alignItems: "center" }}
+          action={
+            <IconButton onClick={handleOpen} aria-label="settings">
+              <CreateIcon />
+            </IconButton>
+          }
+        />
+        <CardActions />
 
+        {/*  Loading State */}
+        {restaurant?.loading ? (
+          <Box p={3} textAlign="center">
+            <CircularProgress />
+          </Box>
+        ) : /*  Error State */
+        restaurant?.error ? (
+          <Box p={3}>
+            <Typography color="error">
+              {restaurant.error.message || "Failed to fetch categories."}
+            </Typography>
+          </Box>
+        ) : /*  Empty State */
+        !restaurant?.categories || restaurant.categories.length === 0 ? (
+          <Box p={3} textAlign="center">
+            <Typography>No food categories found.</Typography>
+          </Box>
+        ) : (
+          /*  Success State */
           <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <Table sx={{ minWidth: 650 }} aria-label="category table">
               <TableHead>
                 <TableRow>
                   <TableCell sx={{ fontWeight: "bold" }} align="left">
@@ -89,41 +107,38 @@ export const FoodCategoryTable = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {restaurant.categories.map((item) => (
-                  <TableRow
-                    key={item.id}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {item.id}
-                    </TableCell>
-                    <TableCell align="left">{item.name}</TableCell>
-                    <TableCell align="left">
-                      <IconButton
-                        onClick={() => handleDeleteFoodCategory(item.id)}
-                        color="primary"
-                      >
-                        <Delete />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {restaurant.categories
+                  .sort((a, b) => a.id - b.id)
+                  .map((item) => (
+                    <TableRow key={item.id}>
+                      <TableCell>{item.id}</TableCell>
+                      <TableCell>{item.name}</TableCell>
+                      <TableCell>
+                        <IconButton
+                          onClick={() => handleDeleteFoodCategory(item.id)}
+                          color="primary"
+                        >
+                          <Delete />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
               </TableBody>
             </Table>
           </TableContainer>
-        </Card>
+        )}
+      </Card>
 
-        <Modal
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={style}>
-            <CreateFoodCategoryForm />
-          </Box>
-        </Modal>
-      </Box>
-    </div>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <CreateFoodCategoryForm />
+        </Box>
+      </Modal>
+    </Box>
   );
 };

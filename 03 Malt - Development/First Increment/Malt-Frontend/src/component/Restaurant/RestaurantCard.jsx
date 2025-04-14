@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addToFavorite } from "../State/Authentication/Action";
 import { isPresentInFavourites } from "../config/logic";
 import { store } from "../State/store";
+import { useAlert } from "../Templates/AlertProvider";
 
 export const RestaurantCard = ({ restaurant }) => {
   if (!restaurant) return null; //  Prevent rendering if restaurant is undefined
@@ -15,6 +16,8 @@ export const RestaurantCard = ({ restaurant }) => {
   const dispatch = useDispatch();
   const jwt = localStorage.getItem("jwt");
   const { auth } = useSelector((store) => store);
+
+  const { showAlert } = useAlert();
 
   const handleAddToFavorite = () => {
     if (!auth?.user) {
@@ -29,6 +32,8 @@ export const RestaurantCard = ({ restaurant }) => {
       navigate(
         `/restaurant/${restaurant.address.city}/${restaurant.name}/${restaurant.id}`
       );
+    } else {
+      showAlert("error", "Restaurant is close");
     }
   };
 
