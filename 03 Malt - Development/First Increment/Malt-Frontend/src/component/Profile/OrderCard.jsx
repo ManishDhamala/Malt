@@ -64,6 +64,7 @@ export const OrderCard = ({ item, order }) => {
           fontSize: "0.75rem",
           backgroundColor: "primary.main",
           color: "white",
+          cursor: "not-allowed",
         }}
       >
         {orderStatus.find((status) => status.value === order.orderStatus)

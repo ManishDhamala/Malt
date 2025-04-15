@@ -12,6 +12,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { uploadImageToCloudinary } from "../Util/UploadToCloudinary";
 import { useDispatch } from "react-redux";
 import { createRestaurant } from "../../component/State/Restaurant/Action";
+import { useAlert } from "../../component/Templates/AlertProvider";
 
 const initialValues = {
   name: "",
@@ -38,6 +39,7 @@ export const CreateRestaurantForm = ({
 
   const dispatch = useDispatch();
   const jwt = localStorage.getItem("jwt");
+  const { showAlert } = useAlert();
 
   const formik = useFormik({
     initialValues: initialData || {
@@ -81,6 +83,7 @@ export const CreateRestaurantForm = ({
         onSubmit(data);
       } else {
         dispatch(createRestaurant({ data, jwt }));
+        showAlert("success", "Restaurant Created Successfully");
       }
     },
   });

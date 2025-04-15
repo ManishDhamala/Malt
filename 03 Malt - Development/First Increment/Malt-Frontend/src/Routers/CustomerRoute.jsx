@@ -13,6 +13,7 @@ import { getUser } from "../component/State/Authentication/Action";
 import { PrivateRoute } from "./PrivateRoute";
 import EsewaCallback from "../component/Cart/EsewaCallback";
 import KhaltiCallback from "../component/Cart/KhaltiCallback";
+import { PaymentFail } from "../component/PaymentFail/PaymentFail";
 
 export const CustomerRoute = () => {
   const dispatch = useDispatch();
@@ -98,6 +99,8 @@ export const CustomerRoute = () => {
             </PrivateRoute>
           }
         />
+        // For payment fail
+        <Route path="/payment/fail" element={<PaymentFail />} />
       </Routes>
     </div>
   );

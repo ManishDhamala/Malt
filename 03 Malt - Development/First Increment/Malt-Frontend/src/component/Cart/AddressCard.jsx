@@ -44,23 +44,31 @@ export const AddressCard = ({
 
   return (
     <>
-      <Card className="flex gap-5 w-64 p-5 shadow-md border border-gray-200">
-        <LocationOnIcon />
-        <div className="space-y-3 text-gray-700">
-          <h1 className="font-semibold text-lg text-black">
-            {item?.streetAddress}
-          </h1>
-          <p>
-            {item?.streetAddress}, {item?.landmark && `${item?.landmark}, `}
-            {item?.postalCode && `${item?.postalCode}, `}
-            {item?.city}, {item?.province}, {item?.country}
-          </p>
-          {showButton && (
-            <Button variant="contained" fullWidth onClick={handleOpenDialog}>
-              Select
-            </Button>
-          )}
+      <Card className="flex flex-col justify-between w-64 p-5 shadow-md border border-gray-200">
+        <div className="flex items-start gap-3 text-gray-700 flex-grow">
+          <LocationOnIcon />
+          <div className="space-y-3">
+            <h1 className="font-semibold text-lg text-black">
+              {item?.streetAddress}
+            </h1>
+            <p>
+              {item?.streetAddress}, {item?.landmark && `${item?.landmark}, `}
+              {item?.postalCode && `${item?.postalCode}, `}
+              {item?.city}, {item?.province}, {item?.country}
+            </p>
+          </div>
         </div>
+
+        {showButton && (
+          <Button
+            variant="contained"
+            fullWidth
+            className="mt-auto"
+            onClick={handleOpenDialog}
+          >
+            Select
+          </Button>
+        )}
       </Card>
 
       {/* Slide-in Confirmation Dialog */}

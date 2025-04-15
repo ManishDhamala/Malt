@@ -51,7 +51,7 @@ export const Login = () => {
         })
       );
 
-      console.log("Login Response:", response); // ✅ This should now show a valid response
+      console.log("Login Response:", response); // This should now show a valid response
 
       if (response?.error) {
         setLoginError(response.error);
@@ -74,7 +74,7 @@ export const Login = () => {
         Login to Malt
       </Typography>
 
-      {/* 🔹 Show Error Alert at the Top */}
+      {/*  Show Error Alert at the Top */}
       {loginError && (
         <Alert severity="error" sx={{ my: 2 }}>
           {loginError}

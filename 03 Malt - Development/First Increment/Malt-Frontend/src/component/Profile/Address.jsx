@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { getSavedAddresses } from "../State/Address/Action";
 import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
 import CenterLoader from "../Templates/CenterLoader";
+import NoDataFound from "../Templates/NoDataFound";
 
 export const Address = () => {
   const { address } = useSelector((store) => store);
@@ -21,8 +22,22 @@ export const Address = () => {
     console.log("Address");
   };
 
-  if (address.savedAddresses.length === 0) {
+  if (address.loading) {
     return <CenterLoader message="Loading saved address..." />;
+  }
+
+  if (address.savedAddresses.length === 0) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <NoDataFound
+          title="No Saved Address"
+          description="You haven't saved any address yet."
+          icon="file"
+          actionLabel="Save delivery address"
+          onAction={() => navigate("/cart")}
+        />
+      </div>
+    );
   }
 
   return (

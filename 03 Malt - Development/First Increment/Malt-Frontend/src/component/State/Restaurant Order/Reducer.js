@@ -43,6 +43,18 @@ const restaurantOrderReducer = (state = initialState, action) => {
                 message: "Order status updated successfully!" // Success message
             };
 
+        // Order Status Update  optimization
+        case actionTypes.UPDATE_ORDER_STATUS_OPTIMISTIC:
+            return {
+                ...state,
+                restaurantOrders: state.restaurantOrders.map(order =>
+                    order.id === action.payload.orderId
+                        ? { ...order, orderStatus: action.payload.orderStatus } //  Update field name
+                        : order
+                )
+            };
+
+
         //  FAIL CASES (Handle Errors)
         case actionTypes.GET_RESTAURANT_ORDER_FAIL:
         case actionTypes.UPDATE_ORDER_STATUS_FAIL:

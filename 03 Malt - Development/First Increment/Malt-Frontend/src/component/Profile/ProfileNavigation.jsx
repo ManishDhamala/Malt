@@ -4,6 +4,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import PaymentsIcon from "@mui/icons-material/Payments";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
+import PersonIcon from "@mui/icons-material/Person";
 import EventIcon from "@mui/icons-material/Event";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { Divider, Drawer, useMediaQuery } from "@mui/material";
@@ -12,11 +13,12 @@ import { useDispatch } from "react-redux";
 import { logout } from "../State/Authentication/Action";
 
 const menu = [
+  { title: "Profile", icon: <PersonIcon /> },
   { title: "Orders", icon: <ShoppingBagIcon /> },
   { title: "Favorites", icon: <FavoriteIcon /> },
   { title: "Address", icon: <LocationOnIcon /> },
   { title: "Payment", icon: <PaymentsIcon /> },
-  { title: "Notifications", icon: <NotificationsActiveIcon /> },
+  // { title: "Notifications", icon: <NotificationsActiveIcon /> },
   { title: "Events", icon: <EventIcon /> },
   { title: "Logout", icon: <LogoutIcon /> },
 ];
@@ -31,13 +33,19 @@ export const ProfileNavigation = ({ open, handleClose }) => {
     if (item.title === "Logout") {
       dispatch(logout());
       navigate("/");
+    } else if (item.title === "Profile") {
+      navigate("/my-profile/");
     } else {
       navigate(`/my-profile/${item.title.toLowerCase()}`);
     }
   };
 
   const getActiveClass = (title) => {
-    const path = `/my-profile/${title.toLowerCase()}`;
+    const path =
+      title === "Profile"
+        ? "/my-profile"
+        : `/my-profile/${title.toLowerCase()}`;
+
     return location.pathname === path
       ? "bg-blue-100 text-blue-600 font-semibold"
       : "text-gray-700 hover:bg-gray-100";

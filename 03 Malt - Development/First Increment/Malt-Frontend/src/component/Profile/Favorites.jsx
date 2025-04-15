@@ -6,9 +6,11 @@ import { useNavigate } from "react-router-dom";
 import { getAllRestaurantsAction } from "../State/Restaurant/Action";
 import { Backdrop, CircularProgress } from "@mui/material";
 import CenterLoader from "../Templates/CenterLoader";
+import NoDataFound from "../Templates/NoDataFound";
 
 export const Favorites = () => {
   const { auth, restaurant } = useSelector((store) => store);
+  const navigate = useNavigate();
 
   const dispatch = useDispatch();
 
@@ -24,8 +26,22 @@ export const Favorites = () => {
     ? restaurant.restaurants
     : [];
 
+  if (favorites.loading || restaurant.loading) {
+    return <CenterLoader message="Loading favorite restaurant..." />;
+  }
+
   if (favorites.length === 0 || allRestaurants.length === 0) {
-    return <CenterLoader message="Loading favorite restaurants..." />;
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <NoDataFound
+          title="No Favorite Restaurant"
+          description="You haven't added any favorite restaurant."
+          icon="file"
+          actionLabel="Go to Home"
+          onAction={() => navigate("/")}
+        />
+      </div>
+    );
   }
 
   // Safely map favorites and attach "open" status

@@ -54,7 +54,7 @@ export const MenuCard = ({ item }) => {
       {/* Right-center positioned icon */}
       <IconButton
         onClick={handleAddItemToCart}
-        className="absolute top-4 lg:top-11 right-3 transform -translate-y-1/2"
+        className="absolute top-4 lg:top-11 right-1 transform -translate-y-1/2"
       >
         <AddCircleIcon
           sx={{

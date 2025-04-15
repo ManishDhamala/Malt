@@ -7,6 +7,7 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import { useDispatch, useSelector } from "react-redux";
 import { updateRestaurantStatus } from "../../component/State/Restaurant/Action";
 import { useNavigate } from "react-router-dom";
+import { useAlert } from "../../component/Templates/AlertProvider";
 
 export const RestaurantDetails = () => {
   const { restaurant } = useSelector((store) => store);
@@ -14,6 +15,7 @@ export const RestaurantDetails = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const jwt = localStorage.getItem("jwt");
+  const { showAlert } = useAlert();
 
   console.log("Restaurant Details: ", restaurant);
 
@@ -24,6 +26,7 @@ export const RestaurantDetails = () => {
         jwt,
       })
     );
+    showAlert("success", "Restaurant open status changed");
   };
 
   return (

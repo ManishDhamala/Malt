@@ -1,13 +1,14 @@
 import axios from "axios";
 import { useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import CenterLoader from "../Templates/CenterLoader";
 
 const KhaltiCallback = () => {
   const [params] = useSearchParams();
   const navigate = useNavigate();
   const pidx = params.get("pidx");
+  const status = params.get("status");
 
-  // Ref to track whether the effect has run (Preventing email from being sent twice)
   const hasVerified = useRef(false);
 
   useEffect(() => {
@@ -23,28 +24,33 @@ const KhaltiCallback = () => {
           }
         );
 
+        console.log("Khalti verification response:", data);
+
         if (data.success) {
-          navigate(`/payment/success/${data.orderId}`);
+          setTimeout(() => navigate(`/payment/success/${data.orderId}`), 1000);
         } else {
-          navigate("/payment/fail");
+          console.warn("Payment was not successful:", data.message);
+          setTimeout(() => navigate("/payment/fail"), 1000);
         }
       } catch (err) {
-        console.error("Verification failed", err);
-        navigate("/payment/fail");
+        console.error("Verification failed:", err);
+        setTimeout(() => navigate("/payment/fail"), 1000);
       }
     };
 
-    if (pidx && !hasVerified.current) {
+    if (!hasVerified.current) {
       hasVerified.current = true;
-      verifyPayment();
-    }
-  }, [pidx, navigate]);
 
-  return (
-    <div className="flex items-center justify-center min-h-screen">
-      <p className="text-lg font-semibold">Verifying Khalti payment...</p>
-    </div>
-  );
+      if (status === "Completed") {
+        verifyPayment();
+      } else {
+        console.warn(`Khalti payment not completed. Status: ${status}`);
+        setTimeout(() => navigate("/payment/fail"), 1000);
+      }
+    }
+  }, [pidx, status, navigate]);
+
+  return <CenterLoader message="Verifying Khalti payment..." />;
 };
 
 export default KhaltiCallback;

@@ -250,7 +250,7 @@ export const RestaurantDetails = () => {
           </div>
 
           {/* Menu in center */}
-          <div className="space-y-3 lg:w-[60%] mr-3">
+          <div className="space-y-3 lg:w-[60%] mr-3 lg:mt-0 mt-5 ">
             {[...menu.menuItems]
               .filter((item) => item && item.available) // Filtering only available items
               .sort((a, b) => {

@@ -327,43 +327,6 @@ export const Cart = () => {
               </div>
             </FormControl>
           </div>
-
-          {/* ✅ Payment Method Radio Group - YT */}
-          {/* <div className="px-5 py-5">
-            <FormControl component="fieldset">
-              <FormLabel component="legend" className="font-semibold text-lg">
-                Select Payment Method
-              </FormLabel>
-              <RadioGroup
-                row
-                aria-label="payment-method"
-                name="paymentMethod"
-                value={paymentMethod}
-                onChange={(e) => setPaymentMethod(e.target.value)}
-              >
-                <FormControlLabel
-                  value="COD"
-                  control={<Radio />}
-                  label="Cash On Delivery"
-                />
-                <FormControlLabel
-                  value="STRIPE"
-                  control={<Radio />}
-                  label="Stripe"
-                />
-                <FormControlLabel
-                  value="ESEWA"
-                  control={<Radio />}
-                  label="eSewa"
-                />
-                <FormControlLabel
-                  value="KHALTI"
-                  control={<Radio />}
-                  label="Khalti"
-                />
-              </RadioGroup>
-            </FormControl>
-          </div> */}
         </section>
 
         <Divider orientation="vertical" flexItem />
@@ -453,7 +416,7 @@ export const Cart = () => {
                     <Field
                       as={TextField}
                       name="postalCode"
-                      label="Postal Code (Optional)"
+                      label="Postal Code(Optional)"
                       fullWidth
                       variant="outlined"
                     />

@@ -19,11 +19,19 @@ export const registerUser = (reqData) => async (dispatch) => {
         console.log("Register Success", data)
         return { success: true, data };  //  RETURN RESPONSE HERE
 
-
     } catch (error) {
-        dispatch({ type: REGISTER_FAIL, payload: error })
-        console.log("error", error)
-        return { error: error.response?.data?.message || "Email is already used" };  //  RETURN ERROR RESPONSE
+        let message = "Something went wrong. Please try again.";
+        if (error.response) {
+            // Server responded but with error
+            message = error.response.data?.message || "Email is already used";
+        } else if (error.request) {
+            // Request was made but no response (e.g server is down)
+            message = "Network error. Please check your connection or try again later.";
+        }
+        dispatch({ type: LOGIN_FAIL, payload: message });
+        console.log("Login Error:", message);
+
+        return { error: message };
     }
 }
 
@@ -43,15 +51,22 @@ export const loginUser = (reqData) => async (dispatch) => {
 
         return { success: true, data };  //  RETURN RESPONSE HERE
 
-
     } catch (error) {
-        dispatch({ type: LOGIN_FAIL, payload: error })
-        console.log("error", error)
+        let message = "Something went wrong. Please try again.";
+        if (error.response) {
+            // Server responded but with error
+            message = error.response.data?.message || "Invalid Username or Password";
+        } else if (error.request) {
+            // Request was made but no response (e.g server is down)
+            message = "Network error. Please check your connection or try again later.";
+        }
+        dispatch({ type: LOGIN_FAIL, payload: message });
+        console.log("Login Error:", message);
 
-        return { error: error.response?.data?.message || "Invalid Username or Password" };  //  RETURN ERROR RESPONSE
+        return { error: message };
     }
+};
 
-}
 
 
 export const getUser = (jwt) => async (dispatch) => {

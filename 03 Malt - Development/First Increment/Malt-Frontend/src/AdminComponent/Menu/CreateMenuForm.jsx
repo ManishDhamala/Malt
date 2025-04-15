@@ -16,6 +16,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { uploadImageToCloudinary } from "../Util/UploadToCloudinary";
 import { useDispatch, useSelector } from "react-redux";
 import { createMenuItem } from "../../component/State/Menu/Action";
+import { useAlert } from "../../component/Templates/AlertProvider";
 
 const initialValues = {
   name: "",
@@ -31,6 +32,7 @@ export const CreateMenuForm = () => {
   const dispatch = useDispatch();
   const jwt = localStorage.getItem("jwt");
   const { restaurant } = useSelector((store) => store);
+  const { showAlert } = useAlert();
 
   const [uploadImage, setUploadImage] = useState(false);
 
@@ -51,6 +53,7 @@ export const CreateMenuForm = () => {
         .then(() => {
           resetForm(); // Resets the form completely
           setSubmitting(false);
+          showAlert("success", "New menu item added");
         })
         .catch((error) => {
           console.error("Error creating menu item:", error);

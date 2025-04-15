@@ -49,16 +49,6 @@ export const Register = () => {
     setShowPassword((prev) => !prev);
   };
 
-  // const handleSubmit = (values) => {
-  //   console.log("Form Values:", { ...values, password: "********" }); // This needs to be removed
-  //   dispatch(
-  //     registerUser({
-  //       userData: values,
-  //       navigate,
-  //     })
-  //   );
-  // };
-
   const handleSubmit = async (values, { setSubmitting }) => {
     setRegisterError(""); // Reset previous errors
     console.log("Form Values:", { ...values, password: "********" }); // This needs to be removed
@@ -71,7 +61,7 @@ export const Register = () => {
         })
       );
 
-      console.log("Register Response:", response); // ✅ This should now show a valid response
+      console.log("Register Response:", response);
 
       if (response?.error) {
         setRegisterError(response.error);
@@ -94,7 +84,7 @@ export const Register = () => {
         Create New Account
       </Typography>
 
-      {/* 🔹 Show Error Alert at the Top */}
+      {/* Show Error Alert at the Top */}
       {registerError && (
         <Alert severity="error" sx={{ my: 2 }}>
           {registerError}
@@ -167,14 +157,6 @@ export const Register = () => {
                 </MenuItem>
               </Field>
             </FormControl>
-            {/* <Button
-              sx={{ mt: 1, padding: "1rem", borderRadius: "50px" }}
-              fullWidth
-              type="submit"
-              variant="contained"
-            >
-              Register
-            </Button> */}
             <Button
               sx={{ mt: 1, padding: "1rem", borderRadius: "50px" }}
               fullWidth

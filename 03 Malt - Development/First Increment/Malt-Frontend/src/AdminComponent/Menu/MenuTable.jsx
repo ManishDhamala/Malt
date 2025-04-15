@@ -26,12 +26,14 @@ import {
   getMenuItemsByRestaurantId,
   updateMenuItemsAvailability,
 } from "../../component/State/Menu/Action";
+import { useAlert } from "../../component/Templates/AlertProvider";
 
 export const MenuTable = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { restaurant, menu } = useSelector((store) => store);
   const jwt = localStorage.getItem("jwt");
+  const { showAlert } = useAlert();
 
   useEffect(() => {
     dispatch(
@@ -46,10 +48,12 @@ export const MenuTable = () => {
 
   const handleDeleteFood = (foodId) => {
     dispatch(deleteFood({ foodId, jwt }));
+    showAlert("error", "Food item deleted");
   };
 
   const handleFoodAvailibilty = (id) => {
     dispatch(updateMenuItemsAvailability({ foodId: id, jwt }));
+    showAlert("info", "Food availability status updated");
   };
 
   return (
@@ -70,12 +74,14 @@ export const MenuTable = () => {
         <CardActions />
 
         {/*  Loading State */}
-        {menu?.loading ? (
+        {/* {menu?.loading ? (
           <Box p={3} textAlign="center">
             <CircularProgress />
           </Box>
-        ) : /*  Error State */
-        menu?.error ? (
+        ) :  */}
+
+        {/* Error state */}
+        {menu?.error ? (
           <Box p={3}>
             <Typography color="error">
               {menu.error.message || "Failed to fetch menu items."}

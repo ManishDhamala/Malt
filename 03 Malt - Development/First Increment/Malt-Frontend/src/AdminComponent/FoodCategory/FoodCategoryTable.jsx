@@ -25,6 +25,7 @@ import {
   deleteFoodCategory,
   getRestaurantCategory,
 } from "../../component/State/Restaurant/Action";
+import { useAlert } from "../../component/Templates/AlertProvider";
 
 const style = {
   position: "absolute",
@@ -40,6 +41,7 @@ export const FoodCategoryTable = () => {
   const { restaurant } = useSelector((store) => store);
   const dispatch = useDispatch();
   const jwt = localStorage.getItem("jwt");
+  const { showAlert } = useAlert();
 
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -47,6 +49,7 @@ export const FoodCategoryTable = () => {
 
   const handleDeleteFoodCategory = (categoryId) => {
     dispatch(deleteFoodCategory({ categoryId, jwt }));
+    showAlert("error", "Food category deleted");
   };
 
   useEffect(() => {
@@ -73,12 +76,13 @@ export const FoodCategoryTable = () => {
         <CardActions />
 
         {/*  Loading State */}
-        {restaurant?.loading ? (
+        {/* {restaurant?.loading ? (
           <Box p={3} textAlign="center">
             <CircularProgress />
           </Box>
-        ) : /*  Error State */
-        restaurant?.error ? (
+        ) : */}
+        {/* Error State  */}
+        {restaurant?.error ? (
           <Box p={3}>
             <Typography color="error">
               {restaurant.error.message || "Failed to fetch categories."}

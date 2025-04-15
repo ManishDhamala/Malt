@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getUserOrders } from "../State/Order/Action";
 import CenterLoader from "../Templates/CenterLoader";
+import NoDataFound from "../Templates/NoDataFound";
 
 export const Orders = () => {
   const { auth, order } = useSelector((store) => store);
@@ -15,8 +16,24 @@ export const Orders = () => {
     dispatch(getUserOrders(jwt));
   }, [auth.jwt]);
 
-  if (!order.orders || order.orders.length === 0) {
+  //  Loading State
+  if (order.loading) {
     return <CenterLoader message="Loading order history..." />;
+  }
+
+  // No Data Found State
+  if (!order.orders || order.orders.length === 0) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <NoDataFound
+          title="No Orders Yet"
+          description="You haven't placed any orders so far."
+          icon="file"
+          actionLabel="Go to Home"
+          onAction={() => navigate("/")}
+        />
+      </div>
+    );
   }
 
   return (

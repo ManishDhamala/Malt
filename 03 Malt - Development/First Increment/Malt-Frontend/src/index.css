@@ -4,3 +4,8 @@ body {
     margin: 0;
     font-family: 'Poppins', sans-serif, Arial, Helvetica !important;
 }
+
+.slick-slide>div {
+    display: flex;
+    justify-content: center;
+}

@@ -24,6 +24,7 @@ import {
   getRestaurantOrders,
   updateOrderStatus,
 } from "../../component/State/Restaurant Order/Action";
+import { useAlert } from "../../component/Templates/AlertProvider";
 
 const orderStatus = [
   { label: "Pending", value: "PENDING" },
@@ -32,10 +33,12 @@ const orderStatus = [
   { label: "Delivered", value: "DELIVERED" },
 ];
 
-export const OrderTable = ({ filterValue }) => {
+export const OrderTable = ({ filterValue, selectedYear, selectedMonth }) => {
   const dispatch = useDispatch();
   const jwt = localStorage.getItem("jwt");
   const { restaurant, restaurantOrder } = useSelector((store) => store);
+
+  const { showAlert } = useAlert();
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -49,12 +52,20 @@ export const OrderTable = ({ filterValue }) => {
     );
   }, [jwt, restaurant?.usersRestaurant?.id]);
 
-  const filteredOrders =
-    filterValue === "all"
-      ? restaurantOrder?.restaurantOrders
-      : restaurantOrder?.restaurantOrders?.filter(
-          (order) => order.orderStatus === filterValue
-        );
+  const filteredOrders = (restaurantOrder?.restaurantOrders || []).filter(
+    (order) => {
+      const date = new Date(order.createdAt);
+      const matchStatus =
+        filterValue === "all" ? true : order.orderStatus === filterValue;
+      const matchYear = selectedYear
+        ? date.getFullYear() === selectedYear
+        : true;
+      const matchMonth =
+        selectedMonth !== "" ? date.getMonth() === Number(selectedMonth) : true;
+
+      return matchStatus && matchYear && matchMonth;
+    }
+  );
 
   const handleClick = (event, orderId) => {
     setAnchorEl(event.currentTarget);
@@ -72,14 +83,8 @@ export const OrderTable = ({ filterValue }) => {
       payload: { orderId, orderStatus },
     });
 
-    dispatch(updateOrderStatus({ orderId, orderStatus, jwt })).then(() => {
-      dispatch(
-        getRestaurantOrders({
-          jwt,
-          restaurantId: restaurant?.usersRestaurant?.id,
-        })
-      );
-    });
+    dispatch(updateOrderStatus({ orderId, orderStatus, jwt }));
+    showAlert("success", "Order status updated");
 
     handleClose();
   };
@@ -90,12 +95,14 @@ export const OrderTable = ({ filterValue }) => {
         <CardHeader title="Order History" sx={{ pt: 2 }} />
 
         {/* Loading State */}
-        {restaurantOrder?.loading ? (
+        {/* {restaurantOrder?.loading ? (
           <Box p={2} textAlign="center">
             <CircularProgress />
           </Box>
-        ) : /*  Error State */
-        restaurantOrder?.error ? (
+        ) : */}
+
+        {/* Error state */}
+        {restaurantOrder?.error ? (
           <Box p={2}>
             <Typography color="error">
               {restaurantOrder.error.message || "Failed to fetch orders."}

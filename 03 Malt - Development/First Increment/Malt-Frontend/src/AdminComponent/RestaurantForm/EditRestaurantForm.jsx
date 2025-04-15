@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { CreateRestaurantForm } from "./CreateRestaurantForm";
 import { updateRestaurant } from "../../component/State/Restaurant/Action";
 import { useNavigate } from "react-router-dom";
+import { useAlert } from "../../component/Templates/AlertProvider";
 
 export const EditRestaurantForm = () => {
   const { restaurant } = useSelector((store) => store);
@@ -10,6 +11,7 @@ export const EditRestaurantForm = () => {
   const jwt = localStorage.getItem("jwt");
   const data = restaurant?.usersRestaurant;
   const navigate = useNavigate();
+  const { showAlert } = useAlert();
 
   const initialData = {
     name: data?.name || "",
@@ -36,6 +38,7 @@ export const EditRestaurantForm = () => {
       })
     );
     navigate("/admin/restaurant/details");
+    showAlert("success", "Restaurant details updated successfully");
   };
 
   return (
