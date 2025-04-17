@@ -5,6 +5,7 @@ import com.project.maltbackend.model.Food;
 import com.project.maltbackend.model.Restaurant;
 import com.project.maltbackend.model.User;
 import com.project.maltbackend.request.CreateFoodRequest;
+import com.project.maltbackend.request.CreateRestaurantRequest;
 import com.project.maltbackend.response.MessageResponse;
 import com.project.maltbackend.service.CategoryService;
 import com.project.maltbackend.service.FoodService;
@@ -70,6 +71,21 @@ public class AdminFoodController {
 
         return new ResponseEntity<>(food, HttpStatus.OK);
     }
+
+    @PutMapping("/{id}/update")
+    public ResponseEntity<Food> updateFood(
+            @RequestBody CreateFoodRequest req,
+            @RequestHeader("Authorization") String jwt,
+            @PathVariable Long id
+    ) throws Exception {
+
+        User user = userService.findUserByJwtToken(jwt);
+
+        Food food = foodService.updateFood(id, req);
+
+        return new ResponseEntity<>(food, HttpStatus.OK);
+    }
+
 
 
 

@@ -9,6 +9,7 @@ import com.project.maltbackend.repository.RestaurantRepository;
 import com.project.maltbackend.request.CreateEventRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -63,24 +64,28 @@ public class EventServiceImp implements EventService {
         return eventRepository.save(event);
     }
 
+    @Transactional
     @Override
     public List<EventDto> getAllEvents() {
         List<Event> events = eventRepository.findAll();
         return events.stream().map(this::mapToEventDto).collect(Collectors.toList());
     }
 
+    @Transactional
     @Override
     public List<EventDto> getActiveEvents() {
         List<Event> events = eventRepository.findAllActiveEvents(LocalDateTime.now());
         return events.stream().map(this::mapToEventDto).collect(Collectors.toList());
     }
 
+    @Transactional
     @Override
     public List<EventDto> getRestaurantEvents(Long restaurantId) {
         List<Event> events = eventRepository.findByRestaurantId(restaurantId);
         return events.stream().map(this::mapToEventDto).collect(Collectors.toList());
     }
 
+    @Transactional
     @Override
     public EventDto getEventById(Long eventId) throws Exception {
         Event event = eventRepository.findById(eventId)

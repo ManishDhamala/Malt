@@ -3,6 +3,7 @@ package com.project.maltbackend.service;
 import com.project.maltbackend.model.Category;
 import com.project.maltbackend.model.Food;
 import com.project.maltbackend.model.Restaurant;
+import com.project.maltbackend.repository.CategoryRepository;
 import com.project.maltbackend.repository.FoodRepository;
 import com.project.maltbackend.request.CreateFoodRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class FoodServiceImp implements FoodService {
+
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @Autowired  // Injecting an instance of FoodRepository to access the database
     private FoodRepository foodRepository;
@@ -124,5 +128,40 @@ public class FoodServiceImp implements FoodService {
         // Save and return the updated food
         return foodRepository.save(food);
     }
+
+    @Override
+    public Food updateFood(Long foodId, CreateFoodRequest updateFoodRequest) throws Exception {
+        Food food = findFoodById(foodId);
+
+        if(updateFoodRequest.getName() != null){
+            food.setName(updateFoodRequest.getName());
+        }
+
+        if(updateFoodRequest.getDescription() != null){
+            food.setDescription(updateFoodRequest.getDescription());
+        }
+
+        if(updateFoodRequest.getImages() != null){
+            food.setImages(updateFoodRequest.getImages());
+        }
+
+        if(updateFoodRequest.getPrice() != null){
+            food.setPrice(updateFoodRequest.getPrice());
+        }
+
+        food.setVegetarian(updateFoodRequest.isVegetarian());
+
+        // validating categoryId before setting it
+        if (updateFoodRequest.getCategoryId() != null) {
+            Category category = categoryRepository.findById(updateFoodRequest.getCategoryId())
+                    .orElseThrow(() -> new Exception("Category not found with id: " + updateFoodRequest.getCategoryId()));
+            food.setFoodCategory(category);
+        }
+
+        // Save and return updated food
+        return foodRepository.save(food);
+    }
+
+
 }
 
