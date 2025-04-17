@@ -4,7 +4,6 @@ import { Route, Routes } from "react-router-dom";
 import { Orders } from "../Orders/Orders";
 import { Menu } from "../Menu/Menu";
 import { FoodCategory } from "../FoodCategory/FoodCategory";
-import { Events } from "../Events/Events";
 import { RestaurantDetails } from "./RestaurantDetails";
 import { RestaurantDashboard } from "../Dashboard/RestaurantDashboard";
 import { CreateMenuForm } from "../Menu/CreateMenuForm";
@@ -17,6 +16,9 @@ import {
 import { getMenuItemsByRestaurantId } from "../../component/State/Menu/Action";
 import { getRestaurantOrders } from "../../component/State/Restaurant Order/Action";
 import { EditRestaurantForm } from "../RestaurantForm/EditRestaurantForm";
+import { AdminEvents } from "../Events/AdminEvents";
+import { CreateEventForm } from "../Events/CreateEventForm";
+import { EditEventForm } from "../Events/EditEventForm";
 
 export const Admin = () => {
   const dispatch = useDispatch();
@@ -54,7 +56,9 @@ export const Admin = () => {
             <Route path="/orders" element={<Orders />} />
             <Route path="/menu" element={<Menu />} />
             <Route path="/category" element={<FoodCategory />} />
-            <Route path="/event" element={<Events />} />
+            <Route path="/event" element={<AdminEvents />} />
+            <Route path="/events/create" element={<CreateEventForm />} />
+            <Route path="/events/edit/:eventId" element={<EditEventForm />} />
             <Route path="/details" element={<RestaurantDetails />} />
             <Route path="/add-menu" element={<CreateMenuForm />} />
             <Route path="/edit" element={<EditRestaurantForm />} />

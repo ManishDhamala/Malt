@@ -50,13 +50,13 @@ const FoodItemOrderChart = ({ filteredOrders }) => {
               scaleType: "band",
               tickPlacement: "middle",
               tickLabelPlacement: "middle",
-              label: "🍽️ Menu Items",
+              label: "Menu Items",
               labelStyle: { fontWeight: "bold", fill: "#333" },
             },
           ]}
           yAxis={[
             {
-              label: "🛒 Quantity Ordered", // Adjust automatically with the  maximum value
+              label: "Quantity Ordered", // Adjust automatically with the  maximum value
               labelStyle: { fontWeight: "bold", fill: "#333" },
             },
           ]}

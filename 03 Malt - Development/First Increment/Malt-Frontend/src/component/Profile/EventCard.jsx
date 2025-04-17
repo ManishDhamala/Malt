@@ -7,35 +7,78 @@ import {
   Typography,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import React from "react";
+import EditIcon from "@mui/icons-material/Edit";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import { format } from "date-fns";
+import { useNavigate } from "react-router-dom";
 
-export const EventCard = () => {
+export const EventCard = ({ event, isAdmin, handleDelete }) => {
+  const navigate = useNavigate();
+
+  const handleEdit = () => {
+    navigate(`/admin/restaurant/events/edit/${event.id}`);
+  };
+
   return (
-    <div>
-      <Card sx={{ width: 310 }}>
+    <Card className="w-64 h-auto shadow-md border border-gray-200 overflow-hidden flex flex-col">
+      <div className="h-36 w-full overflow-hidden flex-shrink-0">
         <CardMedia
-          sx={{ height: 200 }}
-          image="https://images.pexels.com/photos/7159865/pexels-photo-7159865.jpeg?auto=compress&cs=tinysrgb&w=600"
+          component="img"
+          image={
+            event.images?.[0] ||
+            "https://images.pexels.com/photos/7159865/pexels-photo-7159865.jpeg?auto=compress&cs=tinysrgb&w=600"
+          }
+          alt={event.title}
+          className="object-cover h-full w-full"
         />
-        <CardContent>
-          <Typography variant="h5">Dream High Restaurant</Typography>
-          <Typography variant="body2">50% off on Birthday</Typography>
-          <div className="py-2 space-y-2">
-            <p>{"Pokhara"}</p>
-            <p className="text-sm text-sky-500">Feburary 10, 2025 10:00 AM</p>
-            <p className="text-sm text-red-500">Feburary 20, 2025 08:00 PM</p>
-            <p></p>
-          </div>
-        </CardContent>
+      </div>
 
-        {false && (
-          <CardActions>
-            <IconButton>
-              <DeleteIcon />
-            </IconButton>
-          </CardActions>
-        )}
-      </Card>
-    </div>
+      <CardContent className="p-4 flex flex-col gap-2 text-gray-700 flex-grow overflow-hidden">
+        <Typography variant="h6" className="font-semibold text-black truncate">
+          {event.restaurantName}
+        </Typography>
+
+        <Typography
+          variant="subtitle2"
+          color="text.secondary"
+          className="truncate"
+        >
+          {event.title}
+        </Typography>
+
+        <Typography
+          variant="body2"
+          className="text-sm text-gray-600 line-clamp-3 overflow-hidden"
+        >
+          {event.description}
+        </Typography>
+
+        <div className="flex items-center gap-1 text-sm text-gray-500">
+          <LocationOnIcon fontSize="small" />
+          <span className="truncate">{event.address?.city}</span>
+        </div>
+
+        <div className="text-xs mt-1 space-y-2">
+          <p className="text-sky-600">
+            Start Date:{" "}
+            {format(new Date(event.startDate), "MMM dd, yyyy hh:mm a")}
+          </p>
+          <p className="text-red-600">
+            End Date: {format(new Date(event.endDate), "MMM dd, yyyy hh:mm a")}
+          </p>
+        </div>
+      </CardContent>
+
+      {isAdmin && (
+        <CardActions className="justify-end">
+          <IconButton onClick={handleEdit}>
+            <EditIcon fontSize="small" />
+          </IconButton>
+          <IconButton onClick={() => handleDelete(event.id)}>
+            <DeleteIcon fontSize="small" />
+          </IconButton>
+        </CardActions>
+      )}
+    </Card>
   );
 };

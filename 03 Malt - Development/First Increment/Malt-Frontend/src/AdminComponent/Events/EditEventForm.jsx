@@ -1,5 +1,5 @@
-// CreateEventForm.jsx
-import React, { useState } from "react";
+// EditEventForm.jsx
+import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import {
   Button,
@@ -13,9 +13,11 @@ import { DateTimePicker } from "@mui/x-date-pickers";
 import { AddPhotoAlternate, Close as CloseIcon } from "@mui/icons-material";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 import { uploadImageToCloudinary } from "../Util/UploadToCloudinary";
-import { createEvent } from "../../component/State/Event/Action";
+import { updateEvent, getEventById } from "../../component/State/Event/Action";
 import { useAlert } from "../../component/Templates/AlertProvider";
+import dayjs from "dayjs";
 
 const eventSchema = Yup.object().shape({
   title: Yup.string().required("Title is required"),
@@ -27,13 +29,14 @@ const eventSchema = Yup.object().shape({
   images: Yup.array().min(1, "At least one image is required"),
 });
 
-export const CreateEventForm = ({ onSuccess, onCancel }) => {
+export const EditEventForm = ({ onSuccess, onCancel }) => {
   const dispatch = useDispatch();
+  const { eventId } = useParams();
   const jwt = localStorage.getItem("jwt");
-  const { restaurant } = useSelector((store) => store);
+  const { event } = useSelector((store) => store);
   const { showAlert } = useAlert();
-
   const [uploadImage, setUploadImage] = useState(false);
+  const navigate = useNavigate();
 
   const formik = useFormik({
     initialValues: {
@@ -44,24 +47,45 @@ export const CreateEventForm = ({ onSuccess, onCancel }) => {
       images: [],
     },
     validationSchema: eventSchema,
-    onSubmit: async (values, { resetForm, setSubmitting }) => {
+    onSubmit: async (values, { setSubmitting }) => {
       const data = {
         ...values,
-        restaurantId: restaurant.usersRestaurant.id,
       };
       try {
-        await dispatch(createEvent({ data, jwt }));
-        showAlert("success", "Event created successfully");
-        resetForm();
+        await dispatch(updateEvent({ eventId, data, jwt }));
+        showAlert("success", "Event updated successfully");
+        navigate("/admin/restaurant/event");
         onSuccess?.();
       } catch (err) {
         console.error(err);
-        showAlert("error", "Failed to create event");
+        showAlert("error", "Failed to update event");
       } finally {
         setSubmitting(false);
       }
     },
   });
+
+  useEffect(() => {
+    if (eventId) {
+      dispatch(getEventById({ eventId, jwt }));
+    }
+  }, [eventId, dispatch, jwt]);
+
+  useEffect(() => {
+    if (event.currentEvent) {
+      formik.setValues({
+        title: event.currentEvent.title || "",
+        description: event.currentEvent.description || "",
+        startDate: event.currentEvent.startDate
+          ? dayjs(event.currentEvent.startDate)
+          : null,
+        endDate: event.currentEvent.endDate
+          ? dayjs(event.currentEvent.endDate)
+          : null,
+        images: event.currentEvent.images || [],
+      });
+    }
+  }, [event.currentEvent]);
 
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
@@ -82,8 +106,8 @@ export const CreateEventForm = ({ onSuccess, onCancel }) => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md max-w-3xl mx-auto border border-gray-300">
-      <h1 className="font-bold text-xl mb-4 text-center">Create New Event</h1>
+    <div className="bg-white p-6 rounded-lg shadow-md max-w-3xl mx-auto mt-18 border border-gray-300">
+      <h1 className="font-bold text-xl mb-4 text-center">Edit Event</h1>
       <form onSubmit={formik.handleSubmit}>
         <Grid container spacing={2}>
           <Grid className="flex flex-wrap gap-3" item xs={12}>
@@ -216,13 +240,13 @@ export const CreateEventForm = ({ onSuccess, onCancel }) => {
             type="submit"
             disabled={formik.isSubmitting}
           >
-            Create Event
+            Update Event
           </Button>
           <Button
             fullWidth
             variant="outlined"
             color="primary"
-            onClick={onCancel}
+            onClick={() => navigate("/admin/restaurant/event")}
           >
             Cancel
           </Button>

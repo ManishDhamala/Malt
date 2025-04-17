@@ -13,6 +13,7 @@ import { uploadImageToCloudinary } from "../Util/UploadToCloudinary";
 import { useDispatch } from "react-redux";
 import { createRestaurant } from "../../component/State/Restaurant/Action";
 import { useAlert } from "../../component/Templates/AlertProvider";
+import { useNavigate } from "react-router-dom";
 
 const initialValues = {
   name: "",
@@ -40,6 +41,7 @@ export const CreateRestaurantForm = ({
   const dispatch = useDispatch();
   const jwt = localStorage.getItem("jwt");
   const { showAlert } = useAlert();
+  const navigate = useNavigate();
 
   const formik = useFormik({
     initialValues: initialData || {
@@ -82,8 +84,15 @@ export const CreateRestaurantForm = ({
       if (onSubmit) {
         onSubmit(data);
       } else {
-        dispatch(createRestaurant({ data, jwt }));
-        showAlert("success", "Restaurant Created Successfully");
+        dispatch(createRestaurant({ data, jwt }))
+          .then(() => {
+            showAlert("success", "Restaurant Created Successfully");
+            navigate("/admin/restaurant/details");
+          })
+          .catch((err) => {
+            showAlert("error", "Failed to create restaurant");
+            console.error("Restaurant creation error", err);
+          });
       }
     },
   });

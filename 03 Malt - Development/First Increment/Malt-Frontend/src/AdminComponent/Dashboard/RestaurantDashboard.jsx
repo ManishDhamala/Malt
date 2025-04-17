@@ -21,6 +21,7 @@ import RestaurantMenuIcon from "@mui/icons-material/RestaurantMenu";
 import PaidIcon from "@mui/icons-material/Paid";
 import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 import FoodItemOrderChart from "./FoodItemOrderChart";
+import MonthlyOrderTrendChart from "./MonthlyOrderTrendChart";
 
 const currentYear = new Date().getFullYear();
 
@@ -206,6 +207,11 @@ export const RestaurantDashboard = () => {
       </Grid>
 
       <FoodItemOrderChart filteredOrders={filteredOrders} />
+
+      <MonthlyOrderTrendChart
+        orders={restaurantOrder?.restaurantOrders || []}
+        selectedYear={selectedYear}
+      />
     </div>
   );
 };

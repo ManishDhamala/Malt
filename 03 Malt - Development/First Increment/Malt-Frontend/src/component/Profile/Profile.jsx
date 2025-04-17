@@ -8,6 +8,7 @@ import { Favorites } from "./Favorites";
 import { Events } from "./Events";
 import { PrivateRoute } from "../../Routers/PrivateRoute";
 import PaymentHistory from "./PaymentHistory";
+import { CustomerEvents } from "./CustomerEvents";
 
 export const Profile = () => {
   return (
@@ -22,7 +23,7 @@ export const Profile = () => {
             <Route path="/orders" element={<Orders />} />
             <Route path="/address" element={<Address />} />
             <Route path="/favorites" element={<Favorites />} />
-            <Route path="/events" element={<Events />} />
+            <Route path="/events" element={<CustomerEvents />} />
             <Route path="/payment" element={<PaymentHistory />} />
           </Routes>
         </div>

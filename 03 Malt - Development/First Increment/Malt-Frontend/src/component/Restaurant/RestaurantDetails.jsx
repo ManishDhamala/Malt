@@ -24,6 +24,7 @@ import { HomeFooter } from "../Home/HomeFooter";
 import { OrderBag } from "../Cart/OrderBag";
 import SortIcon from "@mui/icons-material/Sort";
 import CenterLoader from "../Templates/CenterLoader";
+import NoDataFound from "../Templates/NoDataFound";
 
 const foodTypes = [
   {
@@ -251,16 +252,25 @@ export const RestaurantDetails = () => {
 
           {/* Menu in center */}
           <div className="space-y-3 lg:w-[60%] mr-3 lg:mt-0 mt-5 ">
-            {[...menu.menuItems]
-              .filter((item) => item && item.available) // Filtering only available items
-              .sort((a, b) => {
-                if (sortOrder === "asc") return a.price - b.price;
-                if (sortOrder === "desc") return b.price - a.price;
-                return a.id - b.id; // Default sorting
-              })
-              .map((item) => (
-                <MenuCard key={item.id} item={item} />
-              ))}
+            {menu.menuItems.filter((item) => item && item.available).length ===
+            0 ? (
+              <div className="h-screen flex items-center justify-center">
+                <NoDataFound
+                  title="No Menu Items Found"
+                  description="This restaurant hasn't added any menu items yet."
+                  icon="file"
+                />
+              </div>
+            ) : (
+              [...menu.menuItems]
+                .filter((item) => item && item.available)
+                .sort((a, b) => {
+                  if (sortOrder === "asc") return a.price - b.price;
+                  if (sortOrder === "desc") return b.price - a.price;
+                  return a.id - b.id;
+                })
+                .map((item) => <MenuCard key={item.id} item={item} />)
+            )}
           </div>
 
           <div className="hidden lg:block lg:w-[20%] relative mr-7">
