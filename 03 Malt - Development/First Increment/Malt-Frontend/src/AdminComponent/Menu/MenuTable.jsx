@@ -27,6 +27,7 @@ import {
   updateMenuItemsAvailability,
 } from "../../component/State/Menu/Action";
 import { useAlert } from "../../component/Templates/AlertProvider";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 
 export const MenuTable = () => {
   const navigate = useNavigate();
@@ -67,7 +68,7 @@ export const MenuTable = () => {
               onClick={() => navigate("/admin/restaurant/add-menu")}
               aria-label="settings"
             >
-              <CreateIcon />
+              <AddCircleIcon fontSize="large" />
             </IconButton>
           }
         />
@@ -111,7 +112,7 @@ export const MenuTable = () => {
                     Availability
                   </TableCell>
                   <TableCell sx={{ fontWeight: "bold" }} align="center">
-                    Delete
+                    Actions
                   </TableCell>
                 </TableRow>
               </TableHead>
@@ -135,6 +136,17 @@ export const MenuTable = () => {
                         </Button>
                       </TableCell>
                       <TableCell align="center">
+                        <IconButton
+                          onClick={() =>
+                            navigate(`/admin/restaurant/edit-menu/${item.id}`, {
+                              state: item, // Pass the whole item via navigation state
+                            })
+                          }
+                          color="warning"
+                        >
+                          <CreateIcon />
+                        </IconButton>
+
                         <IconButton
                           onClick={() => handleDeleteFood(item.id)}
                           color="primary"

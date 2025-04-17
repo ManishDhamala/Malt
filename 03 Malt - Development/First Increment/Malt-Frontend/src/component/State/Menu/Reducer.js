@@ -17,6 +17,7 @@ const menuItemReducer = (state = initialState, action) => {
         case actionTypes.DELETE_MENU_ITEM_REQUEST:
         case actionTypes.SEARCH_MENU_ITEM_REQUEST:
         case actionTypes.UPDATE_MENU_ITEMS_AVAILABILITY_REQUEST:
+        case actionTypes.UPDATE_MENU_ITEMS_REQUEST:
             return {
                 ...state,
                 loading: true,
@@ -67,12 +68,23 @@ const menuItemReducer = (state = initialState, action) => {
                 message: "Food availability updated successfully!"
             };
 
+        case actionTypes.UPDATE_MENU_ITEMS_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                menuItems: state.menuItems.map((item) =>
+                    item.id === action.payload.id ? action.payload : item
+                ),
+                message: "Food updated successfully!"
+            };
+
         // FAIL CASES (Handle Errors)
         case actionTypes.CREATE_MENU_ITEM_FAIL:
         case actionTypes.GET_MENU_ITEMS_BY_RESTAURANT_ID_FAIL:
         case actionTypes.DELETE_MENU_ITEM_FAIL:
         case actionTypes.SEARCH_MENU_ITEM_FAIL:
         case actionTypes.UPDATE_MENU_ITEMS_AVAILABILITY_FAIL:
+        case actionTypes.UPDATE_MENU_ITEMS_FAIL:
             return {
                 ...state,
                 loading: false,

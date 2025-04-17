@@ -25,6 +25,7 @@ import {
   updateOrderStatus,
 } from "../../component/State/Restaurant Order/Action";
 import { useAlert } from "../../component/Templates/AlertProvider";
+import { format } from "date-fns";
 
 const orderStatus = [
   { label: "Pending", value: "PENDING" },
@@ -133,6 +134,9 @@ export const OrderTable = ({ filterValue, selectedYear, selectedMonth }) => {
                     Price
                   </TableCell>
                   <TableCell sx={{ fontWeight: "bold" }} align="center">
+                    Date
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: "bold" }} align="center">
                     Delivery Address
                   </TableCell>
                   <TableCell sx={{ fontWeight: "bold" }} align="center">
@@ -142,7 +146,7 @@ export const OrderTable = ({ filterValue, selectedYear, selectedMonth }) => {
               </TableHead>
               <TableBody>
                 {filteredOrders
-                  .sort((a, b) => b.id - a.id)
+                  .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
                   .map((item) => (
                     <TableRow key={item.id}>
                       <TableCell>{item.id}</TableCell>
@@ -171,6 +175,9 @@ export const OrderTable = ({ filterValue, selectedYear, selectedMonth }) => {
                       </TableCell>
                       <TableCell align="center">
                         Rs {item?.totalPrice}
+                      </TableCell>
+                      <TableCell align="center">
+                        {format(new Date(item.createdAt), "d MMMM, h:mm a")}
                       </TableCell>
                       <TableCell align="center">
                         {item?.deliveryAddress?.city},{" "}

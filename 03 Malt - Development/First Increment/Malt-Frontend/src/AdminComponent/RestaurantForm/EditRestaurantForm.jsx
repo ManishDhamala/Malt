@@ -41,10 +41,15 @@ export const EditRestaurantForm = () => {
     showAlert("success", "Restaurant details updated successfully");
   };
 
+  const handleCancel = () => {
+    navigate("/admin/restaurant/details");
+  };
+
   return (
     <CreateRestaurantForm
       initialData={initialData}
       onSubmit={handleUpdate}
+      onCancel={handleCancel}
       isEdit={true}
     />
   );

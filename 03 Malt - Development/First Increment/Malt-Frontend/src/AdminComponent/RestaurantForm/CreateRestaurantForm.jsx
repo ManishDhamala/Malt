@@ -34,6 +34,7 @@ const initialValues = {
 export const CreateRestaurantForm = ({
   initialData = null,
   onSubmit,
+  onCancel,
   isEdit = false,
 }) => {
   const [uploadImage, setUploadImage] = useState(false);
@@ -309,9 +310,28 @@ export const CreateRestaurantForm = ({
               />
             </Grid>
           </Grid>
-          <Button fullWidth variant="contained" color="primary" type="submit">
-            {isEdit ? "Update Restaurant" : "Create Restaurant"}
-          </Button>
+          <Grid container spacing={2} justifyContent="space-between">
+            <Grid item xs={12} md={6}>
+              <Button
+                fullWidth
+                variant="contained"
+                color="primary"
+                type="submit"
+              >
+                {isEdit ? "Update Restaurant" : "Create Restaurant"}
+              </Button>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Button
+                fullWidth
+                variant="outlined"
+                color="primary"
+                onClick={onCancel}
+              >
+                Cancel
+              </Button>
+            </Grid>
+          </Grid>
         </form>
       </div>
     </div>

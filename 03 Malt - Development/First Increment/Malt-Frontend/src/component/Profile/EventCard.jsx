@@ -72,10 +72,10 @@ export const EventCard = ({ event, isAdmin, handleDelete }) => {
       {isAdmin && (
         <CardActions className="justify-end">
           <IconButton onClick={handleEdit}>
-            <EditIcon fontSize="small" />
+            <EditIcon color="warning" fontSize="medium" />
           </IconButton>
           <IconButton onClick={() => handleDelete(event.id)}>
-            <DeleteIcon fontSize="small" />
+            <DeleteIcon color="primary" fontSize="medium" />
           </IconButton>
         </CardActions>
       )}

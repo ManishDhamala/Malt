@@ -17,6 +17,7 @@ import { uploadImageToCloudinary } from "../Util/UploadToCloudinary";
 import { useDispatch, useSelector } from "react-redux";
 import { createMenuItem } from "../../component/State/Menu/Action";
 import { useAlert } from "../../component/Templates/AlertProvider";
+import { useNavigate } from "react-router-dom";
 
 const initialValues = {
   name: "",
@@ -33,6 +34,7 @@ export const CreateMenuForm = () => {
   const jwt = localStorage.getItem("jwt");
   const { restaurant } = useSelector((store) => store);
   const { showAlert } = useAlert();
+  const navigate = useNavigate();
 
   const [uploadImage, setUploadImage] = useState(false);
 
@@ -210,9 +212,28 @@ export const CreateMenuForm = () => {
               </FormControl>
             </Grid>
           </Grid>
-          <Button fullWidth variant="contained" color="primary" type="submit">
-            Add Menu Item
-          </Button>
+          <Grid container spacing={2} justifyContent="space-between">
+            <Grid item xs={12} md={6}>
+              <Button
+                fullWidth
+                variant="contained"
+                color="primary"
+                type="submit"
+              >
+                Add Menu Item
+              </Button>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Button
+                fullWidth
+                variant="outlined"
+                color="primary"
+                onClick={() => navigate("/admin/restaurant/menu")}
+              >
+                Cancel
+              </Button>
+            </Grid>
+          </Grid>
         </form>
       </div>
     </div>

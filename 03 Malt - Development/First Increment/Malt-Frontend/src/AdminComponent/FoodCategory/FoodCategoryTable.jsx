@@ -18,7 +18,7 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import CreateIcon from "@mui/icons-material/Create";
-import { Delete } from "@mui/icons-material";
+import { AddCircleOutline, Delete } from "@mui/icons-material";
 import { CreateFoodCategoryForm } from "./CreateFoodCategoryForm";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -26,6 +26,7 @@ import {
   getRestaurantCategory,
 } from "../../component/State/Restaurant/Action";
 import { useAlert } from "../../component/Templates/AlertProvider";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 
 const style = {
   position: "absolute",
@@ -69,7 +70,7 @@ export const FoodCategoryTable = () => {
           sx={{ pt: 2, alignItems: "center" }}
           action={
             <IconButton onClick={handleOpen} aria-label="settings">
-              <CreateIcon />
+              <AddCircleIcon fontSize="large" />
             </IconButton>
           }
         />

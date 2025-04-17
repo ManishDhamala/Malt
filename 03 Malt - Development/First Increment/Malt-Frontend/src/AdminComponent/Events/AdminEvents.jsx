@@ -8,6 +8,7 @@ import {
 } from "../../component/State/Event/Action";
 import { EventCard } from "../../component/Profile/EventCard";
 import { CreateEventForm } from "./CreateEventForm";
+import NoDataFound from "../../component/Templates/NoDataFound";
 
 export const AdminEvents = () => {
   const dispatch = useDispatch();
@@ -71,10 +72,12 @@ export const AdminEvents = () => {
         // Only show events list when not in form mode
         <>
           {event.restaurantEvents?.length === 0 ? (
-            <div className="text-center py-10">
-              <p className="text-lg text-gray-500">
-                No events found. Create your first event!
-              </p>
+            <div className="mt-30">
+              <NoDataFound
+                icon="alert"
+                title="No Events Available"
+                description="You haven't created any events yet Create your first event"
+              />
             </div>
           ) : (
             <Grid container spacing={3}>

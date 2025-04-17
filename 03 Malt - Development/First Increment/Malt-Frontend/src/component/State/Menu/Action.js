@@ -1,5 +1,5 @@
 import { api } from "../../config/api";
-import { CREATE_MENU_ITEM_FAIL, CREATE_MENU_ITEM_REQUEST, CREATE_MENU_ITEM_SUCCESS, DELETE_MENU_ITEM_FAIL, DELETE_MENU_ITEM_REQUEST, DELETE_MENU_ITEM_SUCCESS, GET_MENU_ITEMS_BY_RESTAURANT_ID_FAIL, GET_MENU_ITEMS_BY_RESTAURANT_ID_REQUEST, GET_MENU_ITEMS_BY_RESTAURANT_ID_SUCCESS, SEARCH_MENU_ITEM_FAIL, SEARCH_MENU_ITEM_REQUEST, SEARCH_MENU_ITEM_SUCCESS, UPDATE_MENU_ITEMS_AVAILABILITY_FAIL, UPDATE_MENU_ITEMS_AVAILABILITY_REQUEST, UPDATE_MENU_ITEMS_AVAILABILITY_SUCCESS } from "./ActionType"
+import { CREATE_MENU_ITEM_FAIL, CREATE_MENU_ITEM_REQUEST, CREATE_MENU_ITEM_SUCCESS, DELETE_MENU_ITEM_FAIL, DELETE_MENU_ITEM_REQUEST, DELETE_MENU_ITEM_SUCCESS, GET_MENU_ITEMS_BY_RESTAURANT_ID_FAIL, GET_MENU_ITEMS_BY_RESTAURANT_ID_REQUEST, GET_MENU_ITEMS_BY_RESTAURANT_ID_SUCCESS, SEARCH_MENU_ITEM_FAIL, SEARCH_MENU_ITEM_REQUEST, SEARCH_MENU_ITEM_SUCCESS, UPDATE_MENU_ITEMS_AVAILABILITY_FAIL, UPDATE_MENU_ITEMS_AVAILABILITY_REQUEST, UPDATE_MENU_ITEMS_AVAILABILITY_SUCCESS, UPDATE_MENU_ITEMS_FAIL, UPDATE_MENU_ITEMS_REQUEST, UPDATE_MENU_ITEMS_SUCCESS } from "./ActionType"
 
 
 export const createMenuItem = ({ menu, jwt }) => {
@@ -72,6 +72,29 @@ export const updateMenuItemsAvailability = ({ foodId, jwt }) => {
 
         } catch (error) {
             dispatch({ type: UPDATE_MENU_ITEMS_AVAILABILITY_FAIL, payload: error })
+            console.log("error", error)
+        }
+    }
+}
+
+
+
+export const updateMenuItem = ({ foodId, foodData, jwt }) => {
+    return async (dispatch) => {
+        dispatch({ type: UPDATE_MENU_ITEMS_REQUEST })
+        try {
+            const response = await api.put(`/api/admin/food/${foodId}/update`,
+                foodData, {
+                headers: {
+                    Authorization: `Bearer ${jwt}`
+                }
+            })
+
+            dispatch({ type: UPDATE_MENU_ITEMS_SUCCESS, payload: response.data })
+            console.log("Updated Menu Item: ", response.data)
+
+        } catch (error) {
+            dispatch({ type: UPDATE_MENU_ITEMS_FAIL, payload: error })
             console.log("error", error)
         }
     }
