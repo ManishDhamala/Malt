@@ -7,6 +7,8 @@ import com.project.maltbackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class UserServiceImp implements UserService {
 
@@ -47,6 +49,12 @@ public class UserServiceImp implements UserService {
         return user;
     }
 
+    // Method to delete user by Id
+    @Override
+    public void deleteUser(Long userId) throws Exception {
+        Optional<User> user = userRepository.findById(userId);
+        userRepository.deleteById(userId);
+    }
 
 
 }

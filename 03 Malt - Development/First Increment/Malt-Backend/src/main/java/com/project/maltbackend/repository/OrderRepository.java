@@ -13,5 +13,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     public List<Order> findByRestaurantId(Long restaurantId);
 
+    List<Order> findByCustomerIdAndOrderStatusNot(Long customerId, String excludedStatus);
+
+
 
 }

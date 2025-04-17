@@ -26,5 +26,4 @@ public class RestaurantDto {
 
     private String description;
 
-
 }

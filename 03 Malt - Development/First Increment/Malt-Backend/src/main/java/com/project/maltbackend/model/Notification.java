@@ -1,5 +1,6 @@
 package com.project.maltbackend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,7 +12,6 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-//@Table(name = "notifications")
 public class Notification {
 
     @Id
@@ -19,6 +19,7 @@ public class Notification {
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIgnore
     private User user;
 
     private String title;

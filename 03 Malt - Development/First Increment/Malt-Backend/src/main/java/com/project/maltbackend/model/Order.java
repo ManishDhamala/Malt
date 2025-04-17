@@ -46,9 +46,4 @@ public class Order {
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
     private Payment payment;
 
-
-//    private String paymentMethod;
-//    private boolean isPaid = false; // Optional but useful
-//    private String paymentStatus = "UNPAID"; // Or "PAID", "FAILED"
-
 }

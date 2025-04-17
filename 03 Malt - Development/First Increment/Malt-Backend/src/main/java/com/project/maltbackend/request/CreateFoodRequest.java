@@ -17,6 +17,4 @@ public class CreateFoodRequest {
     private Long restaurantId;
     private boolean vegetarian;
 
-
-
 }

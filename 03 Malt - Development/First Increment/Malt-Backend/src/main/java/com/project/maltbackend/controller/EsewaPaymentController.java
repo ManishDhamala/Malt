@@ -5,6 +5,7 @@ import com.project.maltbackend.model.Payment;
 import com.project.maltbackend.repository.OrderRepository;
 import com.project.maltbackend.repository.PaymentRepository;
 import com.project.maltbackend.service.EsewaService;
+import com.project.maltbackend.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,9 @@ public class EsewaPaymentController {
 
     @Autowired
     private EsewaService esewaService;
+
+    @Autowired
+    private OrderService orderService;
 
     @PostMapping("/esewa/verify")
     public ResponseEntity<?> verifyEsewaPayment(@RequestBody Map<String, String> payload) {
@@ -53,7 +57,8 @@ public class EsewaPaymentController {
                 paymentRepository.save(payment);
 
                 // Update order status
-                order.setOrderStatus("CONFIRMED");
+               // order.setOrderStatus("CONFIRMED");
+                orderService.updateOrder(order.getId(), "CONFIRMED");
                 orderRepository.save(order);
 
                 Map<String, Object> response = new HashMap<>();

@@ -5,10 +5,10 @@ import com.project.maltbackend.model.*;
 import com.project.maltbackend.repository.*;
 import com.project.maltbackend.request.OrderRequest;
 import com.project.maltbackend.response.PaymentResponse;
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -220,7 +220,7 @@ public class OrderServiceImp implements OrderService{
         order.setTotalPrice(finalTotal);
         Order savedOrder = orderRepository.save(order);
 
-        notificationService.createOrderNotification(user, savedOrder);
+       // notificationService.createOrderNotification(user, savedOrder);
 
         // Step 3: Save Payment Info
         Payment payment = new Payment();
@@ -231,7 +231,7 @@ public class OrderServiceImp implements OrderService{
         payment.setOrder(savedOrder);
         paymentRepository.save(payment);
 
-        restaurant.getOrders().add(savedOrder); // optional if you're updating restaurant orders
+        restaurant.getOrders().add(savedOrder); // updating restaurant orders
 
         // Step 4: Payment Handling
         switch (request.getPaymentMethod().toUpperCase()) {
@@ -407,7 +407,7 @@ public class OrderServiceImp implements OrderService{
     }
 
 
-
+    @Transactional(readOnly = true)
     @Override
     public List<OrderDto> getRestaurantsOrders(Long restaurantId, String orderStatus) throws Exception {
         List<Order> orders = orderRepository.findByRestaurantId(restaurantId);
@@ -440,10 +440,11 @@ public class OrderServiceImp implements OrderService{
 //        return orders;
 //    }
 
+    @Transactional(readOnly = true)
     @Override
     public List<OrderDto> getUsersOrders(Long userId) throws Exception {
-        List<Order> orders = orderRepository.findByCustomerId(userId);
-
+        // Finding Orders on the basis of customer Id and excluding pending orders
+        List<Order> orders = orderRepository.findByCustomerIdAndOrderStatusNot(userId, "PENDING");
         return orders.stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
@@ -484,7 +485,7 @@ public class OrderServiceImp implements OrderService{
 
     private PaymentDto convertPaymentToDto(Payment payment) {
         if (payment == null) return null;
-        return new PaymentDto(payment.getId(), payment.getPaymentMethod(),payment.isPaid(), payment.getStatus(),  payment.getPaidAt(), payment.getAmount());
+        return new PaymentDto(payment.getId(), payment.getPaymentMethod(),payment.isPaid(), payment.getStatus(),  payment.getPaidAt(), payment.getAmount(), payment.getOrder().getId());
     }
 
     private FoodDto convertFoodToDto(Food food) {

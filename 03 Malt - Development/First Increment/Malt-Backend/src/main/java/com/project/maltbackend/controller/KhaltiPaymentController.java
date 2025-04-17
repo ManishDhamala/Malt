@@ -41,49 +41,54 @@ public class KhaltiPaymentController {
     @Transactional
     @PostMapping("/verify")
     public ResponseEntity<?> verifyKhalti(@RequestBody Map<String, String> payload,
-                                          @RequestHeader("Authorization") String jwt) throws Exception {
-        String pidx = payload.get("pidx");
-        System.out.println("✅ Verifying Khalti payment for pidx: " + pidx);
+                                          @RequestHeader("Authorization") String jwt) {
+        try {
+            String pidx = payload.get("pidx");
+            User user = userService.findUserByJwtToken(jwt);
 
-        User user = userService.findUserByJwtToken(jwt);
-        Map<String, Object> verification = khaltiService.verifyKhaltiPayment(pidx);
+            Map<String, Object> verification = khaltiService.verifyKhaltiPayment(pidx);
+            System.out.println("Khalti verification response: " + verification);
 
-        System.out.println("✅ Khalti verification response: " + verification);
+            // Check if status is "Completed"
+            String status = (String) verification.get("status");
+            Map<String, Object> state = (Map<String, Object>) verification.get("state");
+            String stateName = state != null ? (String) state.get("name") : null;
 
-        if (!"Completed".equals(verification.get("status"))) {
-            return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Payment not completed"));
-        }
-
-        // Find payment by pidx (transactionId)
-        Payment payment = paymentRepository.findByTransactionId(pidx);
-        if (payment == null) {
-            // If not found by transactionId (may not be saved yet), find the one with matching status and unpaid
-            payment = paymentRepository.findFirstByPaidFalseOrderByIdDesc(); // Optional fallback
-            if (payment == null) {
-                System.err.println(" No payment found matching pidx: " + pidx);
-                return ResponseEntity.status(404).body(Map.of("success", false, "message", "Related payment not found"));
+            if (!"Completed".equalsIgnoreCase(status) && !"Completed".equalsIgnoreCase(stateName)) {
+                return ResponseEntity.ok(Map.of("success", false, "message", "Payment not completed"));
             }
+
+            // Proceed with payment update if completed
+            Payment payment = paymentRepository.findByTransactionId(pidx);
+            if (payment == null) {
+                payment = paymentRepository.findFirstByPaidFalseOrderByIdDesc();
+                if (payment == null) {
+                    return ResponseEntity.ok(Map.of("success", false, "message", "Payment not found"));
+                }
+            }
+
+            Order order = payment.getOrder();
+            if (order == null) {
+                return ResponseEntity.ok(Map.of("success", false, "message", "Order not found"));
+            }
+
+            payment.setStatus("PAID");
+            payment.setPaid(true);
+            payment.setTransactionId(pidx);
+            payment.setPaidAt(new Date());
+            paymentRepository.save(payment);
+
+            orderServiceImp.updateOrder(order.getId(), "CONFIRMED");
+
+            return ResponseEntity.ok(Map.of("success", true, "orderId", order.getId()));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.ok(Map.of("success", false, "message", "Server error: " + e.getMessage()));
         }
-
-        Order order = payment.getOrder();
-        if (order == null) {
-            throw new Exception("Order not found for the payment");
-        }
-
-        // Updating payment
-        payment.setStatus("PAID");
-        payment.setPaid(true);
-        payment.setTransactionId(pidx);
-        payment.setPaidAt(new Date());
-        paymentRepository.save(payment);
-
-
-        // Updating order (and sending email)
-        orderServiceImp.updateOrder(order.getId(), "CONFIRMED");
-
-
-        return ResponseEntity.ok(Map.of("success", true, "orderId", order.getId()));
     }
+
+
 
 
 }

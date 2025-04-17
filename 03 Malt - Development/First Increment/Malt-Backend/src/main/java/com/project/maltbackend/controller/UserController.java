@@ -3,6 +3,7 @@ package com.project.maltbackend.controller;
 import com.project.maltbackend.dto.UserDto;
 import com.project.maltbackend.model.Address;
 import com.project.maltbackend.model.User;
+import com.project.maltbackend.response.MessageResponse;
 import com.project.maltbackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,7 +27,6 @@ public class UserController {
         return new ResponseEntity<>(user, HttpStatus.OK);
 
     }
-
 
     @PutMapping("/update")
     public ResponseEntity<UserDto> updateUser(
@@ -55,6 +55,19 @@ public class UserController {
 
         return ResponseEntity.ok(savedAddresses);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<MessageResponse> deleteUser(@PathVariable Long id,
+                                                      @RequestHeader("Authorization")String jwt) throws Exception {
+        User user = userService.findUserByJwtToken(jwt);
+        userService.deleteUser(id);
+
+        MessageResponse response = new MessageResponse();
+        response.setMessage("User Deleted Successfully");
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 
 
 }

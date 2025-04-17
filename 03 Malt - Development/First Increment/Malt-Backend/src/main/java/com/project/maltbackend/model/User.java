@@ -41,12 +41,11 @@ public class User {
     @ElementCollection    // collection of non-entity values that should be stored in separate table
     private List<RestaurantDto> favourites = new ArrayList<>();
 
-//    @OneToMany(cascade = CascadeType.ALL , orphanRemoval = true)
-//    private List<Address> addresses = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Address> addresses = new ArrayList<>();
 
-
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Notification> notifications = new ArrayList<>();
 
 }

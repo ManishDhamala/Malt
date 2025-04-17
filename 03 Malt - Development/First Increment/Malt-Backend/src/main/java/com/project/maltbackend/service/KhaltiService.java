@@ -32,9 +32,9 @@ public class KhaltiService {
         headers.set("Authorization", "Key " + secretKey);
 
         Map<String, Object> body = new HashMap<>();
-        body.put("return_url", "http://localhost:5173/payment/khalti/callback"); // Change to your frontend callback route
+        body.put("return_url", "http://localhost:5173/payment/khalti/callback"); // frontend callback route
         body.put("website_url", "http://localhost:5173"); // Your website URL
-        body.put("amount", order.getTotalPrice() * 100); // Khalti requires amount in paisa
+        body.put("amount", order.getTotalPrice() * 100); //  paisa -> Rupees
         body.put("purchase_order_id", String.valueOf(order.getId()));
         body.put("purchase_order_name", "Order #" + order.getId());
 

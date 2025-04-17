@@ -16,5 +16,6 @@ public class PaymentDto {
     private String status;
     private Date paidAt;
     private Long amount;
+    private Long orderId;
 
 }

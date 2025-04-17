@@ -15,7 +15,7 @@ import java.util.List;
     @RestController
     @RequiredArgsConstructor
     @RequestMapping("/api/payments")
-    public class PaymentController {
+    public class PaymentHistoryController {
 
         private final PaymentHistoryService paymentHistoryService;
         private final UserService userService;
