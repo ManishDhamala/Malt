@@ -1,16 +1,15 @@
 package com.project.maltbackend.service;
 
 import com.project.maltbackend.dto.RestaurantDto;
-import com.project.maltbackend.model.Address;
-import com.project.maltbackend.model.ContactInformation;
-import com.project.maltbackend.model.Restaurant;
-import com.project.maltbackend.model.User;
+import com.project.maltbackend.model.*;
 import com.project.maltbackend.repository.AddressRepository;
+import com.project.maltbackend.repository.CartItemRepository;
 import com.project.maltbackend.repository.RestaurantRepository;
 import com.project.maltbackend.repository.UserRepository;
 import com.project.maltbackend.request.CreateRestaurantRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,6 +26,9 @@ public class RestaurantServiceImp implements RestaurantService{
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private CartItemRepository cartItemRepository;
 
     // Method to create a new restaurant based on the request data and the user
     @Override
@@ -121,12 +123,20 @@ public class RestaurantServiceImp implements RestaurantService{
     }
 
     // Method to delete a restaurant by its ID
+    @Transactional
     @Override
     public void deleteRestaurant(Long restaurantId) throws Exception {
 
         Restaurant restaurant = findRestaurantById(restaurantId);
-        restaurantRepository.delete(restaurant);
 
+        // Get all foods of this restaurant
+        List<Food> restaurantFoods = restaurant.getFoods();
+
+        // Delete cart items for each food
+        for (Food food : restaurantFoods) {
+            cartItemRepository.deleteByFood(food);
+        }
+        restaurantRepository.delete(restaurant);
     }
 
     // Method to retrieve all restaurants

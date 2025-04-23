@@ -53,6 +53,61 @@ public class AuthController {
     @Autowired
     private NotificationService notificationService;
 
+//    @PostMapping("/signup")
+//    public ResponseEntity<AuthResponse> createUserHandler(@RequestBody User user) throws Exception {
+//
+//        User isEmailExist = userRepository.findByEmail(user.getEmail());
+//        if(isEmailExist != null){
+//            throw new Exception("Email is already used");
+//        }
+//
+//        User createdUser = new User();
+//        createdUser.setEmail(user.getEmail());
+//        createdUser.setFullName(user.getFullName());
+//        createdUser.setRole(user.getRole());
+//        createdUser.setPassword(passwordEncoder.encode(user.getPassword()));
+//
+//        User savedUser = userRepository.save(createdUser);
+//
+//        if(user.getRole() == USER_ROLE.ROLE_CUSTOMER) {
+//            // Create welcome notification
+//            notificationService.createWelcomeNotification(savedUser);
+//        }
+//
+//        // Create a cart for the new user and save it in the database
+//        Cart cart = new Cart();
+//        cart.setCustomer(savedUser);
+//        cartRepository.save(cart);
+//
+//        // Authenticate the new user by creating an authentication token using their email and password
+//        Authentication authentication = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
+//        SecurityContextHolder.getContext().setAuthentication(authentication);  // Set the authentication in the SecurityContext
+//
+//        // Generate a JWT token for the authenticated user
+//        String jwt = jwtProvider.generateToken(authentication);
+//
+//        // Create an AuthResponse object with the JWT token, success message, and the user's role
+//        AuthResponse authResponse = new AuthResponse();
+//        authResponse.setJwt(jwt);
+//        authResponse.setMessage("Registered Successfully");
+//        authResponse.setRole(savedUser.getRole());
+//
+//        if(user.getRole() == USER_ROLE.ROLE_CUSTOMER) {
+//            // Loading welcome.html template
+//            String template = emailService.loadTemplate("welcome.html");
+//            String htmlContent = template.replace("[[name]]", user.getFullName()); // Replacing name in HTML Content
+//
+//            //Sending Register / Welcome Mail to User
+//            emailService.sendHtmlEmail(user.getEmail(), "Welcome to Malt!", htmlContent);
+//        }
+//
+//
+//        // Return the response with HTTP status 201 (Created)
+//        return new ResponseEntity<>(authResponse, HttpStatus.CREATED);
+//
+//    }
+
+
     @PostMapping("/signup")
     public ResponseEntity<AuthResponse> createUserHandler(@RequestBody User user) throws Exception {
 
@@ -79,9 +134,18 @@ public class AuthController {
         cart.setCustomer(savedUser);
         cartRepository.save(cart);
 
-        // Authenticate the new user by creating an authentication token using their email and password
-        Authentication authentication = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
-        SecurityContextHolder.getContext().setAuthentication(authentication);  // Set the authentication in the SecurityContext
+        // Load user details to get proper authorities
+        UserDetails userDetails = customerUserDetailsService.loadUserByUsername(savedUser.getEmail());
+
+        // Create authenticated token with proper authorities
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                userDetails,
+                null,
+                userDetails.getAuthorities()
+        );
+
+        // Set the authentication in the SecurityContext
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         // Generate a JWT token for the authenticated user
         String jwt = jwtProvider.generateToken(authentication);
@@ -101,10 +165,8 @@ public class AuthController {
             emailService.sendHtmlEmail(user.getEmail(), "Welcome to Malt!", htmlContent);
         }
 
-
         // Return the response with HTTP status 201 (Created)
         return new ResponseEntity<>(authResponse, HttpStatus.CREATED);
-
     }
 
     @PostMapping("/signin")
@@ -142,12 +204,14 @@ public class AuthController {
 
         // Check if the user exists, if not, throw an exception for invalid username
         if (userDetails == null) {
+            System.out.println("Login failed: Invalid Username");
             throw new BadCredentialsException("Invalid Username");
         }
 
         // Validate the password by comparing the provided password with the stored (hashed) password
         if (!passwordEncoder.matches(password, userDetails.getPassword())) {  // If passwords do not match, throw an exception
-            throw new BadCredentialsException("Invalid Password");
+            System.out.println("Login failed: Invalid Username or Password");
+            throw new BadCredentialsException("Invalid Username or Password");
         }
 
         // Return an authenticated token containing the user's details and authorities (roles)

@@ -214,7 +214,16 @@ public class OrderServiceImp implements OrderService{
         order.setCustomer(user);
         order.setRestaurant(restaurant);
         order.setCreatedAt(new Date());
-        order.setOrderStatus("PENDING");
+
+        // Default order status
+        String orderStatus = "CANCELLED";
+
+        // Only set to pending for COD
+        if ("COD".equalsIgnoreCase(request.getPaymentMethod())) {
+            orderStatus = "PENDING";
+        }
+
+        order.setOrderStatus(orderStatus);
         order.setDeliveryAddress(finalAddress);
         order.setItems(orderItems);
         order.setTotalPrice(finalTotal);
@@ -225,7 +234,16 @@ public class OrderServiceImp implements OrderService{
         // Step 3: Save Payment Info
         Payment payment = new Payment();
         payment.setPaymentMethod(request.getPaymentMethod());
-        payment.setStatus("PENDING");
+
+        // Set default status as "FAILED"
+        String paymentStatus = "FAILED";
+
+        // Only set to "PENDING" for COD
+        if ("COD".equalsIgnoreCase(request.getPaymentMethod())) {
+            paymentStatus = "PENDING";
+        }
+
+        payment.setStatus(paymentStatus);
         payment.setPaid(false);
         payment.setAmount(finalTotal);
         payment.setOrder(savedOrder);
@@ -386,7 +404,7 @@ public class OrderServiceImp implements OrderService{
                     .replace("[[restaurantCharge]]", String.valueOf(restaurantCharge))
                     .replace("[[totalPrice]]", String.valueOf(order.getTotalPrice()));
 
-            System.out.println("✅ Sending confirmation email to {}"+ user.getEmail());
+            System.out.println("Sending confirmation email to {}"+ user.getEmail());
 
 
             emailService.sendHtmlEmail(user.getEmail(), "Your Order Confirmation - Malt", htmlContent);
@@ -407,15 +425,31 @@ public class OrderServiceImp implements OrderService{
     }
 
 
+//    @Transactional(readOnly = true)
+//    @Override
+//    public List<OrderDto> getRestaurantsOrders(Long restaurantId, String orderStatus) throws Exception {
+//        List<Order> orders = orderRepository.findByRestaurantId(restaurantId);
+//
+//        if (orderStatus != null) {
+//            orders = orders.stream()
+//                    .filter(order -> order.getOrderStatus().equals(orderStatus))
+//                    .collect(Collectors.toList());
+//        }
+//
+//        return orders.stream()
+//                .map(this::convertToDto)
+//                .collect(Collectors.toList());
+//    }
+
     @Transactional(readOnly = true)
     @Override
     public List<OrderDto> getRestaurantsOrders(Long restaurantId, String orderStatus) throws Exception {
-        List<Order> orders = orderRepository.findByRestaurantId(restaurantId);
+        List<Order> orders;
 
         if (orderStatus != null) {
-            orders = orders.stream()
-                    .filter(order -> order.getOrderStatus().equals(orderStatus))
-                    .collect(Collectors.toList());
+            orders = orderRepository.findByRestaurantIdAndOrderStatus(restaurantId, orderStatus);
+        } else {
+            orders = orderRepository.findByRestaurantIdAndOrderStatusNot(restaurantId, "CANCELLED");
         }
 
         return orders.stream()
@@ -423,28 +457,12 @@ public class OrderServiceImp implements OrderService{
                 .collect(Collectors.toList());
     }
 
-    //    @Override
-//    public List<Order> getUsersOrders(Long userId) throws Exception {
-//        return orderRepository.findByCustomerId(userId);
-//    }
-
-    //    @Override
-//    public List<Order> getRestaurantsOrders(Long restaurantId, String orderStatus) throws Exception {
-//        List<Order> orders =  orderRepository.findByRestaurantId(restaurantId);
-//
-//        if(orderStatus != null){
-//            orders = orders.stream().filter(order ->
-//                    order.getOrderStatus().equals(orderStatus)).collect(Collectors.toList());
-//        }
-//
-//        return orders;
-//    }
 
     @Transactional(readOnly = true)
     @Override
     public List<OrderDto> getUsersOrders(Long userId) throws Exception {
         // Finding Orders on the basis of customer Id and excluding pending orders
-        List<Order> orders = orderRepository.findByCustomerIdAndOrderStatusNot(userId, "PENDING");
+        List<Order> orders = orderRepository.findByCustomerIdAndOrderStatusNot(userId, "CANCELLED");
         return orders.stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
