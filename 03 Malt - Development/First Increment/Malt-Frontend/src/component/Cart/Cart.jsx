@@ -26,6 +26,7 @@ import { createOrder } from "../State/Order/Action";
 import { getSavedAddresses } from "../State/Address/Action";
 import { HomeFooter } from "../Home/HomeFooter";
 import { useAlert } from "../Templates/AlertProvider";
+import CenterLoader from "../Templates/CenterLoader";
 
 const style = {
   position: "absolute",
@@ -85,6 +86,8 @@ export const Cart = () => {
   const [paymentMethod, setPaymentMethod] = useState("COD");
   const [subtotal, setSubtotal] = useState(0);
   const [totalAmount, setTotalAmount] = useState(0);
+
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
 
   const handleSaveAddressChange = (event) => {
     setSaveAddress(event.target.checked);
@@ -158,7 +161,11 @@ export const Cart = () => {
         form.submit();
       } else {
         // COD fallback
-        window.location.href = `/payment/success/${res.order?.id || res.id}`;
+        // window.location.href = `/payment/success/${res.order?.id || res.id}`;
+        setIsPlacingOrder(true);
+        setTimeout(() => {
+          window.location.href = `/payment/success/${res.order?.id || res.id}`;
+        }, 500); // Add small delay to show loader
       }
 
       resetForm();
@@ -192,7 +199,7 @@ export const Cart = () => {
         // Stripe OR Khalti
         window.location.href = res.paymentUrl;
       } else if (res.paymentProvider === "KHALTI") {
-        window.location.href = res.payment_url; // ← Add this check (optional if you unify both above)
+        window.location.href = res.payment_url;
       } else if (res.paymentProvider === "ESEWA") {
         const form = document.createElement("form");
         form.method = "POST";
@@ -225,7 +232,12 @@ export const Cart = () => {
         document.body.appendChild(form);
         form.submit();
       } else {
-        window.location.href = `/payment/success/${res.id}`;
+        // COD
+        // window.location.href = `/payment/success/${res.id}`;
+        setIsPlacingOrder(true);
+        setTimeout(() => {
+          window.location.href = `/payment/success/${res.order?.id || res.id}`;
+        }, 500); // Add small delay to show loader
       }
     } catch (error) {
       console.error("Order failed", error);
@@ -251,6 +263,10 @@ export const Cart = () => {
       setTotalAmount(0);
     }
   }, [cart.cartItems]);
+
+  if (isPlacingOrder && paymentMethod === "COD") {
+    return <CenterLoader message="Placing your order..." />;
+  }
 
   return (
     <>

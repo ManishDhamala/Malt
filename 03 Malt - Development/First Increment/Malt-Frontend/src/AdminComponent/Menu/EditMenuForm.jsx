@@ -35,9 +35,7 @@ export const EditMenuForm = () => {
       name: state?.name || "",
       description: state?.description || "",
       price: state?.price || "",
-      category:
-        restaurant?.categories?.find((c) => c.id === state?.foodCategory?.id) ||
-        "",
+      category: state?.foodCategory?.id || "",
       restaurantId: state?.restaurantId,
       vegetarian: state?.vegetarian || false,
       images: state?.images || [],
@@ -47,7 +45,7 @@ export const EditMenuForm = () => {
         name: values.name,
         description: values.description,
         price: values.price,
-        categoryId: values.category.id,
+        categoryId: values.category,
         restaurantId: values.restaurantId,
         vegetarian: values.vegetarian,
         images: values.images,
@@ -109,10 +107,16 @@ export const EditMenuForm = () => {
                   />
                   <IconButton
                     onClick={() => handleRemoveImage(i)}
-                    className="absolute top-0 right-0"
+                    sx={{
+                      position: "absolute",
+                      top: 0,
+                      right: 0,
+                      outline: "none",
+                      color: "white",
+                    }}
                     size="small"
                   >
-                    <CloseIcon sx={{ fontSize: "1rem", color: "white" }} />
+                    <CloseIcon sx={{ fontSize: "1rem" }} />
                   </IconButton>
                 </div>
               ))}
@@ -150,7 +154,7 @@ export const EditMenuForm = () => {
                   label="Category"
                 >
                   {restaurant?.categories?.map((item) => (
-                    <MenuItem key={item.id} value={item}>
+                    <MenuItem key={item.id} value={item.id}>
                       {item.name}
                     </MenuItem>
                   ))}

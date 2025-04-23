@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { store } from "../State/store";
 import { Authentication } from "../Authentication/Authentication";
 import { Notification } from "./Notification";
+import maltLogo from "./Malt Logo (White).png";
 
 export const Navbar = () => {
   const { auth, cart } = useSelector((store) => store);
@@ -43,30 +44,30 @@ export const Navbar = () => {
   return (
     <div className="px-5 z-50 py-[.8rem] bg-[#B20303] lg:px-20 flex justify-between fixed w-full top-0 left-0">
       <div className="lg:mr-10 cursor-pointer flex items-center space-x-4">
-        <li
+        <img
+          src={maltLogo}
+          alt="Malt Logo"
           onClick={() => navigate("/")}
-          className="logo font-semibold text-white text-2xl"
-        >
-          Malt
-        </li>
+          className="h-15 w-auto max-h-[2.8rem] cursor-pointer"
+        />
       </div>
 
       <div className="flex items-center space-x-2 lg:space-x-10">
         <div className="">
           <IconButton onClick={handleSearchIconClick}>
-            <SearchIcon sx={{ fontSize: "1.6rem", color: "white" }} />
+            <SearchIcon sx={{ fontSize: "1.5rem", color: "white" }} />
           </IconButton>
         </div>
         <div className="">
           <IconButton onClick={handleCartClick}>
             <Badge color="secondary" badgeContent={cart.cartItems.length}>
-              <ShoppingCartIcon sx={{ fontSize: "1.6rem", color: "white" }} />
+              <ShoppingCartIcon sx={{ fontSize: "1.5rem", color: "white" }} />
             </Badge>
           </IconButton>
         </div>
         <div className="">
           <IconButton onClick={handleProfileClick}>
-            <PersonIcon sx={{ fontSize: "1.8rem", color: "white" }} />
+            <PersonIcon sx={{ fontSize: "1.6rem", color: "white" }} />
           </IconButton>
         </div>
         <div className="">

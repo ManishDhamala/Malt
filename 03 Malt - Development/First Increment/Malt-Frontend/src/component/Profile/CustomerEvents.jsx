@@ -24,7 +24,7 @@ export const CustomerEvents = () => {
   }
 
   return (
-    <div className="p-5 mt-17">
+    <div className="mt-22">
       <div className="flex flex-col items-center mb-6">
         <h1 className="text-xl text-center font-semibold">Upcoming Events</h1>
       </div>
@@ -36,11 +36,11 @@ export const CustomerEvents = () => {
           description="There are currently no upcoming restaurant events. Please check back later!"
         />
       ) : (
-        <Grid container spacing={3} justifyContent="center">
+        <Grid container spacing={2} justifyContent="center">
           {events
             .sort((a, b) => a.id - b.id)
             .map((event) => (
-              <Grid item xs={12} sm={6} md={4} lg={3} key={event.id}>
+              <Grid item xs={10} sm={5} md={4} lg={3.3} key={event.id}>
                 <EventCard event={event} isAdmin={false} />
               </Grid>
             ))}

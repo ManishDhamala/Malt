@@ -106,6 +106,9 @@ export const MenuTable = () => {
                     Name
                   </TableCell>
                   <TableCell sx={{ fontWeight: "bold" }} align="center">
+                    Category
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: "bold" }} align="center">
                     Price
                   </TableCell>
                   <TableCell sx={{ fontWeight: "bold" }} align="center">
@@ -125,6 +128,9 @@ export const MenuTable = () => {
                         <Avatar src={item.images[0]} />
                       </TableCell>
                       <TableCell align="center">{item.name}</TableCell>
+                      <TableCell align="center">
+                        {item.foodCategory.name}
+                      </TableCell>
                       <TableCell align="center">Rs {item.price}</TableCell>
                       <TableCell align="center">
                         <Button

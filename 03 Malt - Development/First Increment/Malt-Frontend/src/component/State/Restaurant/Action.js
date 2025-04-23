@@ -123,6 +123,7 @@ export const getRestaurantByUserId = (jwt) => {
 
 
 export const createRestaurant = (reqData) => {
+    const jwt = localStorage.getItem("jwt");
     return async (dispatch) => {
         dispatch({ type: CREATE_RESTAURANT_REQUEST })
         try {

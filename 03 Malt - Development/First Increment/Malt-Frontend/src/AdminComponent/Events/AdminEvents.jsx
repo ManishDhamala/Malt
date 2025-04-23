@@ -84,7 +84,7 @@ export const AdminEvents = () => {
               {event.restaurantEvents
                 .sort((a, b) => a.id - b.id)
                 .map((event) => (
-                  <Grid item xs={12} sm={6} md={4} lg={3} key={event.id}>
+                  <Grid item xs={10} sm={5} md={4} lg={3.5} key={event.id}>
                     <EventCard
                       event={event}
                       isAdmin={true}

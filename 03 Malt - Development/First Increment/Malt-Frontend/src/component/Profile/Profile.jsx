@@ -5,7 +5,6 @@ import { UserProfile } from "./UserProfile";
 import { Orders } from "./Orders";
 import { Address } from "./Address";
 import { Favorites } from "./Favorites";
-import { Events } from "./Events";
 import { PrivateRoute } from "../../Routers/PrivateRoute";
 import PaymentHistory from "./PaymentHistory";
 import { CustomerEvents } from "./CustomerEvents";
