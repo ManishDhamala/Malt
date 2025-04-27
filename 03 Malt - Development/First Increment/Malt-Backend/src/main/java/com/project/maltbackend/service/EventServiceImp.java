@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,8 +40,17 @@ public class EventServiceImp implements EventService {
         event.setTitle(req.getTitle());
         event.setDescription(req.getDescription());
         event.setImages(req.getImages());
-        event.setStartDate(req.getStartDate());
-        event.setEndDate(req.getEndDate());
+
+        ZoneId serverZone = ZoneId.systemDefault(); // or ZoneId.of("UTC")
+
+        LocalDateTime startDate = req.getStartDate().atZone(ZoneId.of("UTC"))
+                .withZoneSameInstant(serverZone).toLocalDateTime();
+
+        LocalDateTime endDate = req.getEndDate().atZone(ZoneId.of("UTC"))
+                .withZoneSameInstant(serverZone).toLocalDateTime();
+
+        event.setStartDate(startDate);
+        event.setEndDate(endDate);
 
         return eventRepository.save(event);
     }

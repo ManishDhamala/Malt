@@ -3,6 +3,7 @@ package com.project.maltbackend.controller;
 import com.project.maltbackend.model.*;
 import com.project.maltbackend.repository.OrderRepository;
 import com.project.maltbackend.repository.PaymentRepository;
+import com.project.maltbackend.service.OrderService;
 import com.project.maltbackend.service.OrderServiceImp;
 import com.stripe.Stripe;
 import com.stripe.exception.SignatureVerificationException;
@@ -27,6 +28,9 @@ public class StripeWebhookController {
 
     @Autowired
     private PaymentRepository paymentRepository;
+
+    @Autowired
+    private OrderService orderService;
 
     @Autowired
     private OrderServiceImp orderServiceImp;
@@ -62,7 +66,8 @@ public class StripeWebhookController {
                         payment.setPaidAt(new Date());
                         paymentRepository.save(payment);
 
-                        order.setOrderStatus("CONFIRMED");
+                        //order.setOrderStatus("CONFIRMED");
+                        orderService.updateOrder(order.getId(), "CONFIRMED");
                         orderRepository.save(order);
 
 
