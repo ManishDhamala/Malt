@@ -76,7 +76,7 @@ export const AdminEvents = () => {
               <NoDataFound
                 icon="alert"
                 title="No Events Available"
-                description="You haven't created any events yet Create your first event"
+                description="You haven't created any events yet. Create your first event"
               />
             </div>
           ) : (

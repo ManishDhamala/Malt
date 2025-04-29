@@ -55,7 +55,7 @@ export const loginUser = (reqData) => async (dispatch) => {
         let message = "Something went wrong. Please try again.";
         if (error.response) {
             // Server responded but with error
-            message = error.response.data?.message || "Email is already used";
+            message = error.response.data?.message || "Invalid Username or Password";
         } else if (error.request) {
             // Request was made but no response (e.g server is down)
             message = "Network error. Please check your connection or try again later.";

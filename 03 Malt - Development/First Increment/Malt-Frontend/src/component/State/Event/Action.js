@@ -20,6 +20,7 @@ export const createEvent = ({ data, jwt }) => async (dispatch) => {
             },
         });
         dispatch({ type: CREATE_EVENT_SUCCESS, payload: response.data });
+        console.log("Event Created: ", response.data)
         return response.data;
     } catch (error) {
         dispatch({ type: CREATE_EVENT_FAILURE, payload: error.message });

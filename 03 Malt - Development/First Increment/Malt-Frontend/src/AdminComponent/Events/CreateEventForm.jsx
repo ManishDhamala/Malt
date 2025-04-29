@@ -47,8 +47,11 @@ export const CreateEventForm = ({ onSuccess, onCancel }) => {
     onSubmit: async (values, { resetForm, setSubmitting }) => {
       const data = {
         ...values,
+        startDate: values.startDate ? values.startDate.toISOString() : null,
+        endDate: values.endDate ? values.endDate.toISOString() : null,
         restaurantId: restaurant.usersRestaurant.id,
       };
+
       try {
         await dispatch(createEvent({ data, jwt }));
         showAlert("success", "Event created successfully");

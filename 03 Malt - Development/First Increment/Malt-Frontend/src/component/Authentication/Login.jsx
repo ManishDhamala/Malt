@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../State/Authentication/Action";
+import { useAlert } from "../Templates/AlertProvider";
 
 const initialValues = {
   email: "",
@@ -32,6 +33,7 @@ const validationSchema = Yup.object().shape({
 export const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { showAlert } = useAlert();
 
   const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState(""); // State for backend error
@@ -50,6 +52,7 @@ export const Login = () => {
           navigate,
         })
       );
+      // showAlert("success", "Login Successful");
 
       console.log("Login Response:", response); // This should now show a valid response
 

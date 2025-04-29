@@ -74,14 +74,22 @@ export const SearchFood = () => {
             return <CenterLoader message="Searching Food..." />;
           }
 
-          if (keyword.trim() !== "" && filteredResults.length === 0) {
+          if (keyword.trim() === "") {
+            return (
+              <NoDataFound
+                title="Start Searching"
+                description="Begin search by entering food name."
+                icon="search"
+              />
+            );
+          }
+
+          if (filteredResults.length === 0) {
             return (
               <NoDataFound
                 title="No Food items found"
                 description="Try a different search or explore restaurants."
-                icon={
-                  <SearchIcon fontSize="large" className="text-gray-400 mb-4" />
-                }
+                icon="alert"
               />
             );
           }
