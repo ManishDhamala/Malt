@@ -54,7 +54,7 @@ export const Login = () => {
       );
       // showAlert("success", "Login Successful");
 
-      console.log("Login Response:", response); // This should now show a valid response
+      console.log("Login Response:", response);
 
       if (response?.error) {
         setLoginError(response.error);

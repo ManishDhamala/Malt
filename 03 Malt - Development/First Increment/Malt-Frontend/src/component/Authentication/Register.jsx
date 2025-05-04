@@ -51,7 +51,7 @@ export const Register = () => {
 
   const handleSubmit = async (values, { setSubmitting }) => {
     setRegisterError(""); // Reset previous errors
-    console.log("Form Values:", { ...values, password: "********" }); // This needs to be removed
+    // console.log("Form Values:", { ...values, password: "********" });
 
     try {
       const response = await dispatch(

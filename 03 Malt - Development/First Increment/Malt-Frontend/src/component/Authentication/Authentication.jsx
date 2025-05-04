@@ -33,7 +33,7 @@ export const Authentication = () => {
         }
         sx={{
           "& .MuiOutlinedInput-root": {
-            borderRadius: "50px", // Apply border-radius to text-field
+            borderRadius: "50px",
           },
         }}
       >

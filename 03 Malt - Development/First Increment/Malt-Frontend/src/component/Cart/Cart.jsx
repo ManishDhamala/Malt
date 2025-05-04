@@ -129,7 +129,7 @@ export const Cart = () => {
         // Stripe OR Khalti
         window.location.href = res.paymentUrl;
       } else if (res.paymentProvider === "KHALTI") {
-        window.location.href = res.payment_url; // ← Add this check (optional if you unify both above)
+        window.location.href = res.payment_url;
       } else if (res.paymentProvider === "ESEWA") {
         const form = document.createElement("form");
         form.method = "POST";

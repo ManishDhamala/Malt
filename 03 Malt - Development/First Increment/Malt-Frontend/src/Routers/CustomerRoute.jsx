@@ -14,6 +14,8 @@ import { PrivateRoute } from "./PrivateRoute";
 import EsewaCallback from "../component/Cart/EsewaCallback";
 import KhaltiCallback from "../component/Cart/KhaltiCallback";
 import { PaymentFail } from "../component/PaymentFail/PaymentFail";
+import VerificationPending from "../component/Authentication/VerificationPending";
+import VerifyEmail from "../component/Authentication/VerifyEmail";
 
 export const CustomerRoute = () => {
   const dispatch = useDispatch();
@@ -33,6 +35,12 @@ export const CustomerRoute = () => {
         {/* Accessible to everyone */}
         <Route path="/" element={<Home />} />
         <Route path="/account/:register" element={<Home />} />
+        {/* Email Verification Routes - Accessible to everyone */}
+        <Route
+          path="/account/verification-pending"
+          element={<VerificationPending />}
+        />
+        <Route path="/auth/verify" element={<VerifyEmail />} />
         {/* Block Admin/Owner from Restaurant Details and Search */}
         <Route
           path="/restaurant/:city/:title/:id"
