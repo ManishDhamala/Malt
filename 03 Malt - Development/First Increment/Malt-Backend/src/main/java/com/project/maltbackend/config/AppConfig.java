@@ -40,6 +40,14 @@ public class AppConfig {
 
                 // Authorization rules: Defines who can access which URLs
                 .authorizeHttpRequests(Authorize -> Authorize
+
+                        // Allow public access to authentication endpoints
+                        .requestMatchers("/auth/signup").permitAll()
+                        .requestMatchers("/auth/signin").permitAll()
+                        .requestMatchers("/auth/verify").permitAll()  // Allow email verification
+                        .requestMatchers("/auth/resend-verification").permitAll()  // Allow resending verification
+
+
                         // Allow public access to fetch all restaurants
                         .requestMatchers("/api/restaurants").permitAll()
                         .requestMatchers("/api/restaurants/**").permitAll() // Allow restaurant details access

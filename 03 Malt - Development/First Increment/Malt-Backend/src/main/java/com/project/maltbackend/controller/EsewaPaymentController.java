@@ -57,7 +57,6 @@ public class EsewaPaymentController {
                 paymentRepository.save(payment);
 
                 // Update order status
-               // order.setOrderStatus("CONFIRMED");
                 orderService.updateOrder(order.getId(), "CONFIRMED");
                 orderRepository.save(order);
 

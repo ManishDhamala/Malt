@@ -34,7 +34,7 @@ public class CategoryController {
                                                    @RequestBody CreateCategoryRequest categoryRequest) throws Exception {
 
         // Retrieves the user based on the JWT token in the Authorization header
-//        User user = userService.findUserByJwtToken(jwt);
+        User user = userService.findUserByJwtToken(jwt);
 
         Restaurant restaurant = restaurantService.findRestaurantById(categoryRequest.getRestaurantId());
 

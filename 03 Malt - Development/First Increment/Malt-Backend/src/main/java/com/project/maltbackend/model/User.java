@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +34,14 @@ public class User {
     private String password;
 
     private USER_ROLE role = USER_ROLE.ROLE_CUSTOMER;
+
+    // This need to be noted
+    private boolean verified = false;
+
+    @Column(length = 64)
+    private String verificationToken;
+
+    private LocalDateTime verificationTokenExpiry;
 
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "customer")
