@@ -8,11 +8,19 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface FoodRepository extends JpaRepository<Food, Long> {
 
+    // Include deleted food too
     List<Food> findByRestaurantId(Long restaurantId);
+
+    // Exclude deleted food
+    List<Food> findByRestaurantIdAndDeletedFalse(Long restaurantId);
+
+    // Find including deleted
+    Optional<Food> findByIdAndDeletedFalse(Long id);
 
     //Case Sensitive
 //    @Query("SELECT f FROM Food f WHERE f.name LIKE %:KEYWORD% OR f.foodCategory.name LIKE %:keyword%")

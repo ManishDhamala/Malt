@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,6 +14,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@SQLDelete(sql = "UPDATE food SET deleted = true WHERE id=?") // For automatic soft delete instead of hard delete
 public class Food {
 
     @Id
@@ -39,10 +41,11 @@ public class Food {
 
     private boolean isVegetarian;
 
-//    private boolean isSeasonal;
-//
-//    private List<IngredientsItem> ingredientsItems = new ArrayList<>();
-
     private Date creationDate;
+
+    private Boolean deleted = false; // Soft delete flag
+
+    private Date deletedAt;
+
 
 }

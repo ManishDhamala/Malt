@@ -1,11 +1,13 @@
 package com.project.maltbackend.controller;
 
 import com.project.maltbackend.dto.OrderDto;
+import com.project.maltbackend.dto.PaginatedResponse;
 import com.project.maltbackend.model.Order;
 import com.project.maltbackend.model.User;
 import com.project.maltbackend.service.OrderService;
 import com.project.maltbackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,15 +26,33 @@ public class AdminOrderController {
     private UserService userService;
 
 
+//    @GetMapping("/order/restaurant/{id}")
+//    public ResponseEntity<List<OrderDto>> getOrderHistory(@PathVariable Long id,
+//                                                       @RequestParam(required = false) String order_status,
+//                                                       @RequestHeader("Authorization") String jwt) throws Exception {
+//
+//        User user = userService.findUserByJwtToken(jwt);
+//        List<OrderDto> orders = orderService.getRestaurantsOrders(id,order_status);
+//
+//        return new ResponseEntity<>(orders, HttpStatus.OK);
+//    }
+
+    // In AdminOrderController
     @GetMapping("/order/restaurant/{id}")
-    public ResponseEntity<List<OrderDto>> getOrderHistory(@PathVariable Long id,
-                                                       @RequestParam(required = false) String order_status,
-                                                       @RequestHeader("Authorization") String jwt) throws Exception {
+    public ResponseEntity<PaginatedResponse<OrderDto>> getOrderHistory(
+            @PathVariable Long id,
+            @RequestParam(required = false) String order_status,
+            @RequestParam(required = false) Integer year,
+            @RequestParam(required = false) Integer month,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestHeader("Authorization") String jwt) throws Exception {
 
         User user = userService.findUserByJwtToken(jwt);
-        List<OrderDto> orders = orderService.getRestaurantsOrders(id,order_status);
+        PaginatedResponse<OrderDto> response = orderService.getRestaurantsOrders(
+                id, order_status, year, month, page, size);
 
-        return new ResponseEntity<>(orders, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PutMapping("/order/{id}/{orderStatus}")

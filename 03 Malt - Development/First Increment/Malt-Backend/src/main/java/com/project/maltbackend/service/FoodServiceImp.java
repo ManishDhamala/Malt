@@ -51,21 +51,21 @@ public class FoodServiceImp implements FoodService {
 
     @Override
     public void deleteFood(Long foodId) throws Exception {
-//        // Find the food by ID, or throw an exception if not found
-//        Food food = findFoodById(foodId);
-//
-//        // Disassociate the food from its restaurant before deletion
-//        food.setRestaurant(null);
-//
-//        // Save the food with the disassociation change (soft delete approach)
-//        foodRepository.save(food);
-        foodRepository.deleteById(foodId);
+
+        Food food = foodRepository.findById(foodId)
+                .orElseThrow(() -> new Exception("Food not found"));
+
+        //Soft delete
+        food.setDeleted(true);
+        food.setDeletedAt(new Date());
+        foodRepository.save(food);
+
     }
 
     @Override
     public List<Food> getRestaurantsFood(Long restaurantId, Boolean isVegetarian, String foodCategory) throws Exception {
-        // Fetch all food items for a specific restaurant by its ID
-        List<Food> foods = foodRepository.findByRestaurantId(restaurantId);
+        // Fetch all food items for a specific restaurant by its ID and deleted = false
+        List<Food> foods = foodRepository.findByRestaurantIdAndDeletedFalse(restaurantId);
 
         // If isVegetarian is not null, filter foods by vegetarian status (True = veg and False = non-veg)
         if(isVegetarian != null){

@@ -7,6 +7,7 @@ import com.project.maltbackend.repository.FoodRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,7 +44,9 @@ public class CategoryServiceImp implements CategoryService{
 
     @Override
     public List<Category> getAllCategoriesByRestaurantId(Long restaurantId) throws Exception {
-            return categoryRepository.findByRestaurantId(restaurantId);
+
+            // Find all categories by restaurant Id where deleted = false
+            return categoryRepository.findByRestaurantIdAndDeletedFalse(restaurantId);
     }
 
     @Override
@@ -60,6 +63,12 @@ public class CategoryServiceImp implements CategoryService{
 
     @Override
     public void deleteFoodCategory(Long categoryId) throws Exception {
-        categoryRepository.deleteById(categoryId);
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new Exception("Category not found"));
+
+        // Soft delete
+        category.setDeleted(true);
+        category.setDeletedAt(new Date());
+        categoryRepository.save(category);
     }
 }

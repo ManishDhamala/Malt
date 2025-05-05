@@ -7,6 +7,11 @@ import com.project.maltbackend.request.OrderRequest;
 import com.project.maltbackend.response.PaymentResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -424,16 +429,15 @@ public class OrderServiceImp implements OrderService{
 
     }
 
-
 //    @Transactional(readOnly = true)
 //    @Override
 //    public List<OrderDto> getRestaurantsOrders(Long restaurantId, String orderStatus) throws Exception {
-//        List<Order> orders = orderRepository.findByRestaurantId(restaurantId);
+//        List<Order> orders;
 //
 //        if (orderStatus != null) {
-//            orders = orders.stream()
-//                    .filter(order -> order.getOrderStatus().equals(orderStatus))
-//                    .collect(Collectors.toList());
+//            orders = orderRepository.findByRestaurantIdAndOrderStatus(restaurantId, orderStatus);
+//        } else {
+//            orders = orderRepository.findByRestaurantIdAndOrderStatusNot(restaurantId, "CANCELLED");
 //        }
 //
 //        return orders.stream()
@@ -441,20 +445,57 @@ public class OrderServiceImp implements OrderService{
 //                .collect(Collectors.toList());
 //    }
 
+    // In OrderService
     @Transactional(readOnly = true)
     @Override
-    public List<OrderDto> getRestaurantsOrders(Long restaurantId, String orderStatus) throws Exception {
-        List<Order> orders;
+    public PaginatedResponse<OrderDto> getRestaurantsOrders(
+            Long restaurantId,
+            String orderStatus,
+            Integer year,
+            Integer month,
+            int page,
+            int size) throws Exception {
 
-        if (orderStatus != null) {
-            orders = orderRepository.findByRestaurantIdAndOrderStatus(restaurantId, orderStatus);
+        Page<Order> ordersPage;
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+
+        // Create base specification for restaurant
+        Specification<Order> spec = (root, query, cb) ->
+                cb.equal(root.get("restaurant").get("id"), restaurantId);
+
+        // Status filter - modified logic
+        if (orderStatus != null && !orderStatus.equalsIgnoreCase("all")) {
+            spec = spec.and((root, query, cb) ->
+                    cb.equal(root.get("orderStatus"), orderStatus));
         } else {
-            orders = orderRepository.findByRestaurantIdAndOrderStatusNot(restaurantId, "CANCELLED");
+            // When "all" or null is passed, exclude CANCELLED orders
+            spec = spec.and((root, query, cb) ->
+                    cb.notEqual(root.get("orderStatus"), "CANCELLED"));
         }
 
-        return orders.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
+        // For year filter
+        if (year != null) {
+            spec = spec.and((root, query, cb) ->
+                    cb.equal(
+                            cb.function("date_part", Integer.class,
+                                    cb.literal("year"),
+                                    root.get("createdAt")),
+                            year));
+        }
+
+        // For month filter
+        if (month != null) {
+            spec = spec.and((root, query, cb) ->
+                    cb.equal(
+                            cb.function("date_part", Integer.class,
+                                    cb.literal("month"),
+                                    root.get("createdAt")),
+                            month + 1));
+        }
+
+        ordersPage = orderRepository.findAll(spec, pageable);
+        Page<OrderDto> dtoPage = ordersPage.map(this::convertToDto);
+        return new PaginatedResponse<>(dtoPage);
     }
 
 
