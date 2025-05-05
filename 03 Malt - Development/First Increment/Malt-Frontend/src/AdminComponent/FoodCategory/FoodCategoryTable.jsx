@@ -5,6 +5,11 @@ import {
   CardActions,
   CardHeader,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   IconButton,
   Modal,
   Paper,
@@ -15,6 +20,7 @@ import {
   TableHead,
   TableRow,
   Typography,
+  Slide,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import CreateIcon from "@mui/icons-material/Create";
@@ -27,6 +33,10 @@ import {
 } from "../../component/State/Restaurant/Action";
 import { useAlert } from "../../component/Templates/AlertProvider";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const style = {
   position: "absolute",
@@ -45,12 +55,28 @@ export const FoodCategoryTable = () => {
   const { showAlert } = useAlert();
 
   const [open, setOpen] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [categoryToDelete, setCategoryToDelete] = useState(null);
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const handleDeleteFoodCategory = (categoryId) => {
-    dispatch(deleteFoodCategory({ categoryId, jwt }));
-    showAlert("error", "Food category deleted");
+  const handleOpenDialog = (categoryId) => {
+    setCategoryToDelete(categoryId);
+    setDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+    setCategoryToDelete(null);
+  };
+
+  const handleConfirmDelete = () => {
+    if (categoryToDelete) {
+      dispatch(deleteFoodCategory({ categoryId: categoryToDelete, jwt }));
+      showAlert("error", "Food category deleted");
+    }
+    handleCloseDialog();
   };
 
   useEffect(() => {
@@ -120,7 +146,7 @@ export const FoodCategoryTable = () => {
                       <TableCell>{item.name}</TableCell>
                       <TableCell>
                         <IconButton
-                          onClick={() => handleDeleteFoodCategory(item.id)}
+                          onClick={() => handleOpenDialog(item.id)}
                           color="primary"
                         >
                           <Delete />
@@ -144,6 +170,39 @@ export const FoodCategoryTable = () => {
           <CreateFoodCategoryForm />
         </Box>
       </Modal>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        open={dialogOpen}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleCloseDialog}
+        aria-describedby="delete-category-dialog-description"
+      >
+        <DialogTitle>{"Confirm Delete"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="delete-category-dialog-description">
+            Are you sure you want to delete this food category? This action
+            cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={handleCloseDialog}
+            variant="outlined"
+            color="primary"
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleConfirmDelete}
+            variant="contained"
+            color="error"
+          >
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

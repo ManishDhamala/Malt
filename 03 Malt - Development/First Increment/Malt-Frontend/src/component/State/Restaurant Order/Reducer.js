@@ -1,33 +1,41 @@
 import * as actionTypes from './ActionType';
 
 const initialState = {
-    restaurantOrders: [],   // List of all restaurant orders
-    loading: false,         // Loading state for API requests
-    error: null,            // Holds any error messages
-    message: null           // Success messages
+    restaurantOrders: [],   // List of current page restaurant orders
+    totalOrders: 0,        // Total number of orders
+    currentPage: 0,        // Current page number
+    totalPages: 0,         // Total number of pages
+    pageSize: 10,          // Items per page
+    loading: false,        // Loading state for API requests
+    error: null,           // Holds any error messages
+    message: null          // Success messages
 };
-
 
 const restaurantOrderReducer = (state = initialState, action) => {
     switch (action.type) {
-
-        //  REQUEST CASES (Start Loading)
         case actionTypes.GET_RESTAURANT_ORDER_REQUEST:
-        case actionTypes.UPDATE_ORDER_STATUS_REQUEST:
             return {
                 ...state,
                 loading: true,
                 error: null
             };
 
-        //  SUCCESS CASES
+        case actionTypes.UPDATE_ORDER_STATUS_REQUEST:
+            return {
+                ...state,
+                error: null
+                // Don't set loading: true here for better UX
+            };
 
-        // Get All Restaurant Orders
         case actionTypes.GET_RESTAURANT_ORDER_SUCCESS:
             return {
                 ...state,
                 loading: false,
-                restaurantOrders: action.payload // Load all restaurant orders
+                restaurantOrders: action.payload.content || action.payload,
+                totalOrders: action.payload.totalItems || action.payload.length,
+                currentPage: action.payload.currentPage || 0,
+                totalPages: action.payload.totalPages || 1,
+                pageSize: action.payload.itemsPerPage || 10
             };
 
         // Update Order Status
@@ -37,35 +45,54 @@ const restaurantOrderReducer = (state = initialState, action) => {
                 loading: false,
                 restaurantOrders: state.restaurantOrders.map(order =>
                     order.id === action.payload.id
-                        ? { ...order, status: action.payload.status } // Update order status
+                        ? { ...order, orderStatus: action.payload.orderStatus || order.orderStatus }
                         : order
                 ),
-                message: "Order status updated successfully!" // Success message
+                message: "Order status updated successfully!"
             };
 
-        // Order Status Update  optimization
+        // Order Status Update optimization
         case actionTypes.UPDATE_ORDER_STATUS_OPTIMISTIC:
             return {
                 ...state,
                 restaurantOrders: state.restaurantOrders.map(order =>
                     order.id === action.payload.orderId
-                        ? { ...order, orderStatus: action.payload.orderStatus } //  Update field name
+                        ? { ...order, orderStatus: action.payload.orderStatus }
                         : order
                 )
             };
 
+        case actionTypes.SET_CURRENT_PAGE:
+            return {
+                ...state,
+                currentPage: action.payload
+            };
 
-        //  FAIL CASES (Handle Errors)
+        case actionTypes.SET_PAGE_SIZE:
+            return {
+                ...state,
+                pageSize: action.payload,
+                currentPage: 0 // Reset to first page when page size changes
+            };
+
         case actionTypes.GET_RESTAURANT_ORDER_FAIL:
+            return {
+                ...state,
+                loading: false,
+                error: action.payload,
+                restaurantOrders: state.restaurantOrders, // Keep existing orders on fail
+                message: null
+            };
+
         case actionTypes.UPDATE_ORDER_STATUS_FAIL:
             return {
                 ...state,
                 loading: false,
-                error: action.payload,  // Set error message
+                error: action.payload,
                 message: null
+                // Don't clear restaurantOrders on update failure
             };
 
-        //  DEFAULT CASE (Return Current State)
         default:
             return state;
     }

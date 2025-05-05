@@ -6,6 +6,11 @@ import {
   CardActions,
   CardHeader,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   IconButton,
   Paper,
   Table,
@@ -15,8 +20,9 @@ import {
   TableHead,
   TableRow,
   Typography,
+  Slide,
 } from "@mui/material";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import CreateIcon from "@mui/icons-material/Create";
 import { Delete } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
@@ -29,12 +35,19 @@ import {
 import { useAlert } from "../../component/Templates/AlertProvider";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
 export const MenuTable = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { restaurant, menu } = useSelector((store) => store);
   const jwt = localStorage.getItem("jwt");
   const { showAlert } = useAlert();
+
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [foodToDelete, setFoodToDelete] = useState(null);
 
   useEffect(() => {
     dispatch(
@@ -47,9 +60,22 @@ export const MenuTable = () => {
     );
   }, [jwt, restaurant?.usersRestaurant?.id]);
 
-  const handleDeleteFood = (foodId) => {
-    dispatch(deleteFood({ foodId, jwt }));
-    showAlert("error", "Food item deleted");
+  const handleOpenDialog = (foodId) => {
+    setFoodToDelete(foodId);
+    setDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+    setFoodToDelete(null);
+  };
+
+  const handleConfirmDelete = () => {
+    if (foodToDelete) {
+      dispatch(deleteFood({ foodId: foodToDelete, jwt }));
+      showAlert("error", "Food item deleted");
+    }
+    handleCloseDialog();
   };
 
   const handleFoodAvailibilty = (id) => {
@@ -154,7 +180,7 @@ export const MenuTable = () => {
                         </IconButton>
 
                         <IconButton
-                          onClick={() => handleDeleteFood(item.id)}
+                          onClick={() => handleOpenDialog(item.id)}
                           color="primary"
                         >
                           <Delete />
@@ -167,6 +193,39 @@ export const MenuTable = () => {
           </TableContainer>
         )}
       </Card>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        open={dialogOpen}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleCloseDialog}
+        aria-describedby="delete-food-dialog-description"
+      >
+        <DialogTitle>{"Confirm Delete"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="delete-food-dialog-description">
+            Are you sure you want to delete this menu item? This action cannot
+            be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={handleCloseDialog}
+            variant="outlined"
+            color="primary"
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleConfirmDelete}
+            variant="contained"
+            color="error"
+          >
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

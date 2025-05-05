@@ -28,7 +28,28 @@ export const Orders = () => {
   const [selectedYear, setSelectedYear] = useState(currentYear);
   const [selectedMonth, setSelectedMonth] = useState("");
 
-  const handleFilter = (e, value) => setFilterValue(value);
+  // Improved filter handler with immediate action
+  const handleFilter = (e, value) => {
+    // Reset to page 1 when changing filters for better UX
+    if (value !== filterValue) {
+      // Optional: Reset pagination to first page when filtering
+      // dispatch({ type: "SET_CURRENT_PAGE", payload: 0 });
+      setFilterValue(value);
+    }
+  };
+
+  // Improved year/month handlers
+  const handleYearChange = (e) => {
+    // Optional: Reset pagination to first page
+    // dispatch({ type: "SET_CURRENT_PAGE", payload: 0 });
+    setSelectedYear(e.target.value);
+  };
+
+  const handleMonthChange = (e) => {
+    // Optional: Reset pagination to first page
+    // dispatch({ type: "SET_CURRENT_PAGE", payload: 0 });
+    setSelectedMonth(e.target.value);
+  };
 
   return (
     <div className="px-2">
@@ -46,7 +67,7 @@ export const Orders = () => {
                 labelId="year-label"
                 value={selectedYear}
                 label="Year"
-                onChange={(e) => setSelectedYear(e.target.value)}
+                onChange={handleYearChange}
               >
                 {[...Array(5)].map((_, i) => {
                   const year = currentYear - i;
@@ -65,7 +86,7 @@ export const Orders = () => {
                 labelId="month-label"
                 value={selectedMonth}
                 label="Month"
-                onChange={(e) => setSelectedMonth(e.target.value)}
+                onChange={handleMonthChange}
               >
                 <MenuItem value="">All</MenuItem>
                 {[
@@ -97,7 +118,7 @@ export const Orders = () => {
             onChange={handleFilter}
             row
             name="category"
-            value={filterValue || "all"}
+            value={filterValue}
             sx={{ gap: 5 }}
           >
             {orderStatus.map((item) => (

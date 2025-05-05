@@ -34,10 +34,19 @@ export const RestaurantDashboard = () => {
 
   const [selectedYear, setSelectedYear] = useState(currentYear);
   const [selectedMonth, setSelectedMonth] = useState("");
+  const [pageSize, setPageSize] = useState(200); // Larger page size for dashboard
 
   useEffect(() => {
     if (restaurantId && jwt) {
-      dispatch(getRestaurantOrders({ restaurantId, jwt }));
+      dispatch(
+        getRestaurantOrders({
+          restaurantId,
+          jwt,
+          year: selectedYear,
+          month: selectedMonth !== "" ? selectedMonth : null,
+          size: pageSize,
+        })
+      );
       dispatch(getRestaurantCategory({ restaurantId }));
       dispatch(
         getMenuItemsByRestaurantId({
@@ -47,28 +56,14 @@ export const RestaurantDashboard = () => {
         })
       );
     }
-  }, [dispatch, restaurantId, jwt]);
+  }, [dispatch, restaurantId, jwt, selectedYear, selectedMonth, pageSize]);
 
-  // Filter orders by selected month and year
-  const filteredOrders = useMemo(() => {
-    return (
-      restaurantOrder?.restaurantOrders?.filter((order) => {
-        const date = new Date(order.createdAt);
-        const matchesYear = selectedYear
-          ? date.getFullYear() === selectedYear
-          : true;
-        const matchesMonth =
-          selectedMonth !== ""
-            ? date.getMonth() === Number(selectedMonth)
-            : true;
-        return matchesYear && matchesMonth;
-      }) || []
-    );
-  }, [restaurantOrder, selectedMonth, selectedYear]);
+  const filteredOrders = restaurantOrder?.restaurantOrders || [];
 
-  const totalIncome = filteredOrders.reduce(
-    (acc, order) => acc + (order.totalPrice || 0),
-    0
+  const totalIncome = useMemo(
+    () =>
+      filteredOrders.reduce((acc, order) => acc + (order.totalPrice || 0), 0),
+    [filteredOrders]
   );
 
   const DashboardCard = ({ title, count, icon }) => (
