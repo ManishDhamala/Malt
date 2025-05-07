@@ -37,6 +37,8 @@ import {
 } from "../State/Notification/Action";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
+import { connectToNotifications, disconnect } from "../config/websocket";
+import { WEBSOCKET_NOTIFICATION_RECEIVED } from "../State/Notification/ActionType";
 
 export const Notification = () => {
   const [open, setOpen] = useState(false);
@@ -53,6 +55,25 @@ export const Notification = () => {
       dispatch(getUnreadNotificationCount(jwt));
     }
   }, [jwt, dispatch]);
+
+  // useEffect for WebSocket connection
+  useEffect(() => {
+    if (!jwt) return;
+
+    const onNewNotification = (notification) => {
+      // Update the Redux state with the new notification
+      dispatch({
+        type: WEBSOCKET_NOTIFICATION_RECEIVED,
+        payload: notification,
+      });
+    };
+
+    const client = connectToNotifications(auth.user?.id, onNewNotification);
+
+    return () => {
+      disconnect(client);
+    };
+  }, [jwt, auth.user?.id, dispatch]);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);

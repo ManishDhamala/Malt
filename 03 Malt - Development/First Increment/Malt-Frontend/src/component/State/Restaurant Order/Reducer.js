@@ -51,6 +51,27 @@ const restaurantOrderReducer = (state = initialState, action) => {
                 message: "Order status updated successfully!"
             };
 
+
+        // case actionTypes.ADD_NEW_ORDER_OPTIMISTIC:
+
+        //     return {
+        //         ...state,
+        //         restaurantOrders: [action.payload, ...state.restaurantOrders],
+        //         totalOrders: state.totalOrders + 1,
+        //     };
+
+        case actionTypes.ADD_NEW_ORDER_OPTIMISTIC:
+            // Check if order already exists
+            const orderExists = state.restaurantOrders.some(order => order.id === action.payload.id);
+            if (orderExists) {
+                return state;
+            }
+            return {
+                ...state,
+                restaurantOrders: [action.payload, ...state.restaurantOrders],
+                totalOrders: state.totalOrders + 1,
+            };
+
         // Order Status Update optimization
         case actionTypes.UPDATE_ORDER_STATUS_OPTIMISTIC:
             return {

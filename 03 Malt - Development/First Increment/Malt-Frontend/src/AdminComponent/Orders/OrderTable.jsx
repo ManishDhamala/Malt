@@ -24,10 +24,19 @@ import {
   getRestaurantOrders,
   updateOrderStatus,
 } from "../../component/State/Restaurant Order/Action";
-import { useAlert } from "../../component/Templates/AlertProvider";
 import { format } from "date-fns";
 import { TablePagination } from "../../component/Pagination/TablePagination";
 import { debounce } from "lodash";
+import {
+  connectToOrderUpdates,
+  disconnect,
+} from "../../component/config/websocket";
+import { useAlert } from "../../component/Templates/AlertProvider";
+import {
+  ADD_NEW_ORDER_OPTIMISTIC,
+  UPDATE_ORDER_STATUS_OPTIMISTIC,
+} from "../../component/State/Restaurant Order/ActionType";
+import { Client } from "@stomp/stompjs";
 
 const orderStatus = [
   { label: "Pending", value: "PENDING" },
@@ -73,6 +82,46 @@ export const OrderTable = ({ filterValue, selectedYear, selectedMonth }) => {
     () => debounce(fetchOrders, 300),
     [dispatch]
   );
+
+  // WebSocket connection management
+  useEffect(() => {
+    if (!restaurant?.usersRestaurant?.id) return;
+
+    const restaurantId = restaurant.usersRestaurant.id;
+
+    const handleNewOrder = (newOrder) => {
+      dispatch({
+        type: ADD_NEW_ORDER_OPTIMISTIC,
+        payload: newOrder,
+      });
+
+      // Always show alert for new orders
+      showAlert("success", `New order #${newOrder.id} received!`, {
+        position: "top-right",
+        autoClose: 5000,
+      });
+    };
+
+    const handleStatusUpdate = ({ orderId, newStatus }) => {
+      dispatch({
+        type: UPDATE_ORDER_STATUS_OPTIMISTIC,
+        payload: { orderId, orderStatus: newStatus },
+      });
+
+      // Optional: Show alert for status updates too
+      showAlert("info", `Order #${orderId} updated to ${newStatus}`);
+    };
+
+    // Connect to WebSocket with proper error handling
+    const socket = connectToOrderUpdates(
+      restaurantId,
+      handleNewOrder,
+      handleStatusUpdate
+    );
+
+    // Cleanup on unmount
+    return () => Client.activate && Client.deactivate();
+  }, [restaurant?.usersRestaurant?.id]);
 
   useEffect(() => {
     // Don't fetch when component mounts if we don't have restaurant info yet

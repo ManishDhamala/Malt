@@ -86,9 +86,11 @@ export const getRestaurantOrders = ({
             })
 
             dispatch({ type: GET_RESTAURANT_ORDER_SUCCESS, payload: data })
+            console.log("Restaurant Orders: ", data)
 
         } catch (error) {
             dispatch({ type: GET_RESTAURANT_ORDER_FAIL, payload: error })
+            console.log("Error: ", error)
         }
     }
 }

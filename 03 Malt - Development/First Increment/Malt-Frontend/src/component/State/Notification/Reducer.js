@@ -17,7 +17,8 @@ import {
     DELETE_NOTIFICATION_REQUEST,
     DELETE_NOTIFICATION_SUCCESS,
     DELETE_NOTIFICATION_FAIL,
-    RESET_NOTIFICATION_STATE
+    RESET_NOTIFICATION_STATE,
+    WEBSOCKET_NOTIFICATION_RECEIVED
 } from "./ActionType";
 
 const initialState = {
@@ -107,6 +108,25 @@ export const notificationReducer = (state = initialState, action) => {
                 ),
                 success: "Notification deleted successfully"
             };
+
+
+        case WEBSOCKET_NOTIFICATION_RECEIVED:
+            // Check if notification already exists
+            const notificationExists = state.notifications.some(
+                n => n.id === action.payload.id
+            );
+
+            if (notificationExists) {
+                return state;
+            }
+
+            return {
+                ...state,
+                notifications: [action.payload, ...state.notifications],
+                unreadNotifications: [action.payload, ...state.unreadNotifications],
+                unreadCount: state.unreadCount + 1
+            };
+
 
         case RESET_NOTIFICATION_STATE:
             return initialState;
