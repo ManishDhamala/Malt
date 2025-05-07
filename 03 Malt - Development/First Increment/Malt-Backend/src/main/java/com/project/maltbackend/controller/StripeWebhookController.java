@@ -35,6 +35,9 @@ public class StripeWebhookController {
     @Autowired
     private OrderServiceImp orderServiceImp;
 
+    @Autowired
+    private OrderWebSocketController orderWebSocketController;
+
     private final int deliveryCharge = 100;
     private final int restaurantCharge = 10;
 
@@ -68,6 +71,18 @@ public class StripeWebhookController {
 
                         //order.setOrderStatus("CONFIRMED");
                         orderService.updateOrder(order.getId(), "CONFIRMED");
+
+                        // Updating order status in real time
+                        try {
+                            orderWebSocketController.notifyOrderStatusUpdate(
+                                    order.getRestaurant().getId(),
+                                    order.getId(),
+                                    "CONFIRMED"
+                            );
+                        } catch (Exception e) {
+                            System.err.println("WebSocket Order status update failed: " + e.getMessage());
+                        }
+
                         orderRepository.save(order);
 
 

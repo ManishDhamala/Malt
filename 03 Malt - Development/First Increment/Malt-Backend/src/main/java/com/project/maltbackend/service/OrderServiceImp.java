@@ -1,5 +1,6 @@
 package com.project.maltbackend.service;
 
+import com.project.maltbackend.controller.OrderWebSocketController;
 import com.project.maltbackend.dto.*;
 import com.project.maltbackend.model.*;
 import com.project.maltbackend.repository.*;
@@ -58,120 +59,15 @@ public class OrderServiceImp implements OrderService{
     @Autowired
     private NotificationService notificationService;
 
+    @Autowired
+    private OrderWebSocketController orderWebSocketController;
+
     private int deliveryCharge = 100;
 
     private int restaurantCharge = 10;
 
 
-
-//    @Override
-//    public Order createOrder(OrderRequest request, User user) throws Exception {
-//
-//        Address finalAddress;
-//
-//        if (request.getAddressId() != null) {
-//            finalAddress = addressRepository.findById(request.getAddressId())
-//                    .orElseThrow(() -> new Exception("Address not found"));
-//
-//            // Optional: Verify user owns the address
-//            if (!user.getAddresses().contains(finalAddress)) {
-//                throw new Exception("Unauthorized address access");
-//            }
-//
-//        } else if (request.getDeliveryAddress() != null) {
-//            Address deliveryAddress = request.getDeliveryAddress();
-//            deliveryAddress.setUser(user);
-//            Address savedAddress = addressRepository.save(deliveryAddress);
-//
-//            // Save only if marked as savedAddress
-//            if (deliveryAddress.isSavedAddress() && !user.getAddresses().contains(savedAddress)) {
-//                user.getAddresses().add(savedAddress);
-//                userRepository.save(user);
-//            }
-//
-//            finalAddress = savedAddress;
-//        } else {
-//            throw new Exception("No delivery address provided");
-//        }
-//
-//        Restaurant restaurant = restaurantService.findRestaurantById(request.getRestaurantId());
-//
-//        Order createOrder = new Order();
-//        createOrder.setCustomer(user);
-//        createOrder.setRestaurant(restaurant);
-//        createOrder.setCreatedAt(new Date());
-//        createOrder.setOrderStatus("PENDING");
-//        createOrder.setDeliveryAddress(finalAddress);
-//
-//        Cart cart = cartService.findCartByUserId(user.getId());
-//
-//        List<OrderItem> orderItems = new ArrayList<>();
-//
-//        for(CartItem cartItem : cart.getItems()){
-//
-//            OrderItem orderItem = new OrderItem();
-//
-//            orderItem.setFood(cartItem.getFood());
-//            orderItem.setQuantity(cartItem.getQuantity());
-//            orderItem.setTotalPrice(cartItem.getTotalPrice());
-//
-//            OrderItem savedOrderItem = orderItemRepository.save(orderItem);
-//            orderItems.add(savedOrderItem);
-//        }
-//
-////        Long totalPrice = cartService.calculateCartTotals(cart); //check this
-//        Long subtotal = cartService.calculateCartTotals(cart);
-//        Long finalTotal = subtotal + deliveryCharge + restaurantCharge;
-//
-//        createOrder.setItems(orderItems);
-//        createOrder.setTotalPrice(finalTotal);
-//
-//        Order savedOrder = orderRepository.save(createOrder);
-//
-//        // 1. Load template
-//        String template = emailService.loadTemplate("order_confirmation.html");
-//
-//// 2. Build order items HTML
-//        StringBuilder itemsHtml = new StringBuilder();
-//        for (OrderItem item : orderItems) {
-//            itemsHtml.append("<tr>")
-//                    .append("<td>").append(item.getFood().getName()).append("</td>")
-//                    .append("<td>").append(item.getQuantity()).append("</td>")
-//                    .append("<td>").append(item.getTotalPrice()).append("</td>")
-//                    .append("</tr>");
-//        }
-//
-//// 3. Replace placeholders
-//        String htmlContent = template
-//                .replace("[[name]]", user.getFullName())
-//                .replace("[[orderId]]", String.valueOf(savedOrder.getId()))
-//                .replace("[[restaurantName]]", restaurant.getName())
-//                .replace("[[status]]", savedOrder.getOrderStatus())
-//                .replace("[[deliveryAddress]]",
-//                        finalAddress.getStreetAddress() + ", " +
-//                                finalAddress.getCity() + ", " +
-//                                finalAddress.getProvince()
-//                )
-//                .replace("[[orderItems]]", itemsHtml.toString())
-//                .replace("[[subtotal]]", String.valueOf(subtotal))
-//                .replace("[[deliveryCharge]]", String.valueOf(deliveryCharge))
-//                .replace("[[restaurantCharge]]", String.valueOf(restaurantCharge))
-//                .replace("[[totalPrice]]", String.valueOf(finalTotal));
-//
-//// 4. Send email
-//        try {
-//            emailService.sendHtmlEmail(user.getEmail
-//                    (), "Your Order Confirmation - Malt", htmlContent);
-//        }catch (Exception e){
-//            log.error("Failed to send order created email", e);
-//        }
-//
-//        restaurant.getOrders().add(savedOrder);
-//
-//        return createOrder;
-//    }
-
-
+    @Transactional
     @Override
     public Object createOrder(OrderRequest request, User user) throws Exception {
 
@@ -234,9 +130,18 @@ public class OrderServiceImp implements OrderService{
         order.setTotalPrice(finalTotal);
         Order savedOrder = orderRepository.save(order);
 
-       // notificationService.createOrderNotification(user, savedOrder);
 
-        // Step 3: Save Payment Info
+
+        // Step 3: Send WebSocket notification for new order
+        try {
+            OrderDto orderDto = convertToDto(savedOrder);
+            orderWebSocketController.notifyNewOrder(savedOrder.getRestaurant().getId(), orderDto);
+        } catch (Exception e) {
+            // Don't fail the order creation if WebSocket fails
+            System.out.println("Failed to send WebSocket notification for new order: "+ e);
+        }
+
+        // Step 4: Save Payment Info
         Payment payment = new Payment();
         payment.setPaymentMethod(request.getPaymentMethod());
 
@@ -246,6 +151,7 @@ public class OrderServiceImp implements OrderService{
         // Only set to "PENDING" for COD
         if ("COD".equalsIgnoreCase(request.getPaymentMethod())) {
             paymentStatus = "PENDING";
+            notificationService.createOrderNotification(user, savedOrder);
         }
 
         payment.setStatus(paymentStatus);
@@ -256,7 +162,7 @@ public class OrderServiceImp implements OrderService{
 
         restaurant.getOrders().add(savedOrder); // updating restaurant orders
 
-        // Step 4: Payment Handling
+        // Step 5: Payment Handling
         switch (request.getPaymentMethod().toUpperCase()) {
             case "COD":
                 sendOrderConfirmationEmail(user, savedOrder, finalAddress, restaurant, orderItems, subtotal);
@@ -293,21 +199,6 @@ public class OrderServiceImp implements OrderService{
     }
 
 
-
-//    @Override
-//    public Order updateOrder(Long orderId, String orderStatus) throws Exception {
-//        Order order = findOrderById(orderId);
-//        if(orderStatus.equals("OUT_FOR_DELIVERY")
-//                || orderStatus.equals("DELIVERED")
-//                || orderStatus.equals("PENDING")
-//        ){
-//            order.setOrderStatus(orderStatus);
-//            return orderRepository.save(order);
-//
-//        }
-//        throw new Exception("Please select a valid order status");
-//    }
-
     @Override
     public Order updateOrder(Long orderId, String orderStatus) throws Exception {
         Order order = findOrderById(orderId);
@@ -320,7 +211,7 @@ public class OrderServiceImp implements OrderService{
 
             // Prevent re-sending email for already updated status
             if (orderStatus.equals(order.getOrderStatus())) {
-                System.out.println("⚠️ Order is already in status: " + orderStatus + ". Skipping email.");
+                System.out.println(" Order is already in status: " + orderStatus + ". Skipping email.");
                 return order;
             }
 
@@ -445,7 +336,6 @@ public class OrderServiceImp implements OrderService{
 //                .collect(Collectors.toList());
 //    }
 
-    // In OrderService
     @Transactional(readOnly = true)
     @Override
     public PaginatedResponse<OrderDto> getRestaurantsOrders(
@@ -463,7 +353,7 @@ public class OrderServiceImp implements OrderService{
         Specification<Order> spec = (root, query, cb) ->
                 cb.equal(root.get("restaurant").get("id"), restaurantId);
 
-        // Status filter - modified logic
+        // Order Status filter
         if (orderStatus != null && !orderStatus.equalsIgnoreCase("all")) {
             spec = spec.and((root, query, cb) ->
                     cb.equal(root.get("orderStatus"), orderStatus));

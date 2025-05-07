@@ -30,6 +30,9 @@ public class EsewaPaymentController {
     @Autowired
     private OrderService orderService;
 
+    @Autowired
+    private OrderWebSocketController orderWebSocketController;
+
     @PostMapping("/esewa/verify")
     public ResponseEntity<?> verifyEsewaPayment(@RequestBody Map<String, String> payload) {
         try {
@@ -58,6 +61,18 @@ public class EsewaPaymentController {
 
                 // Update order status
                 orderService.updateOrder(order.getId(), "CONFIRMED");
+
+                // Updating order status in real time
+                try {
+                    orderWebSocketController.notifyOrderStatusUpdate(
+                            order.getRestaurant().getId(),
+                            order.getId(),
+                            "CONFIRMED"
+                    );
+                } catch (Exception e) {
+                    System.err.println("WebSocket Order status update failed: " + e.getMessage());
+                }
+
                 orderRepository.save(order);
 
                 Map<String, Object> response = new HashMap<>();

@@ -1,6 +1,7 @@
 package com.project.maltbackend.service;
 
 
+import com.project.maltbackend.controller.NotificationWebSocketController;
 import com.project.maltbackend.model.Notification;
 import com.project.maltbackend.model.Order;
 import com.project.maltbackend.model.User;
@@ -17,6 +18,9 @@ public class NotificationServiceImp implements NotificationService {
 
     @Autowired
     private NotificationRepository notificationRepository;
+
+    @Autowired
+    private NotificationWebSocketController notificationWebSocketController;
 
     @Override
     public Notification createWelcomeNotification(User user) {
@@ -39,9 +43,17 @@ public class NotificationServiceImp implements NotificationService {
                 " has been placed successfully. Current status: " + order.getOrderStatus());
         notification.setType("ORDER_CREATED");
         notification.setReferenceId(order.getId());
+        notification = notificationRepository.save(notification);
+
+        // Real time update of notification
+        try {
+            notificationWebSocketController.sendNotificationToUser(user.getId(), notification);
+        } catch (Exception e) {
+            System.out.println("Websocket notification failed: "+e.getMessage());
+        }
 
         log.info("Created order notification for user: {}, orderId: {}", user.getEmail(), order.getId());
-        return notificationRepository.save(notification);
+        return notification;
     }
 
     @Override
@@ -75,9 +87,18 @@ public class NotificationServiceImp implements NotificationService {
         notification.setType("ORDER_STATUS_UPDATE");
         notification.setReferenceId(order.getId());
 
+        notification = notificationRepository.save(notification);
+
+        // Real time update of notification
+        try {
+            notificationWebSocketController.sendNotificationToUser(user.getId(), notification);
+        } catch (Exception e) {
+            System.out.println("Websocket notification failed: "+e.getMessage());
+        }
+
         log.info("Created order status notification for user: {}, orderId: {}, status: {}",
                 user.getEmail(), order.getId(), order.getOrderStatus());
-        return notificationRepository.save(notification);
+        return notification;
     }
 
     @Override

@@ -37,7 +37,7 @@ public class AdminOrderController {
 //        return new ResponseEntity<>(orders, HttpStatus.OK);
 //    }
 
-    // In AdminOrderController
+
     @GetMapping("/order/restaurant/{id}")
     public ResponseEntity<PaginatedResponse<OrderDto>> getOrderHistory(
             @PathVariable Long id,

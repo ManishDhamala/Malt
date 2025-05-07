@@ -4,6 +4,7 @@ import com.project.maltbackend.model.*;
 import com.project.maltbackend.repository.OrderRepository;
 import com.project.maltbackend.repository.PaymentRepository;
 import com.project.maltbackend.service.KhaltiService;
+import com.project.maltbackend.service.OrderService;
 import com.project.maltbackend.service.OrderServiceImp;
 import com.project.maltbackend.service.UserService;
 import jakarta.transaction.Transactional;
@@ -29,14 +30,15 @@ public class KhaltiPaymentController {
     private OrderRepository orderRepository;
 
     @Autowired
-    private OrderServiceImp orderServiceImp;
+    private OrderService orderService;
+
+    @Autowired
+    private OrderWebSocketController orderWebSocketController;
+
 
     @Autowired
     private UserService userService;
 
-
-    private final int deliveryCharge = 100;
-    private final int restaurantCharge = 10;
 
     @Transactional
     @PostMapping("/verify")
@@ -78,7 +80,18 @@ public class KhaltiPaymentController {
             payment.setPaidAt(new Date());
             paymentRepository.save(payment);
 
-            orderServiceImp.updateOrder(order.getId(), "CONFIRMED");
+            orderService.updateOrder(order.getId(), "CONFIRMED");
+
+            // Updating order status in real time
+            try {
+                orderWebSocketController.notifyOrderStatusUpdate(
+                        order.getRestaurant().getId(),
+                        order.getId(),
+                        "CONFIRMED"
+                );
+            } catch (Exception e) {
+                System.err.println("WebSocket Order status update failed: " + e.getMessage());
+            }
 
             return ResponseEntity.ok(Map.of("success", true, "orderId", order.getId()));
 
