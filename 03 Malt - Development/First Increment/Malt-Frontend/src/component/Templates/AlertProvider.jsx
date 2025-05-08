@@ -32,12 +32,13 @@ export const AlertProvider = ({ children }) => {
         autoHideDuration={3000}
         onClose={handleClose}
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        style={{ top: 78 }}
       >
         <Alert
           onClose={handleClose}
           severity={alert.severity}
           variant="filled"
-          sx={{ width: "100%", marginTop: "52px" }}
+          sx={{ width: "100%" }}
         >
           {alert.message}
         </Alert>

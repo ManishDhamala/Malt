@@ -6,8 +6,6 @@ const initialState = {
     restaurant: null,
     loading: false,
     error: null,
-    // events: [],
-    // restaurantsEvents: [],
     categories: [],
     searchedRestaurants: [] // Added for storing searched restaurants
 };

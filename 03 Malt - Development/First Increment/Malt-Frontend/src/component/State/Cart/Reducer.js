@@ -3,7 +3,7 @@ import * as actionTypes from './ActionType';
 
 
 const initialState = {
-    cart: null,            // Holds the cart data
+    cart: null,            // Holds the cart data (this contains items and restaurant information)
     cartItems: [],         // List of all items in the cart
     loading: false,        // Loading state for API requests
     error: null,           // Holds any error messages
@@ -45,6 +45,7 @@ const cartReducer = (state = initialState, action) => {
                 cartItems: action.payload  // Load all cart items
             };
 
+
         // Add Item to Cart
         case actionTypes.ADD_ITEM_TO_CART_SUCCESS:
             return {
@@ -53,10 +54,10 @@ const cartReducer = (state = initialState, action) => {
                 cartItems: state.cartItems.some(item => item.id === action.payload.id)
                     ? state.cartItems.map(item =>
                         item.id === action.payload.id
-                            ? { ...item, quantity: action.payload.quantity } // Update existing item quantity
+                            ? { ...item, quantity: action.payload.quantity }
                             : item
                     )
-                    : [...state.cartItems, action.payload], // Add new item if not in cart
+                    : [...state.cartItems, action.payload],
                 message: "Item added to cart successfully!"
             };
 
@@ -82,12 +83,20 @@ const cartReducer = (state = initialState, action) => {
                 message: "Item removed from cart successfully!"
             };
 
+        // Set restaurant ID 
+        case actionTypes.SET_CART_RESTAURANT:
+            return {
+                ...state,
+                restaurantId: action.payload
+            };
+
         // Clear Cart
         case actionTypes.CLEAR_CART_SUCCESS:
             return {
                 ...state,
                 loading: false,
-                cartItems: [],    // Clear all items from the cart
+                cartItems: [],
+                cart: { ...state.cart, items: [], total: 0 },
                 message: "Cart cleared successfully!"
             };
 

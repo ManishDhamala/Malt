@@ -7,6 +7,7 @@ import { MenuCard } from "../Restaurant/MenuCard";
 import { searchMenuItem } from "../State/Menu/Action";
 import CenterLoader from "../Templates/CenterLoader";
 import NoDataFound from "../Templates/NoDataFound";
+import { OrderBag } from "../Cart/OrderBag";
 
 export const SearchFood = () => {
   const dispatch = useDispatch();
