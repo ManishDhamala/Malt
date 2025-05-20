@@ -7,6 +7,7 @@ import com.project.maltbackend.repository.*;
 import com.project.maltbackend.request.OrderRequest;
 import com.project.maltbackend.response.PaymentResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -61,6 +62,12 @@ public class OrderServiceImp implements OrderService{
 
     @Autowired
     private OrderWebSocketController orderWebSocketController;
+
+    @Autowired
+    private ReviewRepository reviewRepository;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     private int deliveryCharge = 100;
 
@@ -320,21 +327,6 @@ public class OrderServiceImp implements OrderService{
 
     }
 
-//    @Transactional(readOnly = true)
-//    @Override
-//    public List<OrderDto> getRestaurantsOrders(Long restaurantId, String orderStatus) throws Exception {
-//        List<Order> orders;
-//
-//        if (orderStatus != null) {
-//            orders = orderRepository.findByRestaurantIdAndOrderStatus(restaurantId, orderStatus);
-//        } else {
-//            orders = orderRepository.findByRestaurantIdAndOrderStatusNot(restaurantId, "CANCELLED");
-//        }
-//
-//        return orders.stream()
-//                .map(this::convertToDto)
-//                .collect(Collectors.toList());
-//    }
 
     @Transactional(readOnly = true)
     @Override
@@ -399,7 +391,24 @@ public class OrderServiceImp implements OrderService{
                 .collect(Collectors.toList());
     }
 
+//    @Transactional(readOnly = true)
+//    @Override
+//    public List<OrderDto> getUsersOrders(Long userId) {
+//        // Finding Orders on the basis of customer Id and excluding pending orders
+//        List<Order> orders = orderRepository.findByCustomerIdAndOrderStatusNot(userId, "CANCELLED");
+//        return orders.stream()
+//                .map(order -> {
+//                    OrderDto dto = modelMapper.map(order, OrderDto.class);
+//                    boolean canReview = "DELIVERED".equals(order.getOrderStatus())
+//                            && !reviewRepository.existsByOrder(order);
+//                    dto.setCanReview(canReview);
+//                    return dto;
+//                })
+//                .collect(Collectors.toList());
+//    }
+
     private OrderDto convertToDto(Order order) {
+        boolean canReview = "DELIVERED".equalsIgnoreCase(order.getOrderStatus()) && order.getReview() == null;
         return new OrderDto(
                 order.getId(),
                 convertUserToDto(order.getCustomer()),
@@ -409,7 +418,8 @@ public class OrderServiceImp implements OrderService{
                 order.getCreatedAt(),
                 convertAddressToDto(order.getDeliveryAddress()),
                 convertOrderItemsToDto(order.getItems()),
-                convertPaymentToDto(order.getPayment())
+                convertPaymentToDto(order.getPayment()),
+                canReview
         );
     }
 
@@ -418,9 +428,80 @@ public class OrderServiceImp implements OrderService{
         return new UserDto(user.getId(), user.getFullName(), user.getEmail(), user.getRole());
     }
 
+//    private RestaurantDto convertRestaurantToDto(Restaurant restaurant) {
+//        Address address = restaurant.getAddress();
+//
+//        AddressDto addressDto = new AddressDto(
+//                address.getId(),
+//                address.getStreetAddress(),
+//                address.getCity(),
+//                address.getProvince(),
+//                address.getPostalCode(),
+//                address.getCountry(),
+//                address.getLandmark()
+//        );
+//
+//        return new RestaurantDto(
+//                restaurant.getId(),
+//                restaurant.getName(),
+//                restaurant.getImages(),
+//                restaurant.getOpeningHours(),
+//                restaurant.getDescription(),
+//                addressDto
+//        );
+//    }
+
+
+   // Updated converter method with enhanced mapping
     private RestaurantDto convertRestaurantToDto(Restaurant restaurant) {
-        return new RestaurantDto(restaurant.getId(), restaurant.getName(), restaurant.getImages(), restaurant.getOpeningHours(), restaurant.getDescription());
+        Address address = restaurant.getAddress();
+
+        AddressDto addressDto = null;
+        if (address != null) {
+            addressDto = new AddressDto(
+                    address.getId(),
+                    address.getStreetAddress(),
+                    address.getCity(),
+                    address.getProvince(),
+                    address.getPostalCode(),
+                    address.getCountry(),
+                    address.getLandmark()
+            );
+        }
+
+        ContactInformation contactInformation = null;
+        if(restaurant.getContactInformation() != null) {
+            contactInformation = new ContactInformation(
+                    restaurant.getContactInformation().getMobile(),
+                    restaurant.getContactInformation().getEmail(),
+                    restaurant.getContactInformation().getTwitter(),
+                    restaurant.getContactInformation().getInstagram()
+            );
+        }
+
+        // Calculate average rating if reviews exist
+        Double averageRating = null;
+        if (restaurant.getReviews() != null && !restaurant.getReviews().isEmpty()) {
+            averageRating = restaurant.getReviews().stream()
+                    .mapToDouble(Review::getRating)
+                    .average()
+                    .orElse(0.0);
+        }
+
+        return new RestaurantDto(
+                restaurant.getId(),
+                restaurant.getName(),
+                restaurant.getImages(),
+                restaurant.getOpeningHours(),
+                restaurant.getDescription(),
+                addressDto,
+                contactInformation,
+                restaurant.isOpen(),
+                averageRating,
+                restaurant.getReviews() != null ? restaurant.getReviews().size() : 0
+        );
     }
+
 
     private AddressDto convertAddressToDto(Address address) {
         return new AddressDto(address.getId(), address.getStreetAddress(), address.getCity(), address.getProvince(), address.getPostalCode(),address.getCountry(), address.getLandmark() );

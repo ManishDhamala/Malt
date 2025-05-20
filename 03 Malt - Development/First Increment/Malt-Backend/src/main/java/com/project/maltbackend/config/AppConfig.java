@@ -52,6 +52,10 @@ public class AppConfig {
                         .requestMatchers("/api/restaurants").permitAll()
                         .requestMatchers("/api/restaurants/**").permitAll() // Allow restaurant details access
 
+                        // Allow public access to fetch all reviews
+                        .requestMatchers("/api/reviews").permitAll()
+                        .requestMatchers("/api/reviews/**").permitAll()
+
                         // Allow public access to fetch all events endpoint
                         .requestMatchers("/api/events").permitAll()
                         .requestMatchers("/api/events/**").permitAll()

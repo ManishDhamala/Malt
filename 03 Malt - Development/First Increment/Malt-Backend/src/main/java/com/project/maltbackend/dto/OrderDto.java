@@ -20,4 +20,5 @@ public class OrderDto {
     private AddressDto deliveryAddress;
     private List<OrderItemDto> items;
     private PaymentDto payment;
+    private boolean canReview;
 }

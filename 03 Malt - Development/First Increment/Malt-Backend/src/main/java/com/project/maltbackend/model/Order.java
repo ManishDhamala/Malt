@@ -3,6 +3,7 @@ package com.project.maltbackend.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -45,5 +46,9 @@ public class Order {
 
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
     private Payment payment;
+
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Review review;
 
 }

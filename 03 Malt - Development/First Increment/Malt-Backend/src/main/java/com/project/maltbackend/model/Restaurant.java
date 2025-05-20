@@ -27,8 +27,6 @@ public class Restaurant {
 
     private String description;
 
-//    private String cuisineType;
-
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     private Address address;
@@ -54,9 +52,12 @@ public class Restaurant {
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Food> foods = new ArrayList<>();
 
-    // Added missing OneToMany for Categories
     @JsonIgnore
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Category> categories = new ArrayList<>();
+
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Review> reviews = new ArrayList<>();
 
 }

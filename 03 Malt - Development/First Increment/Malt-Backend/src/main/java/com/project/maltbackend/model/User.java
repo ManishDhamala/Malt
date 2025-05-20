@@ -2,6 +2,7 @@ package com.project.maltbackend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.project.maltbackend.dto.FavoriteRestaurant;
 import com.project.maltbackend.dto.RestaurantDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -47,8 +48,12 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "customer")
     private List<Order> orders = new ArrayList<>();
 
-    @ElementCollection    // collection of non-entity values that should be stored in separate table
-    private List<RestaurantDto> favourites = new ArrayList<>();
+//    @ElementCollection    // collection of non-entity values that should be stored in separate table
+//    private List<RestaurantDto> favourites = new ArrayList<>();
+
+    @ElementCollection
+    @CollectionTable(name = "user_favourites", joinColumns = @JoinColumn(name = "user_id"))
+    private List<FavoriteRestaurant> favourites = new ArrayList<>();
 
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
@@ -56,5 +61,9 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Notification> notifications = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Review> reviews = new ArrayList<>();
 
 }

@@ -1,5 +1,6 @@
 package com.project.maltbackend.controller;
 
+import com.project.maltbackend.dto.FavoriteRestaurant;
 import com.project.maltbackend.dto.RestaurantDto;
 import com.project.maltbackend.model.Restaurant;
 import com.project.maltbackend.model.User;
@@ -34,15 +35,22 @@ public class RestaurantController {
         return new ResponseEntity<>(restaurant, HttpStatus.OK);
     }
 
+//    @GetMapping()
+//    public ResponseEntity<List<Restaurant>> getAllRestaurants(
+//
+//    ) throws Exception {
+//
+//        List<Restaurant> restaurant = restaurantService.getAllRestaurants();
+//
+//        return new ResponseEntity<>(restaurant, HttpStatus.OK);
+//    }
+
     @GetMapping()
-    public ResponseEntity<List<Restaurant>> getAllRestaurants(
-
-    ) throws Exception {
-
-        List<Restaurant> restaurant = restaurantService.getAllRestaurants();
-
-        return new ResponseEntity<>(restaurant, HttpStatus.OK);
+    public ResponseEntity<List<RestaurantDto>> getAllRestaurants() throws Exception {
+        List<RestaurantDto> restaurantDtos = restaurantService.getAllRestaurants();
+        return new ResponseEntity<>(restaurantDtos, HttpStatus.OK);
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<Restaurant> findRestaurantById(
@@ -56,7 +64,7 @@ public class RestaurantController {
     }
 
     @PutMapping("/{id}/add-favourites")
-    public ResponseEntity<RestaurantDto> addToFavourites(
+    public ResponseEntity<FavoriteRestaurant> addToFavourites(
             @RequestHeader("Authorization") String jwt,
             @PathVariable Long id
 
@@ -64,8 +72,7 @@ public class RestaurantController {
 
         User user = userService.findUserByJwtToken(jwt);
 
-        RestaurantDto restaurant = restaurantService.addToFavourites(id,user);
-
+        FavoriteRestaurant restaurant = restaurantService.addToFavourites(id,user);
 
         return new ResponseEntity<>(restaurant, HttpStatus.OK);
     }

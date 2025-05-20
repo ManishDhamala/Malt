@@ -5,7 +5,6 @@ import com.project.maltbackend.dto.PaginatedResponse;
 import com.project.maltbackend.model.Order;
 import com.project.maltbackend.model.User;
 import com.project.maltbackend.request.OrderRequest;
-import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -18,8 +17,6 @@ public interface OrderService {
     public void cancelOrder(Long orderId) throws Exception;
 
     public List<OrderDto> getUsersOrders(Long userId) throws Exception;
-
-    // public List<OrderDto> getRestaurantsOrders(Long restaurantId, String orderStatus) throws Exception;
 
     public PaginatedResponse<OrderDto> getRestaurantsOrders(
             Long restaurantId,

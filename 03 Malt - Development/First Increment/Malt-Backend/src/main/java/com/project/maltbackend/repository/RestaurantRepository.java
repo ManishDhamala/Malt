@@ -1,5 +1,6 @@
 package com.project.maltbackend.repository;
 
+import com.project.maltbackend.dto.RestaurantDto;
 import com.project.maltbackend.model.Restaurant;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

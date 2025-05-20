@@ -1,5 +1,7 @@
 package com.project.maltbackend.service;
 
+import com.project.maltbackend.dto.AddressDto;
+import com.project.maltbackend.dto.FavoriteRestaurant;
 import com.project.maltbackend.dto.RestaurantDto;
 import com.project.maltbackend.model.*;
 import com.project.maltbackend.repository.AddressRepository;
@@ -12,8 +14,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class RestaurantServiceImp implements RestaurantService{
@@ -140,10 +144,71 @@ public class RestaurantServiceImp implements RestaurantService{
     }
 
     // Method to retrieve all restaurants
+//    @Override
+//    public List<Restaurant> getAllRestaurants() throws Exception {
+//        return restaurantRepository.findAll();
+//    }
+
     @Override
-    public List<Restaurant> getAllRestaurants() throws Exception {
-        return restaurantRepository.findAll();
+    public List<RestaurantDto> getAllRestaurants() throws Exception {
+        // Step 1: Get entities from repository
+        List<Restaurant> restaurants = restaurantRepository.findAll();
+
+        // Step 2: Convert entities to DTOs
+        return restaurants.stream()
+                .map(this::convertRestaurantToDto)
+                .collect(Collectors.toList());
     }
+
+    private RestaurantDto convertRestaurantToDto(Restaurant restaurant) {
+        Address address = restaurant.getAddress();
+
+        AddressDto addressDto = null;
+        if (address != null) {
+            addressDto = new AddressDto(
+                    address.getId(),
+                    address.getStreetAddress(),
+                    address.getCity(),
+                    address.getProvince(),
+                    address.getPostalCode(),
+                    address.getCountry(),
+                    address.getLandmark()
+            );
+        }
+
+        ContactInformation contactInformation = null;
+        if(restaurant.getContactInformation() != null) {
+            contactInformation = new ContactInformation(
+                    restaurant.getContactInformation().getMobile(),
+                    restaurant.getContactInformation().getEmail(),
+                    restaurant.getContactInformation().getTwitter(),
+                    restaurant.getContactInformation().getInstagram()
+            );
+        }
+
+        // Calculate average rating if reviews exist
+        Double averageRating = null;
+        if (restaurant.getReviews() != null && !restaurant.getReviews().isEmpty()) {
+            averageRating = restaurant.getReviews().stream()
+                    .mapToDouble(Review::getRating)
+                    .average()
+                    .orElse(0.0);
+        }
+
+        return new RestaurantDto(
+                restaurant.getId(),
+                restaurant.getName(),
+                restaurant.getImages(),
+                restaurant.getOpeningHours(),
+                restaurant.getDescription(),
+                addressDto,
+                contactInformation,
+                restaurant.isOpen(),
+                averageRating,
+                restaurant.getReviews() != null ? restaurant.getReviews().size() : 0
+        );
+    }
+
 
     // Method to search for restaurants based on a keyword
     @Override
@@ -177,39 +242,79 @@ public class RestaurantServiceImp implements RestaurantService{
     }
 
     // Method to add or remove a restaurant from a user's favourites
-    @Override
-    public RestaurantDto addToFavourites(Long restaurantId, User user) throws Exception {
+//    @Override
+//    public RestaurantDto addToFavourites(Long restaurantId, User user) throws Exception {
+//
+//        Restaurant restaurant = findRestaurantById(restaurantId);
+//
+//        RestaurantDto dto = new RestaurantDto();
+//        dto.setDescription(restaurant.getDescription());
+//        dto.setImages(restaurant.getImages());
+//        dto.setName(restaurant.getName());
+//        dto.setId(restaurantId);
+//
+//        // Check if restaurant is already a favourite and toggle
+//        boolean isFavourite = false;
+//        List<RestaurantDto> favourites = user.getFavourites();
+//        for(RestaurantDto favourite : favourites){
+//            if(favourite.getId().equals(restaurantId)){
+//                isFavourite = true;
+//                break;
+//            }
+//        }
+//
+//        // Add or remove from favourites based on current status
+//        if(isFavourite){
+//            favourites.removeIf(favourite -> favourite.getId().equals(restaurantId));
+//        }else {
+//            favourites.add(dto);
+//        }
+//
+//        // Save the updated user with new favourites list
+//        userRepository.save(user);
+//
+//        return dto;
+//    }
 
+    @Override
+    public FavoriteRestaurant addToFavourites(Long restaurantId, User user) throws Exception {
         Restaurant restaurant = findRestaurantById(restaurantId);
 
-        RestaurantDto dto = new RestaurantDto();
-        dto.setDescription(restaurant.getDescription());
-        dto.setImages(restaurant.getImages());
-        dto.setTitle(restaurant.getName());
-        dto.setId(restaurantId);
+        // Create favorite restaurant object
+        FavoriteRestaurant favourite = new FavoriteRestaurant(
+                restaurant.getId(),
+                restaurant.getName(),
+                restaurant.getImages(),
+                restaurant.getDescription()
+        );
 
-        // Check if restaurant is already a favourite and toggle
-        boolean isFavourite = false;
-        List<RestaurantDto> favourites = user.getFavourites();
-        for(RestaurantDto favourite : favourites){
-            if(favourite.getId().equals(restaurantId)){
-                isFavourite = true;
-                break;
+        // First, remove ALL instances of this restaurant ID from favorites (handling duplicates)
+        List<FavoriteRestaurant> updatedFavorites = new ArrayList<>();
+        boolean hadExistingFavorite = false;
+
+        for (FavoriteRestaurant existingFavorite : user.getFavourites()) {
+            if (existingFavorite.getId().equals(restaurantId)) {
+                hadExistingFavorite = true;
+                // Skip this restaurant - don't add to updatedFavorites
+            } else {
+                // Keep all other restaurants
+                updatedFavorites.add(existingFavorite);
             }
         }
 
-        // Add or remove from favourites based on current status
-        if(isFavourite){
-            favourites.removeIf(favourite -> favourite.getId().equals(restaurantId));
-        }else {
-            favourites.add(dto);
+        // Now handle the toggle logic
+        if (!hadExistingFavorite) {
+            // Add this restaurant if it wasn't already a favorite
+            updatedFavorites.add(favourite);
         }
 
-        // Save the updated user with new favourites list
+        // Replace the user's favorites list with our cleaned list
+        user.setFavourites(updatedFavorites);
         userRepository.save(user);
 
-        return dto;
+        return favourite;
     }
+
 
     // Method to toggle the open status of a restaurant
     @Override

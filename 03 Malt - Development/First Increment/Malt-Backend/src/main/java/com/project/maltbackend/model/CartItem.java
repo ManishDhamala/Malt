@@ -27,8 +27,6 @@ public class CartItem {
 
     private int quantity;
 
-//    private List<String> ingredients;
-
     private Long totalPrice;
 
 }

@@ -47,5 +47,4 @@ public class Food {
 
     private Date deletedAt;
 
-
 }
