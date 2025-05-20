@@ -12,6 +12,7 @@ import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logout } from "../../component/State/Authentication/Action";
+import ReviewsIcon from "@mui/icons-material/Reviews";
 
 const menu = [
   { title: "Dashboard", icon: <Dashboard />, path: "/" },
@@ -24,6 +25,7 @@ const menu = [
     icon: <AdminPanelSettings />,
     path: "/details",
   },
+  { title: "Reviews", icon: <ReviewsIcon />, path: "/reviews" },
   { title: "Logout", icon: <Logout /> },
 ];
 
@@ -60,12 +62,12 @@ export const AdminSideBar = ({ handleClose }) => {
       anchor="left"
       sx={{ zIndex: 1 }}
     >
-      <div className="w-[70vw] lg:w-[20vw] h-screen flex flex-col justify-start pt-2 text-base">
+      <div className="w-[70vw] lg:w-[20vw] h-screen flex flex-col justify-start  text-base">
         {menu.map((item, i) => (
           <React.Fragment key={i}>
             <div
               onClick={() => handleNavigate(item)}
-              className={`flex items-center gap-4 px-7 py-5 cursor-pointer rounded-md transition-all duration-200 ${getActiveClass(
+              className={`flex items-center gap-4 px-7 py-4 cursor-pointer rounded-md transition-all duration-200 ${getActiveClass(
                 item.path
               )}`}
             >

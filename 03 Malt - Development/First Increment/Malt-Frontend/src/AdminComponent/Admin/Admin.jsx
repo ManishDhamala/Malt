@@ -20,6 +20,8 @@ import { AdminEvents } from "../Events/AdminEvents";
 import { CreateEventForm } from "../Events/CreateEventForm";
 import { EditEventForm } from "../Events/EditEventForm";
 import { EditMenuForm } from "../Menu/EditMenuForm";
+import CustomerReviews from "../../component/Restaurant/CustomerReviews";
+import RestaurantReviews from "../Reviews/RestaurantReviews";
 
 export const Admin = () => {
   const dispatch = useDispatch();
@@ -64,6 +66,7 @@ export const Admin = () => {
             <Route path="/details" element={<RestaurantDetails />} />
             <Route path="/add-menu" element={<CreateMenuForm />} />
             <Route path="/edit" element={<EditRestaurantForm />} />
+            <Route path="/reviews" element={<RestaurantReviews />} />
           </Routes>
         </div>
       </div>

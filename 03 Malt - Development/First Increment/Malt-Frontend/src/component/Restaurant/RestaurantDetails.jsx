@@ -8,9 +8,13 @@ import {
   Radio,
   RadioGroup,
   Typography,
+  Button,
+  Box,
+  Rating,
 } from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import StarIcon from "@mui/icons-material/Star";
 import React, { useEffect, useState } from "react";
 import { MenuCard } from "./MenuCard";
 import { useNavigate, useParams } from "react-router-dom";
@@ -25,6 +29,8 @@ import { OrderBag } from "../Cart/OrderBag";
 import SortIcon from "@mui/icons-material/Sort";
 import CenterLoader from "../Templates/CenterLoader";
 import NoDataFound from "../Templates/NoDataFound";
+import { getAverageRating, getRestaurantReviews } from "../State/Review/Action";
+import CustomerReviews from "./CustomerReviews";
 
 const foodTypes = [
   {
@@ -43,13 +49,14 @@ const foodTypes = [
 
 export const RestaurantDetails = () => {
   const [foodType, setFoodType] = useState("");
-  const [loading, setLoading] = useState(true); // Track loading state
-  const [sortOrder, setSortOrder] = useState(""); // "asc" or "desc"
+  const [loading, setLoading] = useState(true);
+  const [sortOrder, setSortOrder] = useState("");
+  const [showReviews, setShowReviews] = useState(false);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const jwt = localStorage.getItem("jwt");
-  const { auth, restaurant, menu } = useSelector((store) => store);
+  const { auth, restaurant, menu, review } = useSelector((store) => store);
   const [selectedCategory, setSelectedCategory] = useState("");
 
   const { id, city } = useParams();
@@ -64,15 +71,17 @@ export const RestaurantDetails = () => {
     console.log(e.target.value, e.target.name, value);
   };
 
-  // useEffect(() => {
-  //   dispatch(getRestaurantById({ jwt, restaurantId: id }));
-  // }, [dispatch, jwt, id]);
+  const handleViewReviews = () => {
+    setShowReviews(!showReviews);
+  };
 
   useEffect(() => {
-    setLoading(true); // Start loading before fetching
+    setLoading(true);
     dispatch(getRestaurantById({ restaurantId: id }));
-    dispatch(getRestaurantCategory({ restaurantId: id })).finally(() => {
-      setLoading(false); // Stop loading after fetch
+    dispatch(getRestaurantCategory({ restaurantId: id }));
+    dispatch(getRestaurantReviews(id));
+    dispatch(getAverageRating(id)).finally(() => {
+      setLoading(false);
     });
   }, [dispatch, id, city]);
 
@@ -86,7 +95,6 @@ export const RestaurantDetails = () => {
     );
   }, [selectedCategory, foodType]);
 
-  // Show loading until restaurant data is available
   if (loading || !restaurant?.restaurants) {
     return <CenterLoader message="Loading restaurant details..." />;
   }
@@ -103,7 +111,6 @@ export const RestaurantDetails = () => {
           </h3>
           <div>
             <Grid container spacing={2}>
-              {/* Full-width image */}
               <Grid item xs={12}>
                 {restaurant?.restaurants?.images?.length > 0 ? (
                   <img
@@ -148,18 +155,17 @@ export const RestaurantDetails = () => {
             </Grid>
           </div>
 
-          <div className="pt-3 pb-5">
-            <h1 className="text-4xl font-semibold">
+          <div className="pt-3 pb-2">
+            <h1 className="text-4xl font-semibold pb-1.5">
               {restaurant.restaurants?.name || "Loading..."}
             </h1>
-            <p className="text-gary-700 mt-1">
+            <p className="text-gray-700 mt-1">
               {restaurant.restaurants?.description || "Loading..."}
             </p>
             <div className="space-y-3 mt-3">
               <p className="text-gray-700 flex items-center gap-3">
                 <LocationOnIcon />
                 <span>
-                  {" "}
                   {restaurant.restaurants?.address?.city || "N/A"},{" "}
                   {restaurant.restaurants?.address?.streetAddress || "N/A"}
                 </span>
@@ -169,11 +175,26 @@ export const RestaurantDetails = () => {
                 <span>{restaurant.restaurants?.openingHours || "N/A"}</span>
               </p>
             </div>
+
+            <div className="flex items-center gap-2 py-3 rounded">
+              <StarIcon className="text-yellow-500" />
+              <span className="font-semibold">{review?.averageRating}</span>
+              <span className="text-gray-700 text-sm">
+                ({review?.reviews?.length || 0} reviews)
+              </span>
+              <button
+                className="text-xs underline text-gray-800 cursor-pointer hover:text-red-800"
+                onClick={handleViewReviews}
+              >
+                {showReviews ? "Hide reviews" : "View all reviews"}
+              </button>
+            </div>
           </div>
         </section>
         <Divider />
 
-        {/* Sorting food items on the basis of price */}
+        {showReviews && <CustomerReviews reviews={review.reviews} />}
+
         <Card className="p-3.5 mt-3 mb-0.5 shadow-md border border-gray-200 rounded-md bg-white flex items-center gap-2 lg:max-w-full xs:max-w-full">
           <SortIcon className="text-gray-700" />
           <label htmlFor="sort" className="text-gray-700 font-medium">
@@ -229,7 +250,6 @@ export const RestaurantDetails = () => {
                     name="food_category"
                     value={selectedCategory}
                   >
-                    {/* Default "All" filter */}
                     <FormControlLabel
                       key="all"
                       value=""
@@ -250,8 +270,7 @@ export const RestaurantDetails = () => {
             </div>
           </div>
 
-          {/* Menu in center */}
-          <div className="space-y-3 lg:w-[60%] mr-3 lg:mt-0 mt-5 ">
+          <div className="space-y-3 lg:w-[60%] mr-3 lg:mt-0 mt-5">
             {menu.menuItems.filter((item) => item && item.available).length ===
             0 ? (
               <div className="h-screen flex items-center justify-center">
