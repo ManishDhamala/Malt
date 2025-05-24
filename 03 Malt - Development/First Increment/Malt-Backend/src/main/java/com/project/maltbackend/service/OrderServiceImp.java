@@ -206,8 +206,78 @@ public class OrderServiceImp implements OrderService{
     }
 
 
+//    @Override
+//    public Order updateOrder(Long orderId, String orderStatus) throws Exception {
+//        Order order = findOrderById(orderId);
+//        String previousStatus = order.getOrderStatus();
+//
+//        if (orderStatus.equals("PENDING")
+//                || orderStatus.equals("CONFIRMED")
+//                || orderStatus.equals("OUT_FOR_DELIVERY")
+//                || orderStatus.equals("DELIVERED")) {
+//
+//            // Prevent re-sending email for already updated status
+//            if (orderStatus.equals(order.getOrderStatus())) {
+//                System.out.println(" Order is already in status: " + orderStatus + ". Skipping email.");
+//                return order;
+//            }
+//
+//            order.setOrderStatus(orderStatus);
+//            Order updatedOrder = orderRepository.save(order);
+//
+//            // Create notification for status update
+//            notificationService.createOrderStatusNotification(order.getCustomer(), updatedOrder, previousStatus);
+//
+//            switch (orderStatus) {
+//                case "OUT_FOR_DELIVERY":
+//                case "DELIVERED":
+//                    String templateName = orderStatus.equals("OUT_FOR_DELIVERY")
+//                            ? "order_out_for_delivery.html"
+//                            : "order_delivered.html";
+//
+//                    String template = emailService.loadTemplate(templateName);
+//                    String htmlContent = template
+//                            .replace("[[name]]", order.getCustomer().getFullName())
+//                            .replace("[[orderId]]", String.valueOf(order.getId()));
+//
+//                    try {
+//                        emailService.sendHtmlEmail(
+//                                order.getCustomer().getEmail(),
+//                                orderStatus.equals("OUT_FOR_DELIVERY")
+//                                        ? "Your Order Is On The Way!"
+//                                        : "Order Delivered Successfully",
+//                                htmlContent
+//                        );
+//                    } catch (Exception e) {
+//                        log.error("Failed to send status update email", e);
+//                    }
+//                    break;
+//
+//                case "CONFIRMED":
+//                    try {
+//                        Long subtotal = order.getTotalPrice() - deliveryCharge - restaurantCharge;
+//                        sendOrderConfirmationEmail(
+//                                order.getCustomer(),
+//                                order,
+//                                order.getDeliveryAddress(),
+//                                order.getRestaurant(),
+//                                order.getItems(),
+//                                subtotal
+//                        );
+//                    } catch (Exception e) {
+//                        log.error("Failed to send confirmation email", e);
+//                    }
+//                    break;
+//            }
+//
+//            return updatedOrder;
+//        }
+//
+//        throw new Exception("Please select a valid order status");
+//    }
+
     @Override
-    public Order updateOrder(Long orderId, String orderStatus) throws Exception {
+    public OrderDto updateOrder(Long orderId, String orderStatus) throws Exception {
         Order order = findOrderById(orderId);
         String previousStatus = order.getOrderStatus();
 
@@ -219,7 +289,7 @@ public class OrderServiceImp implements OrderService{
             // Prevent re-sending email for already updated status
             if (orderStatus.equals(order.getOrderStatus())) {
                 System.out.println(" Order is already in status: " + orderStatus + ". Skipping email.");
-                return order;
+                return convertToDto(order); // Return DTO instead of entity
             }
 
             order.setOrderStatus(orderStatus);
@@ -270,7 +340,7 @@ public class OrderServiceImp implements OrderService{
                     break;
             }
 
-            return updatedOrder;
+            return convertToDto(updatedOrder); // Return DTO of updated order
         }
 
         throw new Exception("Please select a valid order status");
@@ -391,21 +461,6 @@ public class OrderServiceImp implements OrderService{
                 .collect(Collectors.toList());
     }
 
-//    @Transactional(readOnly = true)
-//    @Override
-//    public List<OrderDto> getUsersOrders(Long userId) {
-//        // Finding Orders on the basis of customer Id and excluding pending orders
-//        List<Order> orders = orderRepository.findByCustomerIdAndOrderStatusNot(userId, "CANCELLED");
-//        return orders.stream()
-//                .map(order -> {
-//                    OrderDto dto = modelMapper.map(order, OrderDto.class);
-//                    boolean canReview = "DELIVERED".equals(order.getOrderStatus())
-//                            && !reviewRepository.existsByOrder(order);
-//                    dto.setCanReview(canReview);
-//                    return dto;
-//                })
-//                .collect(Collectors.toList());
-//    }
 
     private OrderDto convertToDto(Order order) {
         boolean canReview = "DELIVERED".equalsIgnoreCase(order.getOrderStatus()) && order.getReview() == null;

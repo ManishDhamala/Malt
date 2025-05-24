@@ -1,6 +1,7 @@
 package com.project.maltbackend.service;
 
 
+import com.project.maltbackend.model.USER_ROLE;
 import com.project.maltbackend.model.User;
 import com.project.maltbackend.repository.UserRepository;
 import com.project.maltbackend.util.TokenUtil;
@@ -60,7 +61,7 @@ public class VerificationService {
         );
 
         log.info("Verification email sent to: {}", user.getEmail());
-        System.out.println("Verification email sent to: {}"+ user.getEmail());
+        System.out.println("Verification email sent to: {}" + user.getEmail());
     }
 
     public boolean verifyUser(String token) {
@@ -83,7 +84,20 @@ public class VerificationService {
         user.setVerificationTokenExpiry(null);
         userRepository.save(user);
 
-        log.info("User verified successfully: {}", user.getEmail());
+        // Send welcome email after successful verification
+        if (user.getRole() == USER_ROLE.ROLE_CUSTOMER) {
+            try {
+                String template = emailService.loadTemplate("welcome.html");
+                String htmlContent = template.replace("[[name]]", user.getFullName());
+                emailService.sendHtmlEmail(user.getEmail(), "Welcome to Malt!", htmlContent);
+                System.out.println("Welcome email sent successfully to: {}" + user.getEmail());
+            } catch (Exception e) {
+                // Log the error but don't fail verification
+                System.out.println("Failed to send welcome email to {}: {}" + user.getEmail() + e.getMessage());
+            }
+        }
+
+        System.out.println("User verified successfully: {}"+ user.getEmail());
         return true;
     }
 

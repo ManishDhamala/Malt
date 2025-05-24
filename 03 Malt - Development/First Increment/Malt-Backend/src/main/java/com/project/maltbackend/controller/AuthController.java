@@ -63,7 +63,7 @@ public class AuthController {
     public ResponseEntity<AuthResponse> createUserHandler(@RequestBody User user) throws Exception {
 
         User isEmailExist = userRepository.findByEmail(user.getEmail());
-        if(isEmailExist != null){
+        if (isEmailExist != null) {
             throw new Exception("Email is already used");
         }
 
@@ -82,7 +82,7 @@ public class AuthController {
 
         User savedUser = userRepository.save(createdUser);
 
-        if(user.getRole() == USER_ROLE.ROLE_CUSTOMER) {
+        if (user.getRole() == USER_ROLE.ROLE_CUSTOMER) {
             // Create welcome notification
             notificationService.createWelcomeNotification(savedUser);
         }
@@ -116,12 +116,12 @@ public class AuthController {
                 : "Registered Successfully");
         authResponse.setRole(savedUser.getRole());
 
-        if(user.getRole() == USER_ROLE.ROLE_CUSTOMER) {
+        if ((user.getRole() == USER_ROLE.ROLE_CUSTOMER) || (user.getRole() == USER_ROLE.ROLE_RESTAURANT_OWNER)) {
             if (verificationRequired) {
                 // Send verification email
                 verificationService.sendVerificationEmail(savedUser);
             } else {
-                // Send welcome email as before
+                // Send welcome email
                 String template = emailService.loadTemplate("welcome.html");
                 String htmlContent = template.replace("[[name]]", user.getFullName());
                 emailService.sendHtmlEmail(user.getEmail(), "Welcome to Malt!", htmlContent);
@@ -207,7 +207,7 @@ public class AuthController {
         // Validate the password by comparing the provided password with the stored (hashed) password
         if (!passwordEncoder.matches(password, userDetails.getPassword())) {  // If passwords do not match, throw an exception
             System.out.println("Login failed: Invalid Username or Password");
-            throw new BadCredentialsException("Invalid Username orr Password");
+            throw new BadCredentialsException("Invalid Username or Password");
         }
 
         // Return an authenticated token containing the user's details and authorities (roles)

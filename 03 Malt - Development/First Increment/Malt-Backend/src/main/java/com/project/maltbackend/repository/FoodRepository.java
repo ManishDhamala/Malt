@@ -27,7 +27,11 @@ public interface FoodRepository extends JpaRepository<Food, Long> {
 //    List<Food> searchFood(@Param("keyword") String keyword);
 
     // Custom JPQL query to search foods by name, case-insensitive.
-    @Query("SELECT f FROM Food f WHERE LOWER(f.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(f.foodCategory.name) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+//    @Query("SELECT f FROM Food f WHERE LOWER(f.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(f.foodCategory.name) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+//    List<Food> searchFood(@Param("keyword") String keyword);
+
+    // Updated search query to exclude deleted items
+    @Query("SELECT f FROM Food f WHERE (LOWER(f.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(f.foodCategory.name) LIKE LOWER(CONCAT('%', :keyword, '%'))) AND f.deleted = false")
     List<Food> searchFood(@Param("keyword") String keyword);
 
 
