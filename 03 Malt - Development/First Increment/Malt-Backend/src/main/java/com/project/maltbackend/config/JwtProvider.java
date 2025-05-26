@@ -17,7 +17,7 @@ import java.util.Set;
 @Service
 public class JwtProvider {
 
-    // Create a secret key using the predefined secret from JwtConstant
+    // Create a secret key using the predefined secret from JwtConstant using HMAC-SHA encryption
     private SecretKey key = Keys.hmacShaKeyFor(JwtConstant.SECRET_KEY.getBytes());
 
     // Method to generate a JWT based on authentication information
@@ -39,6 +39,8 @@ public class JwtProvider {
         return jwt; // Return the generated JWT
     }
 
+
+    // This method is for OAuth but currently unimplemented
     public String generateToken(OAuth2AuthenticationToken auth) {
         String email = auth.getPrincipal().getAttribute("email");
 

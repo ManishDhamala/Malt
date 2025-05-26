@@ -38,7 +38,7 @@ public class KhaltiService {
         body.put("purchase_order_id", String.valueOf(order.getId()));
         body.put("purchase_order_name", "Order #" + order.getId());
 
-        System.out.println("✅ Creating Khalti payment for order ID: " + order.getId());
+        System.out.println(" Creating Khalti payment for order ID: " + order.getId());
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
 
@@ -64,6 +64,8 @@ public class KhaltiService {
 
 
     public Map<String, Object> verifyKhaltiPayment(String pidx) throws Exception {
+
+      //  endpoint to check/verify a payment
         String url = "https://a.khalti.com/api/v2/epayment/lookup/";
 
         HttpHeaders headers = new HttpHeaders();

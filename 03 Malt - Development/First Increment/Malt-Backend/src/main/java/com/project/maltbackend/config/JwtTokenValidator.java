@@ -53,7 +53,7 @@ public class JwtTokenValidator extends OncePerRequestFilter {
                 // Setting up an authentication object with the user's email and authorities
                 Authentication authentication = new UsernamePasswordAuthenticationToken(email,null, auth);
 
-                // Now we store this authentication info in the security context, so the user is authenticated
+                // Now store this authentication info in the security context, so the user is authenticated
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
             }catch (Exception e){

@@ -44,6 +44,8 @@ public class StripeWebhookController {
     @Value("${stripe.webhookKey}")
     private String webhookKey;
 
+
+    // Receiving post request from stripe and verifying the stripe payment
     @PostMapping("/stripe")
     public ResponseEntity<String> handleStripeWebhook(@RequestBody String payload,
                                                       @RequestHeader("Stripe-Signature") String sigHeader) {

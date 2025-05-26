@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class OrderServiceImp implements OrderService{
+public class OrderServiceImp implements OrderService {
 
     @Autowired
     private OrderRepository orderRepository;
@@ -78,13 +78,13 @@ public class OrderServiceImp implements OrderService{
     @Override
     public Object createOrder(OrderRequest request, User user) throws Exception {
 
-        // Step 1: Resolve Address
+        // Step 1: Address Object
         Address finalAddress;
 
         if (request.getAddressId() != null) {
             finalAddress = addressRepository.findById(request.getAddressId())
                     .orElseThrow(() -> new Exception("Address not found"));
-            if (!user.getAddresses().contains(finalAddress)) {
+            if (!user.getAddresses().contains(finalAddress)) {  // Check if the found address belong to the user
                 throw new Exception("Unauthorized address access");
             }
         } else if (request.getDeliveryAddress() != null) {
@@ -138,14 +138,13 @@ public class OrderServiceImp implements OrderService{
         Order savedOrder = orderRepository.save(order);
 
 
-
         // Step 3: Send WebSocket notification for new order
         try {
             OrderDto orderDto = convertToDto(savedOrder);
             orderWebSocketController.notifyNewOrder(savedOrder.getRestaurant().getId(), orderDto);
         } catch (Exception e) {
             // Don't fail the order creation if WebSocket fails
-            System.out.println("Failed to send WebSocket notification for new order: "+ e);
+            System.out.println("Failed to send WebSocket notification for new order: " + e);
         }
 
         // Step 4: Save Payment Info
@@ -182,10 +181,12 @@ public class OrderServiceImp implements OrderService{
             case "ESEWA":
                 PaymentResponse esewaResponse = esewaService.createEsewaPaymentLink(savedOrder);
 
+                // Prepare a map to hold information related to the payment request
                 Map<String, Object> esewaMap = new HashMap<>();
+                // Adding data to the map in key & value pair
                 esewaMap.put("order", savedOrder);
                 esewaMap.put("paymentProvider", "ESEWA");
-                esewaMap.put("signature", esewaResponse.getSignature());
+                esewaMap.put("signature", esewaResponse.getSignature());  // Add the payment signature returned by the eSewa service to the map
                 esewaMap.put("signedFieldNames", esewaResponse.getSignedFieldNames());
 
                 return esewaMap;
@@ -205,76 +206,6 @@ public class OrderServiceImp implements OrderService{
         }
     }
 
-
-//    @Override
-//    public Order updateOrder(Long orderId, String orderStatus) throws Exception {
-//        Order order = findOrderById(orderId);
-//        String previousStatus = order.getOrderStatus();
-//
-//        if (orderStatus.equals("PENDING")
-//                || orderStatus.equals("CONFIRMED")
-//                || orderStatus.equals("OUT_FOR_DELIVERY")
-//                || orderStatus.equals("DELIVERED")) {
-//
-//            // Prevent re-sending email for already updated status
-//            if (orderStatus.equals(order.getOrderStatus())) {
-//                System.out.println(" Order is already in status: " + orderStatus + ". Skipping email.");
-//                return order;
-//            }
-//
-//            order.setOrderStatus(orderStatus);
-//            Order updatedOrder = orderRepository.save(order);
-//
-//            // Create notification for status update
-//            notificationService.createOrderStatusNotification(order.getCustomer(), updatedOrder, previousStatus);
-//
-//            switch (orderStatus) {
-//                case "OUT_FOR_DELIVERY":
-//                case "DELIVERED":
-//                    String templateName = orderStatus.equals("OUT_FOR_DELIVERY")
-//                            ? "order_out_for_delivery.html"
-//                            : "order_delivered.html";
-//
-//                    String template = emailService.loadTemplate(templateName);
-//                    String htmlContent = template
-//                            .replace("[[name]]", order.getCustomer().getFullName())
-//                            .replace("[[orderId]]", String.valueOf(order.getId()));
-//
-//                    try {
-//                        emailService.sendHtmlEmail(
-//                                order.getCustomer().getEmail(),
-//                                orderStatus.equals("OUT_FOR_DELIVERY")
-//                                        ? "Your Order Is On The Way!"
-//                                        : "Order Delivered Successfully",
-//                                htmlContent
-//                        );
-//                    } catch (Exception e) {
-//                        log.error("Failed to send status update email", e);
-//                    }
-//                    break;
-//
-//                case "CONFIRMED":
-//                    try {
-//                        Long subtotal = order.getTotalPrice() - deliveryCharge - restaurantCharge;
-//                        sendOrderConfirmationEmail(
-//                                order.getCustomer(),
-//                                order,
-//                                order.getDeliveryAddress(),
-//                                order.getRestaurant(),
-//                                order.getItems(),
-//                                subtotal
-//                        );
-//                    } catch (Exception e) {
-//                        log.error("Failed to send confirmation email", e);
-//                    }
-//                    break;
-//            }
-//
-//            return updatedOrder;
-//        }
-//
-//        throw new Exception("Please select a valid order status");
-//    }
 
     @Override
     public OrderDto updateOrder(Long orderId, String orderStatus) throws Exception {
@@ -347,7 +278,6 @@ public class OrderServiceImp implements OrderService{
     }
 
 
-
     public void sendOrderConfirmationEmail(User user, Order order, Address address, Restaurant restaurant, List<OrderItem> items, Long subtotal) {
         try {
             String template = emailService.loadTemplate("order_confirmation.html");
@@ -377,7 +307,7 @@ public class OrderServiceImp implements OrderService{
                     .replace("[[restaurantCharge]]", String.valueOf(restaurantCharge))
                     .replace("[[totalPrice]]", String.valueOf(order.getTotalPrice()));
 
-            System.out.println("Sending confirmation email to {}"+ user.getEmail());
+            System.out.println("Sending confirmation email to {}" + user.getEmail());
 
 
             emailService.sendHtmlEmail(user.getEmail(), "Your Order Confirmation - Malt", htmlContent);
@@ -388,11 +318,10 @@ public class OrderServiceImp implements OrderService{
     }
 
 
-
     @Override
     public void cancelOrder(Long orderId) throws Exception {
 
-        Order order =  findOrderById(orderId);
+        Order order = findOrderById(orderId);
         orderRepository.deleteById(orderId);
 
     }
@@ -411,7 +340,7 @@ public class OrderServiceImp implements OrderService{
         Page<Order> ordersPage;
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
 
-        // Create base specification for restaurant
+        // Create base specification to filters orders by restaurantID
         Specification<Order> spec = (root, query, cb) ->
                 cb.equal(root.get("restaurant").get("id"), restaurantId);
 
@@ -429,7 +358,7 @@ public class OrderServiceImp implements OrderService{
         if (year != null) {
             spec = spec.and((root, query, cb) ->
                     cb.equal(
-                            cb.function("date_part", Integer.class,
+                            cb.function("date_part", Integer.class,  // Use a database function "date_part" to extract the year part of the createdAt timestamp
                                     cb.literal("year"),
                                     root.get("createdAt")),
                             year));
@@ -445,6 +374,7 @@ public class OrderServiceImp implements OrderService{
                             month + 1));
         }
 
+        //  fetching the paginated list of orders by matching the built specification
         ordersPage = orderRepository.findAll(spec, pageable);
         Page<OrderDto> dtoPage = ordersPage.map(this::convertToDto);
         return new PaginatedResponse<>(dtoPage);
@@ -454,7 +384,7 @@ public class OrderServiceImp implements OrderService{
     @Transactional(readOnly = true)
     @Override
     public List<OrderDto> getUsersOrders(Long userId) throws Exception {
-        // Finding Orders on the basis of customer Id and excluding pending orders
+        // Finding Orders on the basis of customer Id and excluding Cancelled orders
         List<Order> orders = orderRepository.findByCustomerIdAndOrderStatusNot(userId, "CANCELLED");
         return orders.stream()
                 .map(this::convertToDto)
@@ -483,31 +413,8 @@ public class OrderServiceImp implements OrderService{
         return new UserDto(user.getId(), user.getFullName(), user.getEmail(), user.getRole());
     }
 
-//    private RestaurantDto convertRestaurantToDto(Restaurant restaurant) {
-//        Address address = restaurant.getAddress();
-//
-//        AddressDto addressDto = new AddressDto(
-//                address.getId(),
-//                address.getStreetAddress(),
-//                address.getCity(),
-//                address.getProvince(),
-//                address.getPostalCode(),
-//                address.getCountry(),
-//                address.getLandmark()
-//        );
-//
-//        return new RestaurantDto(
-//                restaurant.getId(),
-//                restaurant.getName(),
-//                restaurant.getImages(),
-//                restaurant.getOpeningHours(),
-//                restaurant.getDescription(),
-//                addressDto
-//        );
-//    }
 
-
-   // Updated converter method with enhanced mapping
+    // Updated converter method with enhanced mapping
     private RestaurantDto convertRestaurantToDto(Restaurant restaurant) {
         Address address = restaurant.getAddress();
 
@@ -525,7 +432,7 @@ public class OrderServiceImp implements OrderService{
         }
 
         ContactInformation contactInformation = null;
-        if(restaurant.getContactInformation() != null) {
+        if (restaurant.getContactInformation() != null) {
             contactInformation = new ContactInformation(
                     restaurant.getContactInformation().getMobile(),
                     restaurant.getContactInformation().getEmail(),
@@ -559,7 +466,7 @@ public class OrderServiceImp implements OrderService{
 
 
     private AddressDto convertAddressToDto(Address address) {
-        return new AddressDto(address.getId(), address.getStreetAddress(), address.getCity(), address.getProvince(), address.getPostalCode(),address.getCountry(), address.getLandmark() );
+        return new AddressDto(address.getId(), address.getStreetAddress(), address.getCity(), address.getProvince(), address.getPostalCode(), address.getCountry(), address.getLandmark());
     }
 
     private List<OrderItemDto> convertOrderItemsToDto(List<OrderItem> items) {
@@ -570,7 +477,7 @@ public class OrderServiceImp implements OrderService{
 
     private PaymentDto convertPaymentToDto(Payment payment) {
         if (payment == null) return null;
-        return new PaymentDto(payment.getId(), payment.getPaymentMethod(),payment.isPaid(), payment.getStatus(),  payment.getPaidAt(), payment.getAmount(), payment.getOrder().getId());
+        return new PaymentDto(payment.getId(), payment.getPaymentMethod(), payment.isPaid(), payment.getStatus(), payment.getPaidAt(), payment.getAmount(), payment.getOrder().getId());
     }
 
     private FoodDto convertFoodToDto(Food food) {
@@ -589,7 +496,7 @@ public class OrderServiceImp implements OrderService{
     @Override
     public Order findOrderById(Long orderId) throws Exception {
         Optional<Order> optionalOrder = orderRepository.findById(orderId);
-        if(optionalOrder.isEmpty()){
+        if (optionalOrder.isEmpty()) {
             throw new Exception("Order not found");
         }
         return optionalOrder.get();

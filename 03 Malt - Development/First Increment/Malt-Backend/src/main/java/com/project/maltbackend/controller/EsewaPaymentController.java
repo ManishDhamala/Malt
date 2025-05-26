@@ -8,6 +8,7 @@ import com.project.maltbackend.service.EsewaService;
 import com.project.maltbackend.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -33,6 +34,7 @@ public class EsewaPaymentController {
     @Autowired
     private OrderWebSocketController orderWebSocketController;
 
+    @Transactional
     @PostMapping("/esewa/verify")
     public ResponseEntity<?> verifyEsewaPayment(@RequestBody Map<String, String> payload) {
         try {

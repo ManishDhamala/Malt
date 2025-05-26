@@ -46,8 +46,6 @@ public class EmailService {
             helper.setSubject(subject);
             helper.setText(htmlContent, true); // true enables HTML
 
-            // Example: If you want to add a logo or image
-            // helper.addInline("logo", new ClassPathResource("static/images/logo.png"));
 
             mailSender.send(message);
 

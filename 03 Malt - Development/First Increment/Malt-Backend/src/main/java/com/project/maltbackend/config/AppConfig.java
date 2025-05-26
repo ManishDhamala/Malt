@@ -140,7 +140,7 @@ public class AppConfig {
         return new BCryptPasswordEncoder();
     }
 
-    //Convert DTOs into entities automatically
+    //Convert entities into DTO automatically
     @Bean
     public ModelMapper modelMapper() {
         return new ModelMapper();

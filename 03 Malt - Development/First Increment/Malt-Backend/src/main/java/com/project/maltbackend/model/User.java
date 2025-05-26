@@ -31,12 +31,12 @@ public class User {
     @Email
     private String email;
 
+    // Allow the field to be set but hide it from outgoing JSON response
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     private USER_ROLE role = USER_ROLE.ROLE_CUSTOMER;
 
-    // This need to be noted
     private boolean verified = false;
 
     @Column(length = 64)
@@ -48,10 +48,8 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "customer")
     private List<Order> orders = new ArrayList<>();
 
-//    @ElementCollection    // collection of non-entity values that should be stored in separate table
-//    private List<RestaurantDto> favourites = new ArrayList<>();
 
-    @ElementCollection
+    @ElementCollection // collection of non-entity values that should be stored in separate table
     @CollectionTable(name = "user_favourites", joinColumns = @JoinColumn(name = "user_id"))
     private List<FavoriteRestaurant> favourites = new ArrayList<>();
 

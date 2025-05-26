@@ -40,6 +40,7 @@ public class Event {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    //Automatically sets timestamp before saving the entity
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();

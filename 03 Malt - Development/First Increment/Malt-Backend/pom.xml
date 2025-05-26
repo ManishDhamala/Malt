@@ -55,6 +55,7 @@
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
+        <!--This is used for encoding and decoding (passwords, token)-->
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
@@ -116,11 +117,11 @@
         </dependency>
 
         <!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-devtools</artifactId>-->
-<!--            <scope>runtime</scope>-->
-<!--            <optional>true</optional>-->
-<!--        </dependency>-->
+        <!--            <groupId>org.springframework.boot</groupId>-->
+        <!--            <artifactId>spring-boot-devtools</artifactId>-->
+        <!--            <scope>runtime</scope>-->
+        <!--            <optional>true</optional>-->
+        <!--        </dependency>-->
 
         <dependency>
             <groupId>org.postgresql</groupId>
