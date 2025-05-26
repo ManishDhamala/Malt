@@ -21,7 +21,7 @@ export default function NoDataFound({
     typeof icon === "string" && iconMap[icon] ? iconMap[icon] : icon;
 
   return (
-    <div className="flex flex-col items-center justify-center text-center py-10 px-100 ">
+    <div className="flex flex-col items-center justify-center text-center py-4 px-4 ">
       {selectedIcon}
       <h2 className="text-lg font-semibold mb-1">{title}</h2>
       <p className="text-gray-500 text-sm mb-4 max-w-sm">{description}</p>

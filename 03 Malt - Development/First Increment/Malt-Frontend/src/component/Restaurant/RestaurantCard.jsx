@@ -37,17 +37,6 @@ export const RestaurantCard = ({ restaurant }) => {
     }
   };
 
-  // This code will work if there is no missing vlaue in resaturant address (Optimized Code)
-  // const handleNavigateToRestaurant = () => {
-  //   if (restaurant.open && restaurant.address && restaurant.address.city) {
-  //     navigate(
-  //       `/restaurant/${restaurant.address.city}/${restaurant.name}/${restaurant.id}`
-  //     );
-  //   } else {
-  //     console.warn("Restaurant address is missing or restaurant is closed.");
-  //   }
-  // };
-
   return (
     <Card className="m-2 w-[19rem]">
       <div className="transition-transform ease-in-out duration-200 hover:scale-105">

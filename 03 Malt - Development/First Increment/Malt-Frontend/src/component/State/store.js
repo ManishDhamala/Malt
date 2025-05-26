@@ -12,14 +12,16 @@ import { notificationReducer } from "./Notification/Reducer";
 import { eventReducer } from "./Event/Reducer";
 import reviewReducer from "./Review/Reducer";
 
-
+// Extracting jwt token from local storage
 const persistedJwt = localStorage.getItem("jwt");
+
+// Getting logged in user information
 const persistedUser = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : null;
 
 const initialState = {
     auth: {
-        user: persistedUser,
-        jwt: persistedJwt,
+        user: persistedUser,  // logged in user (or null if not logged in)
+        jwt: persistedJwt,     // JWT token for authentication
         favourites: [],
         isLoading: false,
         error: null,
@@ -43,5 +45,5 @@ const rootReducer = combineReducers({
     review: reviewReducer
 })
 
-
+// create the redux store
 export const store = legacy_createStore(rootReducer, initialState, applyMiddleware(thunk));

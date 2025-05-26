@@ -257,7 +257,7 @@ export const Cart = () => {
         0
       );
       setSubtotal(newSubtotal);
-      setTotalAmount(newSubtotal + 100 + 10);
+      setTotalAmount(newSubtotal + 100 + 10); // Fixed delivery and restaurant charge
     } else {
       setSubtotal(0);
       setTotalAmount(0);

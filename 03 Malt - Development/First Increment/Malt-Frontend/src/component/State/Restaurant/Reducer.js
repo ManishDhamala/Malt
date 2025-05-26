@@ -47,7 +47,7 @@ const restaurantReducer = (state = initialState, action) => {
             return {
                 ...state,
                 loading: false,
-                restaurants: action.payload // Fixed: Storing single restaurant in `restaurant` instead of `restaurants`
+                restaurants: action.payload
             };
 
         case actionTypes.GET_RESTAURANT_BY_USER_ID_SUCCESS:
@@ -59,18 +59,6 @@ const restaurantReducer = (state = initialState, action) => {
                 usersRestaurant: action.payload
             };
 
-        // case actionTypes.DELETE_RESTAURANT_SUCCESS:
-        //     return {
-        //         ...state,
-        //         error: null,
-        //         loading: false,
-        //         restaurants: state.restaurants.filter(
-        //             (item) => item.id !== action.payload
-        //         ),
-        //         usersRestaurant: state.usersRestaurant.filter(
-        //             (item) => item.id !== action.payload
-        //         ),
-        //     };
 
         case actionTypes.DELETE_RESTAURANT_SUCCESS:
             return {

@@ -197,7 +197,7 @@ const VerifyEmail = () => {
     );
   }
 
-  // Default/initial state (should rarely be seen)
+  // Default/initial state
   return (
     <Box
       sx={{

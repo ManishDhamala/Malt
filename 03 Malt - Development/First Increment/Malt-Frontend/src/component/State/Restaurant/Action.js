@@ -6,26 +6,6 @@ import {
 } from "./ActionType"
 
 
-// export const getAllRestaurantsAction = (jwt) => {
-//     return async (dispatch) => {
-//         dispatch({ type: GET_ALL_RESTAURANT_REQUEST })
-//         try {
-//             const { data } = await api.get(`/api/restaurants`, {
-//                 headers: {
-//                     Authorization: `Bearer ${jwt}`
-//                 }
-//             })
-
-//             dispatch({ type: GET_ALL_RESTAURANT_SUCCESS, payload: data })
-//             console.log("All restaurant", data)
-
-//         } catch (error) {
-//             dispatch({ type: GET_ALL_RESTAURANT_FAIL, payload: error })
-//             console.log("error", error)
-//         }
-//     }
-// }
-
 
 export const getAllRestaurantsAction = () => {
     return async (dispatch) => {
@@ -44,25 +24,6 @@ export const getAllRestaurantsAction = () => {
 }
 
 
-// export const getRestaurantById = (reqData) => {
-//     return async (dispatch) => {
-//         dispatch({ type: GET_RESTAURANT_BY_ID_REQUEST })
-//         try {
-//             const response = await api.get(`/api/restaurants/${reqData.restaurantId}`, {
-//                 headers: {
-//                     Authorization: `Bearer ${reqData.jwt}`
-//                 }
-//             })
-
-//             dispatch({ type: GET_RESTAURANT_BY_ID_SUCCESS, payload: response.data })
-//             console.log("Get Restaurant By Id", response.data)
-
-//         } catch (error) {
-//             dispatch({ type: GET_RESTAURANT_BY_ID_FAIL, payload: error })
-//             console.log("error", error)
-//         }
-//     }
-// }
 
 export const getRestaurantById = (reqData) => {
     return async (dispatch) => {
@@ -209,28 +170,6 @@ export const updateRestaurantStatus = ({ restaurantId, jwt }) => {
 }
 
 
-// This api needs to be configure
-// export const createEvent = ({ restaurantId, data, jwt }) => {
-//     return async (dispatch) => {
-//         dispatch({ type: CREATE_EVENT_REQUEST })
-//         try {
-//             const response = await api.post(`/api/admin/events/restaurant/${restaurantId}`,
-//                 data, {
-//                 headers: {
-//                     Authorization: `Bearer ${jwt}`
-//                 }
-//             })
-
-//             dispatch({ type: CREATE_EVENT_SUCCESS, payload: response.data })
-//             console.log("Created Restaurant Event", response.data)
-
-//         } catch (error) {
-//             dispatch({ type: CREATE_EVENT_FAIL, payload: error })
-//             console.log("error", error)
-//         }
-//     }
-// }
-
 
 export const createCategory = ({ reqData, jwt }) => {
     return async (dispatch) => {
@@ -252,26 +191,6 @@ export const createCategory = ({ reqData, jwt }) => {
     }
 }
 
-
-// export const getRestaurantCategory = ({ jwt, restaurantId }) => {
-//     return async (dispatch) => {
-//         dispatch({ type: GET_RESTAURANT_CATEGORY_REQUEST })
-//         try {
-//             const response = await api.get(`/api/category/restaurant/${restaurantId}`, {
-//                 headers: {
-//                     Authorization: `Bearer ${jwt}`
-//                 }
-//             })
-
-//             dispatch({ type: GET_RESTAURANT_CATEGORY_SUCCESS, payload: response.data })
-//             console.log("Get Restaurant Category", response.data)
-
-//         } catch (error) {
-//             dispatch({ type: GET_RESTAURANT_CATEGORY_FAIL, payload: error })
-//             console.log("error", error)
-//         }
-//     }
-// }
 
 
 export const getRestaurantCategory = ({ restaurantId }) => {

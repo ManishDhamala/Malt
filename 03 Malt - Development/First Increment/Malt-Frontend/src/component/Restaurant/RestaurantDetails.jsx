@@ -273,10 +273,10 @@ export const RestaurantDetails = () => {
           <div className="space-y-3 lg:w-[60%] mr-3 lg:mt-0 mt-5">
             {menu.menuItems.filter((item) => item && item.available).length ===
             0 ? (
-              <div className="h-screen flex items-center justify-center">
+              <div className="h-100 flex items-center justify-center">
                 <NoDataFound
                   title="No Menu Items Found"
-                  description="This restaurant hasn't added any menu items yet."
+                  description="This restaurant hasn't added menu items yet."
                   icon="file"
                 />
               </div>

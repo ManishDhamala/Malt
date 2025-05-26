@@ -5,38 +5,6 @@ import { RESET_RESTAURANT_STATE } from "../Restaurant/ActionType"
 import { resetNotificationState } from "../Notification/Action"
 
 
-// export const registerUser = (reqData) => async (dispatch) => {
-//     dispatch({ type: REGISTER_REQUEST })
-//     try {
-//         const { data } = await axios.post(`${API_URL}/auth/signup`, reqData.userData)
-//         if (data.jwt) localStorage.setItem("jwt", data.jwt);
-//         if (data.role === "ROLE_RESTAURANT_OWNER") {
-//             reqData.navigate("/admin/restaurant")
-//         } else {
-//             reqData.navigate("/")
-//         }
-//         dispatch({ type: REGISTER_SUCCESS, payload: data.jwt })
-//         console.log("Register Success", data)
-//         return { success: true, data };
-
-//     } catch (error) {
-//         let message = "Something went wrong. Please try again.";
-//         if (error.response) {
-//             // Server responded but with error
-//             message = error.response.data?.message || "Email is already used";
-//         } else if (error.request) {
-//             // Request was made but no response (e.g server is down)
-//             message = "Network error. Please check your connection or try again later.";
-//         }
-//         dispatch({ type: REGISTER_FAIL, payload: message });
-//         console.log("Register Error:", message);
-
-//         return { error: message };
-//     }
-// }
-
-
-// Modified registerUser action to handle verification flow
 export const registerUser = (reqData) => async (dispatch) => {
     dispatch({ type: REGISTER_REQUEST })
     try {
@@ -88,7 +56,6 @@ export const registerUser = (reqData) => async (dispatch) => {
 }
 
 
-// Fix the frontend error handling - Modify your loginUser function
 export const loginUser = (reqData) => async (dispatch) => {
     dispatch({ type: LOGIN_REQUEST })
     try {
@@ -182,7 +149,6 @@ export const resendVerification = (email) => async (dispatch) => {
         return { error: message };
     }
 };
-
 
 
 
