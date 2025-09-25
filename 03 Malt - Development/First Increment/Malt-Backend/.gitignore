@@ -34,3 +34,8 @@ build/
 
 # Adding authentication part in gitignore
 /src/main/java/com/project/maltbackend/config/
+
+
+# Ignore Spring Boot configuration files
+src/main/resources/application.properties
+src/main/resources/application.yml
