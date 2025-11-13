@@ -6,21 +6,20 @@ import com.project.maltbackend.model.Notification;
 import com.project.maltbackend.model.Order;
 import com.project.maltbackend.model.User;
 import com.project.maltbackend.repository.NotificationRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class NotificationServiceImp implements NotificationService {
 
-    @Autowired
-    private NotificationRepository notificationRepository;
+    private final NotificationRepository notificationRepository;
 
-    @Autowired
-    private NotificationWebSocketController notificationWebSocketController;
+    private final NotificationWebSocketController notificationWebSocketController;
 
     @Override
     public Notification createWelcomeNotification(User user) {

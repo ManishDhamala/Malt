@@ -2,6 +2,7 @@ package com.project.maltbackend.controller;
 
 import com.project.maltbackend.dto.EventDto;
 import com.project.maltbackend.service.EventService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,12 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/events")
 public class EventController {
 
-    @Autowired
-    private EventService eventService;
+    private final EventService eventService;
 
     @GetMapping
     public ResponseEntity<List<EventDto>> getAllActiveEvents() {

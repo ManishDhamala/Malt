@@ -15,9 +15,6 @@ public class OrderWebSocketController {
     private final SimpMessagingTemplate messagingTemplate;
 
     @Autowired
-    private NotificationService notificationService;
-
-    @Autowired
     public OrderWebSocketController(SimpMessagingTemplate messagingTemplate) {
         this.messagingTemplate = messagingTemplate;
     }

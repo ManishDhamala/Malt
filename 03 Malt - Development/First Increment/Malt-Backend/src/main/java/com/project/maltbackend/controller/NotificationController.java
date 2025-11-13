@@ -4,6 +4,7 @@ import com.project.maltbackend.model.Notification;
 import com.project.maltbackend.model.User;
 import com.project.maltbackend.service.NotificationService;
 import com.project.maltbackend.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,15 +15,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/notifications")
 public class NotificationController {
 
-    @Autowired
-    private NotificationService notificationService;
+    private final NotificationService notificationService;
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     @GetMapping
     public ResponseEntity<List<Notification>> getUserNotifications(@RequestHeader("Authorization") String jwt) throws Exception {

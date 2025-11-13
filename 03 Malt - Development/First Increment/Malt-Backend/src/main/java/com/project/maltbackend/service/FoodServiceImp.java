@@ -6,6 +6,7 @@ import com.project.maltbackend.model.Restaurant;
 import com.project.maltbackend.repository.CategoryRepository;
 import com.project.maltbackend.repository.FoodRepository;
 import com.project.maltbackend.request.CreateFoodRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,13 +16,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class FoodServiceImp implements FoodService {
 
-    @Autowired
-    private CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
 
-    @Autowired  // Injecting an instance of FoodRepository to access the database
-    private FoodRepository foodRepository;
+    // Injecting an instance of FoodRepository to access the database
+    private final FoodRepository foodRepository;
 
     @Override
     public Food createFood(CreateFoodRequest request, Category category, Restaurant restaurant) {

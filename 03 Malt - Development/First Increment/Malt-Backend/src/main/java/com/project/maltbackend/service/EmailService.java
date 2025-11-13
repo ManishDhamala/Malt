@@ -1,8 +1,8 @@
 package com.project.maltbackend.service;
 
 import jakarta.mail.internet.MimeMessage;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -15,12 +15,11 @@ import java.nio.file.Path;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class EmailService {
 
+    private final JavaMailSender mailSender;
 
-    @Autowired
-    private JavaMailSender mailSender;
-//
 //    //Simple method for sending mail
 //    public void sendEmail(String to, String subject, String text) {
 //        try{

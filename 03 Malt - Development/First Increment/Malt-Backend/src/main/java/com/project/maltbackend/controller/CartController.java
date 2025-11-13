@@ -7,33 +7,33 @@ import com.project.maltbackend.request.AddCartItemRequest;
 import com.project.maltbackend.request.UpdateCartItemRequest;
 import com.project.maltbackend.service.CartService;
 import com.project.maltbackend.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
 public class CartController {
 
-    @Autowired
-    private CartService cartService;
+    private final CartService cartService;
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
 
     @PutMapping("/cart/add")
     public ResponseEntity<CartItem> addItemToCart(@RequestBody AddCartItemRequest request,
                                                   @RequestHeader("Authorization") String jwt) throws Exception {
-        CartItem cartItem = cartService.addItemToCart(request,jwt);
+        CartItem cartItem = cartService.addItemToCart(request, jwt);
 
         return new ResponseEntity<>(cartItem, HttpStatus.OK);
     }
 
     @PutMapping("/cart-item/update")
     public ResponseEntity<CartItem> updateCartItemQuantity(@RequestBody UpdateCartItemRequest request,
-                                                  @RequestHeader("Authorization") String jwt) throws Exception {
+                                                           @RequestHeader("Authorization") String jwt) throws Exception {
         CartItem cartItem = cartService.updateCartItemQuantity(request.getCartItemId(), request.getQuantity());
 
         return new ResponseEntity<>(cartItem, HttpStatus.OK);
@@ -41,8 +41,8 @@ public class CartController {
 
     @DeleteMapping("/cart-item/{id}/remove")
     public ResponseEntity<Cart> removeCartItem(@PathVariable Long id,
-                                                           @RequestHeader("Authorization") String jwt) throws Exception {
-        Cart cart= cartService.removeItemFromCart(id,jwt);
+                                               @RequestHeader("Authorization") String jwt) throws Exception {
+        Cart cart = cartService.removeItemFromCart(id, jwt);
 
         return new ResponseEntity<>(cart, HttpStatus.OK);
     }
@@ -64,10 +64,6 @@ public class CartController {
 
         return new ResponseEntity<>(cart, HttpStatus.OK);
     }
-
-
-
-
 
 
 }

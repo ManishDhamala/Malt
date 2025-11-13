@@ -14,17 +14,12 @@ import java.util.Optional;
 @Service
 public class CategoryServiceImp implements CategoryService{
 
-    @Autowired
-    private CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
 
-
-    @Autowired
-    private FoodRepository foodRepository;
-
-    @Autowired
-    private RestaurantService restaurantService;
-
-
+    // Constructor Injection
+    public CategoryServiceImp(CategoryRepository categoryRepository){
+        this.categoryRepository = categoryRepository;
+    }
 
         @Override
         public Category createCategory(String name, Restaurant restaurant) throws Exception {

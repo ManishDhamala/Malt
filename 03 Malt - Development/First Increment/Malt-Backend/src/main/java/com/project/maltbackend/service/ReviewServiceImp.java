@@ -10,6 +10,7 @@ import com.project.maltbackend.repository.ReviewRepository;
 import com.project.maltbackend.request.ReviewRequest;
 import com.project.maltbackend.response.ReviewResponse;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.stereotype.Service;
@@ -19,13 +20,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ReviewServiceImp implements ReviewService {
 
-    @Autowired
-    private ReviewRepository reviewRepository;
+    private final ReviewRepository reviewRepository;
 
-    @Autowired
-    private OrderRepository orderRepository;
+    private final OrderRepository orderRepository;
 
     @Override
     @Transactional

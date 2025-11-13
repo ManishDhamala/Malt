@@ -5,6 +5,7 @@ import com.project.maltbackend.model.Address;
 import com.project.maltbackend.model.User;
 import com.project.maltbackend.response.MessageResponse;
 import com.project.maltbackend.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,16 +14,16 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     @GetMapping("/profile")
     public ResponseEntity<User> findUserByJwtToken(@RequestHeader("Authorization") String jwt) throws Exception {
-        User user= userService.findUserByJwtToken(jwt);
+        User user = userService.findUserByJwtToken(jwt);
 
         return new ResponseEntity<>(user, HttpStatus.OK);
 
@@ -58,7 +59,7 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<MessageResponse> deleteUser(@PathVariable Long id,
-                                                      @RequestHeader("Authorization")String jwt) throws Exception {
+                                                      @RequestHeader("Authorization") String jwt) throws Exception {
         User user = userService.findUserByJwtToken(jwt);
         userService.deleteUser(id);
 
@@ -67,7 +68,6 @@ public class UserController {
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
 
 
 }

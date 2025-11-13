@@ -8,6 +8,7 @@ import com.project.maltbackend.response.MessageResponse;
 import com.project.maltbackend.service.CategoryService;
 import com.project.maltbackend.service.RestaurantService;
 import com.project.maltbackend.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,18 +16,16 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
 public class CategoryController {
 
-    @Autowired
-    private CategoryService categoryService;
+    private final CategoryService categoryService;
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    private RestaurantService restaurantService;
+    private final RestaurantService restaurantService;
 
     //  Endpoint for creating new category
     @PostMapping("/admin/category")
@@ -50,7 +49,7 @@ public class CategoryController {
     @GetMapping("/category/restaurant/{id}")
     public ResponseEntity<List<Category>> getRestaurantCategories(
             @PathVariable Long id
-           )
+    )
             throws Exception {
 
         // Finds all categories by the restaurant's ID
@@ -63,7 +62,7 @@ public class CategoryController {
 
     @DeleteMapping("/admin/category/{id}")
     public ResponseEntity<MessageResponse> deleteFoodCategory(@PathVariable Long id,
-                                                      @RequestHeader("Authorization") String jwt) throws Exception {
+                                                              @RequestHeader("Authorization") String jwt) throws Exception {
 
         User user = userService.findUserByJwtToken(jwt);
 
@@ -74,7 +73,6 @@ public class CategoryController {
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
 
 
 }

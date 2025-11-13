@@ -8,6 +8,7 @@ import com.project.maltbackend.service.OrderService;
 import com.project.maltbackend.service.OrderServiceImp;
 import com.project.maltbackend.service.UserService;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,29 +17,22 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/payment/khalti")
 public class KhaltiPaymentController {
 
-    @Autowired
-    private KhaltiService khaltiService;
+    private final KhaltiService khaltiService;
 
-    @Autowired
-    private PaymentRepository paymentRepository;
+    private final PaymentRepository paymentRepository;
 
-    @Autowired
-    private OrderRepository orderRepository;
+    private final OrderRepository orderRepository;
 
-    @Autowired
-    private OrderService orderService;
+    private final OrderService orderService;
 
-    @Autowired
-    private OrderWebSocketController orderWebSocketController;
+    private final OrderWebSocketController orderWebSocketController;
 
-
-    @Autowired
-    private UserService userService;
-
+    private final UserService userService;
 
     @Transactional
     @PostMapping("/verify")
@@ -100,8 +94,6 @@ public class KhaltiPaymentController {
             return ResponseEntity.ok(Map.of("success", false, "message", "Server error: " + e.getMessage()));
         }
     }
-
-
 
 
 }

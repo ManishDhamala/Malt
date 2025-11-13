@@ -9,6 +9,7 @@ import com.project.maltbackend.repository.CartItemRepository;
 import com.project.maltbackend.repository.RestaurantRepository;
 import com.project.maltbackend.repository.UserRepository;
 import com.project.maltbackend.request.CreateRestaurantRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,19 +21,16 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class RestaurantServiceImp implements RestaurantService{
 
-    @Autowired
-    private RestaurantRepository restaurantRepository;
+    private final RestaurantRepository restaurantRepository;
 
-    @Autowired
-    private AddressRepository addressRepository;
+    private final AddressRepository addressRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private CartItemRepository cartItemRepository;
+    private final CartItemRepository cartItemRepository;
 
     // Method to create a new restaurant based on the request data and the user
     @Override

@@ -10,6 +10,7 @@ import com.stripe.exception.SignatureVerificationException;
 import com.stripe.model.Event;
 import com.stripe.model.checkout.Session;
 import com.stripe.net.Webhook;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -19,24 +20,20 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/webhook")
 public class StripeWebhookController {
 
-    @Autowired
-    private OrderRepository orderRepository;
+    private final OrderRepository orderRepository;
 
-    @Autowired
-    private PaymentRepository paymentRepository;
+    private final PaymentRepository paymentRepository;
 
-    @Autowired
-    private OrderService orderService;
+    private final OrderService orderService;
 
-    @Autowired
-    private OrderServiceImp orderServiceImp;
+    private final OrderServiceImp orderServiceImp;
 
-    @Autowired
-    private OrderWebSocketController orderWebSocketController;
+    private final OrderWebSocketController orderWebSocketController;
 
     private final int deliveryCharge = 100;
     private final int restaurantCharge = 10;

@@ -14,6 +14,7 @@ import com.stripe.model.checkout.Session;
 import com.stripe.net.Webhook;
 import jakarta.validation.Valid;
 import jdk.jfr.Event;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,19 +23,16 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
 public class OrderController {
 
-    @Autowired
-    private OrderService orderService;
+    private  final OrderService orderService;
 
-    @Autowired
-    private PaymentService paymentService;
+    private final PaymentService paymentService;
 
-    @Autowired
-    private UserService userService;
-
+    private final UserService userService;
 
     @PostMapping("/order")
     public ResponseEntity<?> createOrder(@Valid @RequestBody OrderRequest request,

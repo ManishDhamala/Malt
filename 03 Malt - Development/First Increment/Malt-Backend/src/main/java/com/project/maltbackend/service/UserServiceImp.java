@@ -4,19 +4,19 @@ import com.project.maltbackend.config.JwtProvider;
 import com.project.maltbackend.dto.UserDto;
 import com.project.maltbackend.model.User;
 import com.project.maltbackend.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImp implements UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private JwtProvider jwtProvider;
+    private final JwtProvider jwtProvider;
 
     @Override
     public UserDto updateUser(String jwt, UserDto userDto) throws Exception {

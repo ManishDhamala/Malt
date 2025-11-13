@@ -8,7 +8,7 @@ import com.project.maltbackend.repository.RestaurantRepository;
 import com.project.maltbackend.request.CreateEventRequest;
 import com.project.maltbackend.service.EventService;
 import com.project.maltbackend.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,42 +17,33 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/admin/events")
 public class AdminEventController {
 
-    @Autowired
-    private EventService eventService;
+    private final EventService eventService;
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    private RestaurantRepository restaurantRepository;
+    private final RestaurantRepository restaurantRepository;
 
     @PostMapping
-    public ResponseEntity<Event> createEvent(
-            @RequestBody CreateEventRequest req,
-            @RequestHeader("Authorization") String jwt) throws Exception {
+    public ResponseEntity<Event> createEvent(@RequestBody CreateEventRequest req, @RequestHeader("Authorization") String jwt) throws Exception {
         User user = userService.findUserByJwtToken(jwt);
         Event event = eventService.createEvent(req, user);
         return new ResponseEntity<>(event, HttpStatus.CREATED);
     }
 
     @PutMapping("/{eventId}")
-    public ResponseEntity<Event> updateEvent(
-            @PathVariable Long eventId,
-            @RequestBody CreateEventRequest req,
-            @RequestHeader("Authorization") String jwt) throws Exception {
+    public ResponseEntity<Event> updateEvent(@PathVariable Long eventId, @RequestBody CreateEventRequest req, @RequestHeader("Authorization") String jwt) throws Exception {
         User user = userService.findUserByJwtToken(jwt);
         Event event = eventService.updateEvent(eventId, req, user);
         return new ResponseEntity<>(event, HttpStatus.OK);
     }
 
     @DeleteMapping("/{eventId}")
-    public ResponseEntity<Map<String, String>> deleteEvent(
-            @PathVariable Long eventId,
-            @RequestHeader("Authorization") String jwt) throws Exception {
+    public ResponseEntity<Map<String, String>> deleteEvent(@PathVariable Long eventId, @RequestHeader("Authorization") String jwt) throws Exception {
         User user = userService.findUserByJwtToken(jwt);
         String message = eventService.deleteEvent(eventId, user);
 
@@ -62,8 +53,7 @@ public class AdminEventController {
     }
 
     @GetMapping("/restaurant")
-    public ResponseEntity<List<EventDto>> getRestaurantEvents(
-            @RequestHeader("Authorization") String jwt) throws Exception {
+    public ResponseEntity<List<EventDto>> getRestaurantEvents(@RequestHeader("Authorization") String jwt) throws Exception {
         User user = userService.findUserByJwtToken(jwt);
         Restaurant restaurant = restaurantRepository.findByOwnerId(user.getId());
 

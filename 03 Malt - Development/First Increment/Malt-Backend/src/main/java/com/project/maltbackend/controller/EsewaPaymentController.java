@@ -6,6 +6,7 @@ import com.project.maltbackend.repository.OrderRepository;
 import com.project.maltbackend.repository.PaymentRepository;
 import com.project.maltbackend.service.EsewaService;
 import com.project.maltbackend.service.OrderService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,24 +16,20 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/payment")
 public class EsewaPaymentController {
 
-    @Autowired
-    private OrderRepository orderRepository;
+    private final OrderRepository orderRepository;
 
-    @Autowired
-    private PaymentRepository paymentRepository;
+    private final PaymentRepository paymentRepository;
 
-    @Autowired
-    private EsewaService esewaService;
+    private final EsewaService esewaService;
 
-    @Autowired
-    private OrderService orderService;
+    private final OrderService orderService;
 
-    @Autowired
-    private OrderWebSocketController orderWebSocketController;
+    private final OrderWebSocketController orderWebSocketController;
 
     @Transactional
     @PostMapping("/esewa/verify")

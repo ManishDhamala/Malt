@@ -6,9 +6,8 @@ import com.project.maltbackend.model.*;
 import com.project.maltbackend.repository.*;
 import com.project.maltbackend.request.OrderRequest;
 import com.project.maltbackend.response.PaymentResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,56 +21,38 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class OrderServiceImp implements OrderService {
 
-    @Autowired
-    private OrderRepository orderRepository;
+    private final OrderRepository orderRepository;
 
-    @Autowired
-    private OrderItemRepository orderItemRepository;
+    private final OrderItemRepository orderItemRepository;
 
-    @Autowired
-    private AddressRepository addressRepository;
+    private final AddressRepository addressRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private RestaurantService restaurantService;
+    private final RestaurantService restaurantService;
 
-    @Autowired
-    private CartService cartService;
+    private final CartService cartService;
 
-    @Autowired
-    private PaymentRepository paymentRepository;
+    private final PaymentRepository paymentRepository;
 
-    @Autowired
-    private PaymentService paymentService;
+    private final PaymentService paymentService;
 
-    @Autowired
-    private EsewaService esewaService;
+    private final EsewaService esewaService;
 
-    @Autowired
-    private KhaltiService khaltiService;
+    private final KhaltiService khaltiService;
 
-    @Autowired
-    private EmailService emailService;
+    private final EmailService emailService;
 
-    @Autowired
-    private NotificationService notificationService;
+    private final NotificationService notificationService;
 
-    @Autowired
-    private OrderWebSocketController orderWebSocketController;
+    private  final OrderWebSocketController orderWebSocketController;
 
-    @Autowired
-    private ReviewRepository reviewRepository;
+    private final int deliveryCharge = 100;
 
-    @Autowired
-    private ModelMapper modelMapper;
-
-    private int deliveryCharge = 100;
-
-    private int restaurantCharge = 10;
+    private final int restaurantCharge = 10;
 
 
     @Transactional
@@ -320,10 +301,7 @@ public class OrderServiceImp implements OrderService {
 
     @Override
     public void cancelOrder(Long orderId) throws Exception {
-
-        Order order = findOrderById(orderId);
         orderRepository.deleteById(orderId);
-
     }
 
 

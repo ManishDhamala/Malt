@@ -7,6 +7,7 @@ import com.project.maltbackend.model.User;
 import com.project.maltbackend.repository.EventRepository;
 import com.project.maltbackend.repository.RestaurantRepository;
 import com.project.maltbackend.request.CreateEventRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,13 +18,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class EventServiceImp implements EventService {
 
-    @Autowired
-    private EventRepository eventRepository;
+    private final EventRepository eventRepository;
 
-    @Autowired
-    private RestaurantRepository restaurantRepository;
+    private final RestaurantRepository restaurantRepository;
 
     @Override
     public Event createEvent(CreateEventRequest req, User user) throws Exception {

@@ -2,6 +2,7 @@ package com.project.maltbackend.config;
 
 import com.project.maltbackend.service.CustomOAuth2UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -22,13 +23,12 @@ import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class AppConfig {
 
-    @Autowired
-    private CustomOAuth2UserService customOAuth2UserService;
+    private final CustomOAuth2UserService customOAuth2UserService;
 
-    @Autowired
-    private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+    private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 
     // This method configures Spring Security's filter chain.
     // It defines how requests should be authorized, enables CORS, disables CSRF, and adds JWT validation.

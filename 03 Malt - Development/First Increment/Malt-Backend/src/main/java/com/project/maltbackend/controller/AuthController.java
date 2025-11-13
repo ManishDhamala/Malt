@@ -12,6 +12,7 @@ import com.project.maltbackend.service.CustomerUserDetailsService;
 import com.project.maltbackend.service.EmailService;
 import com.project.maltbackend.service.NotificationService;
 import com.project.maltbackend.service.VerificationService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -27,33 +28,26 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private JwtProvider jwtProvider;
+    private final JwtProvider jwtProvider;
 
-    @Autowired
-    private CustomerUserDetailsService customerUserDetailsService;
+    private final CustomerUserDetailsService customerUserDetailsService;
 
-    @Autowired
-    private CartRepository cartRepository;
+    private final CartRepository cartRepository;
 
-    @Autowired
-    private EmailService emailService;
+    private final EmailService emailService;
 
-    @Autowired
-    private NotificationService notificationService;
+    private final NotificationService notificationService;
 
-    @Autowired
-    private VerificationService verificationService;
+    private final VerificationService verificationService;
 
     // Added to customize the verification requirement
     @Value("${app.verification.required:true}")

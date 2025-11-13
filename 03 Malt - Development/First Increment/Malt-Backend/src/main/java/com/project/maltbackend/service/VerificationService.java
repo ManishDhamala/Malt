@@ -5,6 +5,7 @@ import com.project.maltbackend.model.USER_ROLE;
 import com.project.maltbackend.model.User;
 import com.project.maltbackend.repository.UserRepository;
 import com.project.maltbackend.util.TokenUtil;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
 @Service
+@RequiredArgsConstructor
 public class VerificationService {
 
     private static final Logger log = LoggerFactory.getLogger(VerificationService.class);
@@ -24,11 +26,10 @@ public class VerificationService {
     @Value("${app.base-url:http://localhost:8080}")
     private String baseUrl;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private EmailService emailService;
+    private final EmailService emailService;
+
 
     public void sendVerificationEmail(User user) {
         // Generate a new verification token

@@ -7,6 +7,7 @@ import com.project.maltbackend.model.User;
 import com.project.maltbackend.request.CreateRestaurantRequest;
 import com.project.maltbackend.service.RestaurantService;
 import com.project.maltbackend.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,15 +15,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/restaurants")
 public class RestaurantController {
 
-    @Autowired
-    private RestaurantService restaurantService;
+    private final RestaurantService restaurantService;
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     @GetMapping("/search")
     public ResponseEntity<List<Restaurant>> searchRestaurant(
@@ -35,15 +35,6 @@ public class RestaurantController {
         return new ResponseEntity<>(restaurant, HttpStatus.OK);
     }
 
-//    @GetMapping()
-//    public ResponseEntity<List<Restaurant>> getAllRestaurants(
-//
-//    ) throws Exception {
-//
-//        List<Restaurant> restaurant = restaurantService.getAllRestaurants();
-//
-//        return new ResponseEntity<>(restaurant, HttpStatus.OK);
-//    }
 
     @GetMapping()
     public ResponseEntity<List<RestaurantDto>> getAllRestaurants() throws Exception {
@@ -72,7 +63,7 @@ public class RestaurantController {
 
         User user = userService.findUserByJwtToken(jwt);
 
-        FavoriteRestaurant restaurant = restaurantService.addToFavourites(id,user);
+        FavoriteRestaurant restaurant = restaurantService.addToFavourites(id, user);
 
         return new ResponseEntity<>(restaurant, HttpStatus.OK);
     }
